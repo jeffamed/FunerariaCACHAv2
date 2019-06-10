@@ -21,7 +21,7 @@ class CreateClientesTable extends Migration
             $table->string('Direccion', 1000);
             $table->string('Estado_Civil', 15);
             $table->string('Telefono', 10);
-            $table->string('No.Cedula', 20);
+            $table->string('Cedula', 20);
             $table->string('Estado', 6)->default('Tipo A');
             $table->timestamps();
         });

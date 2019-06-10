@@ -19,7 +19,7 @@ class CreateEmpleadosTable extends Migration
             $table->string('Apellido', 100);
             $table->string('Direccion', 500);
             $table->string('Telefono', 10);
-            $table->string('No.Cedula', 20);
+            $table->string('Cedula', 20);
             $table->string('Estado',10)->default('Activo');
             $table->timestamps();
         });
