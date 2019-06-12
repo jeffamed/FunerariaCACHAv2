@@ -1779,6 +1779,181 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     console.log('Component mounted.');
@@ -37093,23 +37268,690 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-md-8" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-header" }, [
-              _vm._v("Example Component")
-            ]),
+    return _c(
+      "section",
+      {
+        staticClass: "main-section col-md-10 col-sm-12 d-flex ml-auto",
+        attrs: { id: "SectionCuerpo" }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "section-contenido mt-4 ml-2 mr-4 mb-4",
+            attrs: { id: "contenido" }
+          },
+          [
+            _c(
+              "div",
+              {
+                staticClass: "contenido__encabezado bg-primary d-flex w-100",
+                attrs: { id: "contenido-enc" }
+              },
+              [
+                _c("h5", { staticClass: "titulo" }, [_vm._v("Opcion 1")]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn-new",
+                    attrs: { "data-toggle": "modal", "data-target": "#btn-new" }
+                  },
+                  [
+                    _c("i", { staticClass: "fa fa-plus-circle" }),
+                    _vm._v(" Nuevo")
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "modal fade",
+                    attrs: {
+                      id: "btn-new",
+                      tabindex: "-1",
+                      role: "dialog",
+                      "aria-labelledby": "btn-new",
+                      "aria-hidden": "true"
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "modal-dialog" }, [
+                      _c("div", { staticClass: "modal-content" }, [
+                        _c("div", { staticClass: "modal-header bg-primary" }, [
+                          _c("h5", { staticClass: "modal-title text-white" }, [
+                            _vm._v("Agregar Opcion 1")
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "close",
+                              attrs: {
+                                "data-dismiss": "modal",
+                                "aria-label": "Cerrar"
+                              }
+                            },
+                            [
+                              _c("span", { attrs: { "aria-hidden": "true" } }, [
+                                _vm._v("×")
+                              ])
+                            ]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "modal-body" }, [
+                          _c("form", { attrs: { action: "" } }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", { attrs: { for: "nombre" } }, [
+                                _vm._v("Nombre: ")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                staticClass: "form-control",
+                                attrs: {
+                                  type: "text",
+                                  placeholder: "Nombre..."
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", { attrs: { for: "fecha" } }, [
+                                _vm._v("Fecha: ")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                staticClass: "form-control",
+                                attrs: {
+                                  type: "text",
+                                  id: "dpFecha",
+                                  placeholder: "dd/mm/yyyy"
+                                }
+                              })
+                            ])
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "modal-footer" }, [
+                          _c("button", { staticClass: "btn btn-success" }, [
+                            _c("i", { staticClass: "fa fa-check" }),
+                            _vm._v(" Aceptar")
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-danger",
+                              attrs: { "data-dismiss": "modal" }
+                            },
+                            [
+                              _c("i", { staticClass: "fa fa-remove" }),
+                              _vm._v(" Cerrar")
+                            ]
+                          )
+                        ])
+                      ])
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "buscador d-flex ml-auto hidden-md-down" },
+                  [
+                    _c(
+                      "label",
+                      { staticClass: "etiqueta", attrs: { for: "" } },
+                      [_vm._v("Buscar por: ")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        staticClass: "option-search",
+                        attrs: { name: "filtro", id: "" }
+                      },
+                      [
+                        _c("option", { attrs: { value: "nombre" } }, [
+                          _vm._v("Nombre")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "descripcion" } }, [
+                          _vm._v("Descripción")
+                        ])
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("input", {
+                      staticClass: "buscar",
+                      attrs: {
+                        type: "text",
+                        name: "buscar",
+                        id: "buscar",
+                        placeholder: "Buscar..."
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "icon-buscar" }, [
+                      _c("i", { staticClass: "fa fa-search hidden-md-down" })
+                    ])
+                  ]
+                )
+              ]
+            ),
             _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                    I'm an example component.\n                "
-              )
-            ])
-          ])
-        ])
-      ])
-    ])
+            _c(
+              "div",
+              {
+                staticClass: "contenido__cuerpo",
+                attrs: { id: "cuerpo-contenido" }
+              },
+              [
+                _c("div", { staticClass: "table-responsive tabla-contenido" }, [
+                  _c("div", { staticClass: "form-inline mt-2 mb-2" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "hidden-lg-up ml-1",
+                        attrs: { for: "buscar" }
+                      },
+                      [_vm._v("Buscar por: ")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        staticClass:
+                          "custom-select hidden-lg-up mb-1 mr-1 w-25",
+                        attrs: { name: "", id: "select-opciones" }
+                      },
+                      [
+                        _c("option", { attrs: { value: "nombre" } }, [
+                          _vm._v("Nombre")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "descripcion" } }, [
+                          _vm._v("Descripción")
+                        ])
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("input", {
+                      staticClass: "form-control hidden-lg-up mb-1 w-50",
+                      attrs: {
+                        type: "text",
+                        name: "buscar",
+                        id: "txtbuscar",
+                        placeholder: "Buscar..."
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "table",
+                    {
+                      staticClass:
+                        "tablesorter table table-striped table-hover table-sm",
+                      attrs: { id: "tabla" }
+                    },
+                    [
+                      _c("thead", { staticClass: "enc-tabla" }, [
+                        _c("tr", [
+                          _c("th", [_vm._v("Opciones")]),
+                          _vm._v(" "),
+                          _c("th", [_vm._v("Nombre")]),
+                          _vm._v(" "),
+                          _c("th", [_vm._v("Descripción")]),
+                          _vm._v(" "),
+                          _c("th", [_vm._v("Estado")])
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("tbody", [
+                        _c("tr", [
+                          _c("td", [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "boton boton-edit",
+                                attrs: {
+                                  "data-toggle": "modal",
+                                  "data-target": "#btn-modificar"
+                                }
+                              },
+                              [_c("i", { staticClass: "fa fa-pencil" })]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass: "modal fade",
+                                attrs: {
+                                  id: "btn-modificar",
+                                  tabindex: "-1",
+                                  role: "dialog",
+                                  "aria-labelledby": "btn-modificar",
+                                  "aria-hidden": "true"
+                                }
+                              },
+                              [
+                                _c("div", { staticClass: "modal-dialog" }, [
+                                  _c("div", { staticClass: "modal-content" }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass: "modal-header bg-warning"
+                                      },
+                                      [
+                                        _c(
+                                          "h5",
+                                          {
+                                            staticClass:
+                                              "modal-title text-white"
+                                          },
+                                          [_vm._v("Editar Opcion 1")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "button",
+                                          {
+                                            staticClass: "close",
+                                            attrs: {
+                                              "data-dismiss": "modal",
+                                              "aria-label": "Cerrar"
+                                            }
+                                          },
+                                          [
+                                            _c(
+                                              "span",
+                                              {
+                                                attrs: { "aria-hidden": "true" }
+                                              },
+                                              [_vm._v("×")]
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c("div", { staticClass: "modal-body" }, [
+                                      _c("form", { attrs: { action: "" } }, [
+                                        _c(
+                                          "div",
+                                          { staticClass: "form-group" },
+                                          [
+                                            _c(
+                                              "label",
+                                              { attrs: { for: "nombre" } },
+                                              [_vm._v("Nombre: ")]
+                                            ),
+                                            _vm._v(" "),
+                                            _c("input", {
+                                              staticClass: "form-control",
+                                              attrs: {
+                                                type: "text",
+                                                placeholder: "Nombre..."
+                                              }
+                                            })
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "div",
+                                          { staticClass: "form-group" },
+                                          [
+                                            _c(
+                                              "label",
+                                              { attrs: { for: "fecha" } },
+                                              [_vm._v("Fecha: ")]
+                                            ),
+                                            _vm._v(" "),
+                                            _c("input", {
+                                              staticClass: "form-control",
+                                              attrs: {
+                                                type: "text",
+                                                id: "dpFecha1",
+                                                placeholder: "dd/mm/yyyy"
+                                              }
+                                            })
+                                          ]
+                                        )
+                                      ])
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("div", { staticClass: "modal-footer" }, [
+                                      _c(
+                                        "button",
+                                        { staticClass: "btn btn-success" },
+                                        [
+                                          _c("i", {
+                                            staticClass: "fa fa-check"
+                                          }),
+                                          _vm._v(" Aceptar")
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "button",
+                                        {
+                                          staticClass: "btn btn-danger",
+                                          attrs: { "data-dismiss": "modal" }
+                                        },
+                                        [
+                                          _c("i", {
+                                            staticClass: "fa fa-remove"
+                                          }),
+                                          _vm._v(" Cerrar")
+                                        ]
+                                      )
+                                    ])
+                                  ])
+                                ])
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "boton boton-eliminar",
+                                attrs: {
+                                  "data-toggle": "modal",
+                                  "data-target": "#btn-eliminar"
+                                }
+                              },
+                              [_c("i", { staticClass: "fa fa-remove" })]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass: "modal fade",
+                                attrs: {
+                                  id: "btn-eliminar",
+                                  tabindex: "-1",
+                                  role: "dialog",
+                                  "aria-labelledby": "btn-eliminar",
+                                  "aria-hidden": "true"
+                                }
+                              },
+                              [
+                                _c("div", { staticClass: "modal-dialog" }, [
+                                  _c("div", { staticClass: "modal-content" }, [
+                                    _c(
+                                      "div",
+                                      { staticClass: "modal-header bg-danger" },
+                                      [
+                                        _c(
+                                          "h5",
+                                          {
+                                            staticClass:
+                                              "modal-title text-white"
+                                          },
+                                          [_vm._v("Eliminar Opcion 1")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "button",
+                                          {
+                                            staticClass: "close",
+                                            attrs: {
+                                              "data-dismiss": "modal",
+                                              "aria-label": "Cerrar"
+                                            }
+                                          },
+                                          [
+                                            _c(
+                                              "span",
+                                              {
+                                                attrs: { "aria-hidden": "true" }
+                                              },
+                                              [_vm._v("×")]
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c("div", { staticClass: "modal-body" }, [
+                                      _c("h6", [
+                                        _vm._v(
+                                          "¿Seguro desea eliminar la Opcion 1 "
+                                        ),
+                                        _c("b", [_vm._v("Lucie Marvin")]),
+                                        _vm._v("?")
+                                      ])
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("div", { staticClass: "modal-footer" }, [
+                                      _c(
+                                        "button",
+                                        { staticClass: "btn btn-success" },
+                                        [
+                                          _c("i", {
+                                            staticClass: "fa fa-check"
+                                          }),
+                                          _vm._v(" Aceptar")
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "button",
+                                        {
+                                          staticClass: "btn btn-danger",
+                                          attrs: { "data-dismiss": "modal" }
+                                        },
+                                        [
+                                          _c("i", {
+                                            staticClass: "fa fa-remove"
+                                          }),
+                                          _vm._v(" Cerrar")
+                                        ]
+                                      )
+                                    ])
+                                  ])
+                                ])
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Lucie Marvin")]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Trantow Road 39375 Mariah Burgs")]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Activo")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("td", [
+                            _c("button", { staticClass: "boton boton-edit" }, [
+                              _c("i", { staticClass: "fa fa-pencil" })
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              { staticClass: "boton boton-eliminar" },
+                              [_c("i", { staticClass: "fa fa-times" })]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Katelyn Grady")]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v("Champlin Forges, 07420 Gerardo Parkway")
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Activo")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("td", [
+                            _c("button", { staticClass: "boton boton-edit" }, [
+                              _c("i", { staticClass: "fa fa-pencil" })
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              { staticClass: "boton boton-eliminar" },
+                              [_c("i", { staticClass: "fa fa-times" })]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Amanda Kihn")]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v("Terry Mountain, 58681 Hackett Greens")
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Activo")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("td", [
+                            _c("button", { staticClass: "boton boton-edit" }, [
+                              _c("i", { staticClass: "fa fa-pencil" })
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              { staticClass: "boton boton-eliminar" },
+                              [_c("i", { staticClass: "fa fa-times" })]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Miss Alejandrin Nikolaus")]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Bettye Plaza, 6568 Ned Square")]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Inactivo")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("td", [
+                            _c("button", { staticClass: "boton boton-edit" }, [
+                              _c("i", { staticClass: "fa fa-pencil" })
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              { staticClass: "boton boton-eliminar" },
+                              [_c("i", { staticClass: "fa fa-times" })]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Emery Sporer IV")]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v("Senger Ports, 8047 Gulgowski Estates")
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Inactivo")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("td", [
+                            _c("button", { staticClass: "boton boton-edit" }, [
+                              _c("i", { staticClass: "fa fa-pencil" })
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              { staticClass: "boton boton-eliminar" },
+                              [_c("i", { staticClass: "fa fa-times" })]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Cara Brekke")]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Rathton,1560 Mohr Motorway")]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Activo")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("td", [
+                            _c("button", { staticClass: "boton boton-edit" }, [
+                              _c("i", { staticClass: "fa fa-pencil" })
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              { staticClass: "boton boton-eliminar" },
+                              [_c("i", { staticClass: "fa fa-times" })]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Charity Kohler")]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Port Ella, 24495 Fahey Centers")]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Inactivo")])
+                        ])
+                      ])
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c(
+                  "nav",
+                  { attrs: { "aria-label": "Page navigation example" } },
+                  [
+                    _c(
+                      "ul",
+                      {
+                        staticClass: "pagination justify-content-end",
+                        attrs: { id: "pagination" }
+                      },
+                      [
+                        _c("li", { staticClass: "page-item" }, [
+                          _c(
+                            "a",
+                            { staticClass: "page-link", attrs: { href: "#" } },
+                            [_c("span", [_vm._v("«")]), _vm._v(" Ant")]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("li", { staticClass: "page-item" }, [
+                          _c(
+                            "a",
+                            { staticClass: "page-link", attrs: { href: "#" } },
+                            [_vm._v("1")]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("li", { staticClass: "page-item" }, [
+                          _c(
+                            "a",
+                            { staticClass: "page-link", attrs: { href: "#" } },
+                            [_vm._v("2")]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("li", { staticClass: "page-item" }, [
+                          _c(
+                            "a",
+                            { staticClass: "page-link", attrs: { href: "#" } },
+                            [_vm._v("3")]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("li", { staticClass: "page-item" }, [
+                          _c(
+                            "a",
+                            { staticClass: "page-link", attrs: { href: "#" } },
+                            [_vm._v("Sig "), _c("span", [_vm._v("»")])]
+                          )
+                        ])
+                      ]
+                    )
+                  ]
+                )
+              ]
+            )
+          ]
+        )
+      ]
+    )
   }
 ]
 render._withStripped = true
