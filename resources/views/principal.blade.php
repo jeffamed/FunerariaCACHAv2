@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/jquery-ui.css">
-    <link rel="stylesheet" href="css/estilo.css">
-    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="css/all.css">
     <title>Funeraria CACHA</title>
 </head>
 <body>
+<div id="app">
     <div class="container-fluid">
         <div class="row">
             <!-- BARRA HORIZONTAL -->
@@ -121,13 +119,8 @@
             {{-- FIN DEL CONTENIDO --}}
         </div>
     </div>
-
-    <script src="js/jquery-3.2.1.min.js"></script>
-    <script src="js/tether.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.tablesorter.min.js"></script>
-    <script src="js/datepicker.js"></script>
-    <script src="js/resolucion.js"></script>
-    <script src="js/application.js"></script>
+</div>
+    <script src="js/all.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>

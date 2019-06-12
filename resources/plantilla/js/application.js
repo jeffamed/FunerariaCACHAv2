@@ -59,6 +59,9 @@ $(function(){
       e.preventDefault();
    });
 
+   // COLOR ROJO DE LAS LETRAS EN LA TABLA
+   $("table td:nth-child(4):contains('Inactivo')").parents("tr").css("color","#e4605e");
+
 });
 
 $(document).ready(function(){
@@ -127,6 +130,10 @@ $(document).ready(function(){
    
    $.datepicker.setDefaults($.datepicker.regional['es']);
    $("#dpFecha").datepicker({
+      dateFormat: 'dd/mm/yy',
+   }
+   );
+   $("#dpFecha1").datepicker({
       dateFormat: 'dd/mm/yy',
    }
    );
