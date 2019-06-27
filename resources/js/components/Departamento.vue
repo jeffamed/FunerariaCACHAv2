@@ -3,16 +3,16 @@
         <div class="section-contenido mt-4 ml-2 mr-4 mb-4" id="contenido">
         <!-- ENCABEZADO -->
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
-                <h5 class="titulo">Opcion 1</h5>
+                <h5 class="titulo">Departamentos</h5>
             <!-- Boton nuevo -->
                 <button class="btn-new"  @click="abrirModal('departamento','registrar')"><i class="fa fa-plus-circle"></i> Nuevo</button>
-                <!-- Modal del Nuevo -->
+                <!-- Abrir Modal-->
                 <div class="modal fade" id="btn-new" tabindex="-1" :class="{'mostrar' : modal}" role="dialog" aria-labelledby="btn-new" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header bg-primary">
                                 <h5 class="modal-title text-white" v-text="tituloModal"></h5>
-                                <button class="close" data-dismiss="modal" aria-label="Cerrar">
+                                <button class="close" aria-label="Cerrar" @click="cerrarModal()">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
@@ -20,38 +20,38 @@
                                 <form action="">
                                     <div class="form-group">
                                         <label for="nombre">Nombre: </label>
-                                        <input type="text" class="form-control" placeholder="Nombre...">
+                                        <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre">
+                                        <small class="form-text text-muted">* Ingrese un departamento ejm.: Managua</small>
                                     </div>
-                                    <!-- <div class="form-group">
-                                        <label for="fecha">Fecha: </label>
-                                        <input type="date"  class="form-control" id="dpFecha" placeholder="dd/mm/yyyy">
-                                    </div> -->
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button class="btn btn-success"><i class="fa fa-check"></i> Aceptar</button>
-                                <button class="btn btn-danger" data-dismiss="modal"><i class="fa fa-remove"></i> Cerrar</button>
+                                <button class="btn btn-success" v-if="btnFuncion == 1" @click="registrarDepartamento()"><i class="fa fa-check"></i> Guardar</button>
+                                <button class="btn btn-success" v-if="btnFuncion == 2" @click="actualizarDepartamento()"><i class="fa fa-check"></i> Actualizar</button>
+                                <button class="btn btn-danger" @click="cerrarModal()"><i class="fa fa-remove"></i> Cerrar</button>
                             </div>    
                         </div>
                     </div>
                 </div>
+                <!-- Fin del modal -->
                 <!-- buscador -->
                 <div class="buscador d-flex ml-auto hidden-md-down">
                     <label for="" class="etiqueta">Buscar por: </label>
                     <select name="filtro" id="" class="option-search">
                         <option value="nombre">Nombre</option>
-                        <option value="descripcion">Descripción</option>
+                        <!-- <option value="descripcion">Descripción</option> -->
                     </select>
-                <input type="text" name="buscar" id="buscar" class="buscar" placeholder="Buscar...">
-                <div class="icon-buscar">
-                    <i class="fa fa-search hidden-md-down"></i>
-                </div> 
+                    <input type="text" name="buscar" id="buscar" class="buscar" placeholder="Buscar...">
+                    <div class="icon-buscar">
+                        <i class="fa fa-search hidden-md-down"></i>
+                    </div> 
                 </div>
+                <!-- Fin del buscador -->
             </div>
             <!-- CUERPO -->
             <div class="contenido__cuerpo" id="cuerpo-contenido">
                 <div class="table-responsive tabla-contenido">
-                    <!-- Buscar  -->
+                    <!-- Buscar  segundo-->
                     <div class="form-inline mt-2 mb-2">
                         <label for="buscar" class="hidden-lg-up ml-1">Buscar por: </label>
                         <select name="" id="select-opciones" class="custom-select hidden-lg-up mb-1 mr-1 w-25">
@@ -60,7 +60,7 @@
                         </select>
                         <input type="text" name="buscar" id="txtbuscar" class="form-control hidden-lg-up mb-1 w-50" placeholder="Buscar...">
                     </div>
-
+                    <!-- fin del buscador segundo -->
                     <!-- TABLA -->
                     <table class="tablesorter table table-striped table-hover table-sm" id="tabla">
                         <thead class="enc-tabla">
@@ -86,13 +86,13 @@
 
                 <!-- PAGINACION -->
                 <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-end" id="pagination">
-                    <li class="page-item"><a href="#" class="page-link"><span>&laquo;</span> Ant</a></li>
-                    <li class="page-item"><a href="#" class="page-link">1</a></li>
-                    <li class="page-item"><a href="#" class="page-link">2</a></li>
-                    <li class="page-item"><a href="#" class="page-link">3</a></li>
-                    <li class="page-item"><a href="#" class="page-link">Sig <span>&raquo;</span></a></li>
-                </ul>
+                    <ul class="pagination justify-content-end" id="pagination">
+                        <li class="page-item"><a href="#" class="page-link"><span>&laquo;</span> Ant</a></li>
+                        <li class="page-item"><a href="#" class="page-link">1</a></li>
+                        <li class="page-item"><a href="#" class="page-link">2</a></li>
+                        <li class="page-item"><a href="#" class="page-link">3</a></li>
+                        <li class="page-item"><a href="#" class="page-link">Sig <span>&raquo;</span></a></li>
+                    </ul>
                 </nav>
             </div>
         </div>
@@ -107,6 +107,7 @@
                 Departamentos: [],
                 modal: 0,
                 tituloModal: '',
+                btnFuncion: 0,
             }
         },
         methods:{
@@ -121,6 +122,16 @@
                 });
             },
             registrarDepartamento(){
+                let me = this;
+                axios.post('/departamento/registrar', {'Nombre' : this.nombre}).then(function(response) {
+                    me.cerrarModal();
+                    me.mostrarDepartamento();
+                 })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            actualizarDepartamento(){
 
             },
             abrirModal(modelo, accion, data=[]){
@@ -131,21 +142,26 @@
                             case 'registrar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Registrar Departamento'
+                                this.tituloModal = 'Registrar Departamento';
                                 this.nombre = '';
+                                this.btnFuncion = 1;
                                 break;
                             }
                             case 'actualizar':
                             {
- 
+								this.modal = 1;
+                                this.tituloModal = 'Actualizar Departamento';
+                                this.btnFuncion = 2;
                             }
                         }
                     }
                 }
             },
-            actualizarDepartamento(){
-
-            },
+            cerrarModal(){
+                this.modal = 0;
+                this.tituloModal = '';
+                this.nombre = '';
+            },         
         },
         mounted() {
             this.mostrarDepartamento();
@@ -153,14 +169,14 @@
     }
 </script>
 <style>
-    .modal-dialog, .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
+     .modal-content{
+         width: 100% !important;
+         position: absolute !important;
+     }
     .mostrar{
         display: list-item !important;
         opacity: 1 !important;
-        position: absolute !important;
+        /* position: absolute !important; */
         background-color: #3c29297a !important;
     }
 </style>

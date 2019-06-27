@@ -13,7 +13,7 @@ class DepartamentoRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,7 +25,7 @@ class DepartamentoRequest extends FormRequest
     {
         return [
             'Nombre'=>'required|max:45',
-            'Estado'=>'required|max:10'
+            'Estado'=>'max:10'
         ];
     }
 }

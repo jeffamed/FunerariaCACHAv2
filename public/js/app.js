@@ -1862,15 +1862,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       nombre: '',
       Departamentos: [],
       modal: 0,
-      tituloModal: ''
+      tituloModal: '',
+      btnFuncion: 0
     };
   },
   methods: {
@@ -1882,7 +1881,18 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    registrarDepartamento: function registrarDepartamento() {},
+    registrarDepartamento: function registrarDepartamento() {
+      var me = this;
+      axios.post('/departamento/registrar', {
+        'Nombre': this.nombre
+      }).then(function (response) {
+        me.cerrarModal();
+        me.mostrarDepartamento();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    actualizarDepartamento: function actualizarDepartamento() {},
     abrirModal: function abrirModal(modelo, accion) {
       var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
@@ -1895,16 +1905,24 @@ __webpack_require__.r(__webpack_exports__);
                   this.modal = 1;
                   this.tituloModal = 'Registrar Departamento';
                   this.nombre = '';
+                  this.btnFuncion = 1;
                   break;
                 }
 
               case 'actualizar':
-                {}
+                {
+                  this.modal = 1;
+                  this.tituloModal = 'Actualizar Departamento';
+                }
             }
           }
       }
     },
-    actualizarDepartamento: function actualizarDepartamento() {}
+    cerrarModal: function cerrarModal() {
+      this.modal = 0;
+      this.tituloModal = '';
+      this.nombre = '';
+    }
   },
   mounted: function mounted() {
     this.mostrarDepartamento();
@@ -1925,7 +1943,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-dialog, .modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n     width: 100% !important;\n     position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    /* position: absolute !important; */\n    background-color: #3c29297a !important;\n}\n", ""]);
 
 // exports
 
@@ -3094,7 +3112,7 @@ var render = function() {
               attrs: { id: "contenido-enc" }
             },
             [
-              _c("h5", { staticClass: "titulo" }, [_vm._v("Opcion 1")]),
+              _c("h5", { staticClass: "titulo" }, [_vm._v("Departamentos")]),
               _vm._v(" "),
               _c(
                 "button",
@@ -3134,18 +3152,126 @@ var render = function() {
                           domProps: { textContent: _vm._s(_vm.tituloModal) }
                         }),
                         _vm._v(" "),
-                        _vm._m(0)
+                        _c(
+                          "button",
+                          {
+                            staticClass: "close",
+                            attrs: { "aria-label": "Cerrar" },
+                            on: {
+                              click: function($event) {
+                                return _vm.cerrarModal()
+                              }
+                            }
+                          },
+                          [
+                            _c("span", { attrs: { "aria-hidden": "true" } }, [
+                              _vm._v("×")
+                            ])
+                          ]
+                        )
                       ]),
                       _vm._v(" "),
-                      _vm._m(1),
+                      _c("div", { staticClass: "modal-body" }, [
+                        _c("form", { attrs: { action: "" } }, [
+                          _c("div", { staticClass: "form-group" }, [
+                            _c("label", { attrs: { for: "nombre" } }, [
+                              _vm._v("Nombre: ")
+                            ]),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.nombre,
+                                  expression: "nombre"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: { type: "text", placeholder: "Nombre..." },
+                              domProps: { value: _vm.nombre },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.nombre = $event.target.value
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "small",
+                              { staticClass: "form-text text-muted" },
+                              [
+                                _vm._v(
+                                  "* Ingrese un departamento ejm.: Managua"
+                                )
+                              ]
+                            )
+                          ])
+                        ])
+                      ]),
                       _vm._v(" "),
-                      _vm._m(2)
+                      _c("div", { staticClass: "modal-footer" }, [
+                        _vm.btnFuncion == 1
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-success",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.registrarDepartamento()
+                                  }
+                                }
+                              },
+                              [
+                                _c("i", { staticClass: "fa fa-check" }),
+                                _vm._v(" Guardar")
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.btnFuncion == 2
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-success",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.actualizarDepartamento()
+                                  }
+                                }
+                              },
+                              [
+                                _c("i", { staticClass: "fa fa-check" }),
+                                _vm._v(" Actualizar")
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-danger",
+                            on: {
+                              click: function($event) {
+                                return _vm.cerrarModal()
+                              }
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fa fa-remove" }),
+                            _vm._v(" Cerrar")
+                          ]
+                        )
+                      ])
                     ])
                   ])
                 ]
               ),
               _vm._v(" "),
-              _vm._m(3)
+              _vm._m(0)
             ]
           ),
           _vm._v(" "),
@@ -3157,7 +3283,7 @@ var render = function() {
             },
             [
               _c("div", { staticClass: "table-responsive tabla-contenido" }, [
-                _vm._m(4),
+                _vm._m(1),
                 _vm._v(" "),
                 _c(
                   "table",
@@ -3167,7 +3293,7 @@ var render = function() {
                     attrs: { id: "tabla" }
                   },
                   [
-                    _vm._m(5),
+                    _vm._m(2),
                     _vm._v(" "),
                     _c(
                       "tbody",
@@ -3191,7 +3317,7 @@ var render = function() {
                               [_c("i", { staticClass: "fa fa-pencil" })]
                             ),
                             _vm._v(" "),
-                            _vm._m(6, true)
+                            _vm._m(3, true)
                           ]),
                           _vm._v(" "),
                           _c("td", {
@@ -3213,7 +3339,7 @@ var render = function() {
                 )
               ]),
               _vm._v(" "),
-              _vm._m(7)
+              _vm._m(4)
             ]
           )
         ]
@@ -3222,53 +3348,6 @@ var render = function() {
   )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "close",
-        attrs: { "data-dismiss": "modal", "aria-label": "Cerrar" }
-      },
-      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-body" }, [
-      _c("form", { attrs: { action: "" } }, [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "nombre" } }, [_vm._v("Nombre: ")]),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "form-control",
-            attrs: { type: "text", placeholder: "Nombre..." }
-          })
-        ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-footer" }, [
-      _c("button", { staticClass: "btn btn-success" }, [
-        _c("i", { staticClass: "fa fa-check" }),
-        _vm._v(" Aceptar")
-      ]),
-      _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-danger", attrs: { "data-dismiss": "modal" } },
-        [_c("i", { staticClass: "fa fa-remove" }), _vm._v(" Cerrar")]
-      )
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
