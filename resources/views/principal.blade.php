@@ -66,9 +66,9 @@
             </div>
         </div>
     </div>
-{{-- <script src="js/jquery-3.2.1.min.js"></script> --}}
-{{-- <script src="js/application.js"></script> --}}
 <script src="js/all.js"></script>
+<script src="js/datepicker.js"></script>
+<script src="js/tablesorter.min.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

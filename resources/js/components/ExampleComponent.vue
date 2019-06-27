@@ -24,7 +24,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="fecha">Fecha: </label>
-                                        <input type="text"  class="form-control" id="dpFecha" placeholder="dd/mm/yyyy">
+                                        <input type="date"  class="form-control" id="dpFecha" placeholder="dd/mm/yyyy">
                                     </div>
                                 </form>
                             </div>
@@ -93,7 +93,7 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="fecha">Fecha: </label>
-                                                            <input type="text"  class="form-control" id="dpFecha1" placeholder="dd/mm/yyyy">
+                                                            <input type="date"  class="form-control" id="dpFecha1" placeholder="dd/mm/yyyy">
                                                         </div>
                                                     </form>
                                                 </div>
