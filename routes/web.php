@@ -16,3 +16,9 @@ Route::get('/', function () {
 });
 
 Route::get('scraping','DashboardController@Tasa');
+
+Route::get('/departamento','DepartamentosController@index');
+Route::post('/departamento/registrar','DepartamentoControsller@store');
+Route::put('/departamento/actualizar','DepartamentoControsller@update');
+Route::put('/departamento/desactivar','DepartamentoControsller@desactivar');
+Route::put('/departamento/activar','DepartamentosController@activar');

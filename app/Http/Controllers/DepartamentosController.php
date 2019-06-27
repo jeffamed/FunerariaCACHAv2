@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Departamento;
+use App\Http\Requests\DepartamentoRequest;
 
 class DepartamentosController extends Controller
 {
@@ -11,19 +13,12 @@ class DepartamentosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    //  SE ESTA UTILIZANDO ELOQUENT
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+       $departamentos = Departamento::all();
+       return $departamentos;
     }
 
     /**
@@ -32,31 +27,12 @@ class DepartamentosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(DepartamentoRequest $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $departamento = new Departamento();
+        $departamento->Nombre = $request->Nombre;
+        $departamento->Estado = 'Activo';
+        $departamento->save();
     }
 
     /**
@@ -66,19 +42,26 @@ class DepartamentosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(DepartamentoRequest $request, $id)
     {
-        //
+        // $departamento = Departamento::findOrFail($request->$id);
+        $departamento = Departamento::findOrFail($id);
+        $departamento->Nombre = $request->Nombre;
+        $departamento->Estado = 'Activo';
+        $departamento->save();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function desactivar(Request $request, $id)
     {
-        //
+        $departamento = Departamento::findOrFail($id);
+        $departamento->Estado = 'Inactivo';
+        $departamento->save();
+    }
+
+    public function activar(Request $request, $id)
+    {
+        $departamento = Departamento::findOrFail($id);
+        $departamento->Estado = 'Activo';
+        $departamento->save();
     }
 }

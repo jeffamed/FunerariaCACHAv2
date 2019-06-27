@@ -13,7 +13,7 @@ class CreateTasaCambioTable extends Migration
      */
     public function up()
     {
-        Schema::create('tasa_cambio', function (Blueprint $table) {
+        Schema::create('tasacambios', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->float('Monto');
             $table->timestamps();

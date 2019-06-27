@@ -26,7 +26,7 @@
     </a>
         <div class="collapse" id="ubicacion">
             <ul class="bvmenu__sub">
-                <a class="bvmenu__subitem" href="#" @click="menu=4"><i class="fa fa-circle-o"></i>Opción 1</a>
+                <a class="bvmenu__subitem" href="#" @click="menu=4"><i class="fa fa-circle-o"></i>Departamentos</a>
                 <a class="bvmenu__subitem" href="#" @click="menu=5"><i class="fa fa-circle-o"></i>Opción 2</a>
                 <a class="bvmenu__subitem" href="#" @click="menu=6"><i class="fa fa-circle-o"></i>Opción 3</a>
             </ul>
