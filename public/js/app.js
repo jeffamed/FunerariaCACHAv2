@@ -1869,6 +1869,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1935,6 +1940,76 @@ __webpack_require__.r(__webpack_exports__);
 
 
       return this.errorDepartamento;
+    },
+    activarDepartamento: function activarDepartamento(id) {
+      var _this = this;
+
+      swal({
+        title: '¿Estas seguro?',
+        text: 'Deseas activar este departamento',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Activar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        buttonsStyling: false,
+        reverseButtons: true
+      }).then(function (result) {
+        if (result.value) {
+          var me = _this;
+          axios.put('/departamento/activar', {
+            'id': id
+          }).then(function (response) {
+            me.mostrarDepartamento();
+            swal('Activado', 'El registro fue activado correctamente', 'success');
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        } else if (result.dismiss === swal.DismissReason.cancel) {// swal(
+          //     'Cancelado',
+          //     'No se desactivo el registro',
+          //     'error'
+          // )
+        }
+      });
+    },
+    desactivarDepartamento: function desactivarDepartamento(id) {
+      var _this2 = this;
+
+      swal({
+        title: '¿Estas seguro?',
+        text: 'Deseas desactivar este departamento',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Desactivar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        buttonsStyling: false,
+        reverseButtons: true
+      }).then(function (result) {
+        if (result.value) {
+          var me = _this2;
+          axios.put('/departamento/desactivar', {
+            'id': id
+          }).then(function (response) {
+            me.mostrarDepartamento();
+            swal('Desactivado', 'El registro fue desactivado correctamente', 'success');
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        } else if (result.dismiss === swal.DismissReason.cancel) {// swal(
+          //     'Cancelado',
+          //     'No se desactivo el registro',
+          //     'error'
+          // )
+        }
+      });
     },
     abrirModal: function abrirModal(modelo, accion) {
       var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
@@ -3174,7 +3249,7 @@ var render = function() {
                   }
                 },
                 [
-                  _c("i", { staticClass: "fa fa-plus-circle" }),
+                  _c("i", { staticClass: "hidden-xs-down fa fa-plus-circle" }),
                   _vm._v(" Nuevo")
                 ]
               ),
@@ -3361,26 +3436,66 @@ var render = function() {
                       "tbody",
                       _vm._l(_vm.Departamentos, function(departamento) {
                         return _c("tr", { key: departamento.id }, [
-                          _c("td", [
-                            _c(
-                              "button",
-                              {
-                                staticClass: "boton boton-edit",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.abrirModal(
-                                      "departamento",
-                                      "actualizar",
-                                      departamento
-                                    )
+                          _c(
+                            "td",
+                            [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "boton boton-edit",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.abrirModal(
+                                        "departamento",
+                                        "actualizar",
+                                        departamento
+                                      )
+                                    }
                                   }
-                                }
-                              },
-                              [_c("i", { staticClass: "fa fa-pencil" })]
-                            ),
-                            _vm._v(" "),
-                            _vm._m(3, true)
-                          ]),
+                                },
+                                [_c("i", { staticClass: "fa fa-pencil" })]
+                              ),
+                              _vm._v(" "),
+                              departamento.Estado == "Activo"
+                                ? [
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass: "boton boton-eliminar",
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.desactivarDepartamento(
+                                              departamento.id
+                                            )
+                                          }
+                                        }
+                                      },
+                                      [_c("i", { staticClass: "fa fa-trash" })]
+                                    )
+                                  ]
+                                : [
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass: "boton boton-activar",
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.activarDepartamento(
+                                              departamento.id
+                                            )
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c("i", {
+                                          staticClass: "fa fa-check-circle"
+                                        })
+                                      ]
+                                    )
+                                  ]
+                            ],
+                            2
+                          ),
                           _vm._v(" "),
                           _c("td", {
                             domProps: {
@@ -3401,7 +3516,7 @@ var render = function() {
                 )
               ]),
               _vm._v(" "),
-              _vm._m(4)
+              _vm._m(3)
             ]
           )
         ]
@@ -3494,19 +3609,6 @@ var staticRenderFns = [
         _c("th", [_vm._v("Estados")])
       ])
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "boton boton-eliminar",
-        attrs: { "data-toggle": "modal", "data-target": "#btn-eliminar" }
-      },
-      [_c("i", { staticClass: "fa fa-remove" })]
-    )
   },
   function() {
     var _vm = this

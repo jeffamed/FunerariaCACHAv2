@@ -27,6 +27,7 @@ mix.scripts([
     'resources/plantilla/js/bootstrap.min.js',
     // 'resources/plantilla/js/Chart.min.js',
     // 'resources/plantilla/js/graficas.js'
+    'resources/plantilla/js/sweetalert2.all.min.js',
     ], 'public/js/all.js');
 
 mix.js('resources/js/app.js', 'public/js/app.js');

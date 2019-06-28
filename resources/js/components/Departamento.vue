@@ -5,7 +5,7 @@
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
                 <h5 class="titulo">Departamentos</h5>
             <!-- Boton nuevo -->
-                <button class="btn-new"  @click="abrirModal('departamento','registrar')"><i class="fa fa-plus-circle"></i> Nuevo</button>
+                <button class="btn-new"  @click="abrirModal('departamento','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- Abrir Modal-->
                 <div class="modal fade" id="btn-new" tabindex="-1" :class="{'mostrar' : modal}" role="dialog" aria-labelledby="btn-new" aria-hidden="true">
                     <div class="modal-dialog">
@@ -79,7 +79,12 @@
                             <tr v-for="departamento in Departamentos" :key="departamento.id">
                                 <td>
                                     <button class="boton boton-edit" @click="abrirModal('departamento','actualizar', departamento)"><i class="fa fa-pencil"></i></button>
-                                    <button class="boton boton-eliminar" data-toggle="modal" data-target="#btn-eliminar"><i class="fa fa-remove"></i></button>
+                                    <template v-if="departamento.Estado == 'Activo'">
+                                        <button class="boton boton-eliminar" @click="desactivarDepartamento(departamento.id)"><i class="fa fa-trash"></i></button>
+                                    </template>
+                                    <template v-else>
+                                        <button class="boton boton-activar" @click="activarDepartamento(departamento.id)"><i class="fa fa-check-circle"></i></button>
+                                    </template>
                                 </td>
                                 <td v-text="departamento.Nombre"></td>
                                 <td v-text="departamento.Estado"></td>
@@ -171,6 +176,80 @@
                 // {
                 // }
                 return this.errorDepartamento;
+            },
+            activarDepartamento(id){
+                swal({
+                    title: '¿Estas seguro?',
+                    text: 'Deseas activar este departamento',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Activar',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonClass: 'btn btn-success',
+                    cancelButtonClass: 'btn btn-danger',
+                    buttonsStyling: false,
+                    reverseButtons: true,
+                    }).then((result) => {
+                        if (result.value) {
+                            let me = this;
+                            axios.put('/departamento/activar', {'id' : id}).then(function(response) {
+                                me.mostrarDepartamento();
+                                swal(
+                                    'Activado',
+                                    'El registro fue activado correctamente',
+                                    'success'
+                                )
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                        }else if(result.dismiss === swal.DismissReason.cancel){
+                            // swal(
+                            //     'Cancelado',
+                            //     'No se desactivo el registro',
+                            //     'error'
+                            // )
+                        }
+                    })
+            },
+            desactivarDepartamento(id){
+                swal({
+                    title: '¿Estas seguro?',
+                    text: 'Deseas desactivar este departamento',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Desactivar',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonClass: 'btn btn-success',
+                    cancelButtonClass: 'btn btn-danger',
+                    buttonsStyling: false,
+                    reverseButtons: true,
+                    }).then((result) => {
+                        if (result.value) {
+                            let me = this;
+                            axios.put('/departamento/desactivar', {'id' : id}).then(function(response) {
+                                me.mostrarDepartamento();
+                                swal(
+                                    'Desactivado',
+                                    'El registro fue desactivado correctamente',
+                                    'success'
+                                )
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                        }else if(result.dismiss === swal.DismissReason.cancel){
+                            // swal(
+                            //     'Cancelado',
+                            //     'No se desactivo el registro',
+                            //     'error'
+                            // )
+                        }
+                    })
             },
             abrirModal(modelo, accion, data=[]){
                 switch (modelo) {
