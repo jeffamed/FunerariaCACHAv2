@@ -95,13 +95,17 @@
                 </div>
 
                 <!-- PAGINACION -->
-                <nav aria-label="Page navigation example">
+                <nav aria-label="page navigation example">
                     <ul class="pagination justify-content-end" id="pagination">
-                        <li class="page-item"><a href="#" class="page-link"><span>&laquo;</span> Ant</a></li>
-                        <li class="page-item"><a href="#" class="page-link">1</a></li>
-                        <li class="page-item"><a href="#" class="page-link">2</a></li>
-                        <li class="page-item"><a href="#" class="page-link">3</a></li>
-                        <li class="page-item"><a href="#" class="page-link">Sig <span>&raquo;</span></a></li>
+                        <li class="page-item" v-if="pagination.current_page > 1">
+                            <a href="#" class="page-link" @click.prevent="cambiarPagina(pagination.current_page - 1)"><span>&laquo;</span> Ant</a>
+                        </li>
+                        <li class="page-item" v-for="pagina in pagesNumber" :key="pagina" :class="page == isActived ? 'active' : ''">
+                            <a href="#" class="page-link"  @click.prevent="cambiarPagina(pagina)" v-text="pagina"></a>
+                        </li>
+                        <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                            <a href="#" class="page-link" @click.prevent="cambiarPagina(pagination.current_page + 1)">Sig <span>&raquo;</span></a>
+                        </li>
                     </ul>
                 </nav>
             </div>
@@ -121,17 +125,62 @@
                 btnFuncion: 0,
                 errorDepartamento: 0,
                 msjErrores: [],
+                pagination: {
+                    'total': 0,    
+                    'current_page': 0,
+                    'per_page': 0,
+                    'last_page': 0,
+                    'from': 0,
+                    'to': 0,
+                },
+                offset: 3,
+            }
+        },
+        computed: {
+            isActived: function(){
+                return this.pagination.current_page;
+            },
+            // Calcular los elementos de la paginacion
+            pagesNumber: function() {
+                if (!this.pagination.to) {
+                    return [];
+                }  
+
+                var from = this.pagination.current_page - this.offset;
+                if (from < 1) {
+                    from = 1;
+                }
+
+                var to = from + (this.offset * 2);
+                if (to >= this.pagination.last_page) {
+                    to = this.pagination.last_page;
+                }
+
+                var pagesArray = [];
+                while(from <= to){
+                    pagesArray.push(from);
+                    from++;
+                }
+                return pagesArray;
             }
         },
         methods:{
-            mostrarDepartamento(){
+            mostrarDepartamento(pagina){
                 let me = this;
-                axios.get('/departamento').then(function(response) {
-                    me.Departamentos = response.data;
+                var url= '/departamento?page=' + pagina;
+                axios.get(url).then(function(response) {
+                    var respuesta = response.data;
+                    me.Departamentos = respuesta.departamentos.data;
+                    me.pagination= respuesta.pagination;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            cambiarPagina(pagina){
+                let me = this;
+                me.pagination.current_page = pagina;
+                me.mostrarDepartamento(pagina);
             },
             registrarDepartamento(){
                 if(this.validarFrmDepartamento()){

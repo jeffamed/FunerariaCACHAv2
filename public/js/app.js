@@ -1874,6 +1874,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1884,17 +1888,66 @@ __webpack_require__.r(__webpack_exports__);
       tituloModal: '',
       btnFuncion: 0,
       errorDepartamento: 0,
-      msjErrores: []
+      msjErrores: [],
+      pagination: {
+        'total': 0,
+        'current_page': 0,
+        'per_page': 0,
+        'last_page': 0,
+        'from': 0,
+        'to': 0
+      },
+      offset: 3
     };
   },
+  computed: {
+    isActived: function isActived() {
+      return this.pagination.current_page;
+    },
+    // Calcular los elementos de la paginacion
+    pagesNumber: function pagesNumber() {
+      if (!this.pagination.to) {
+        return [];
+      }
+
+      var from = this.pagination.current_page - this.offset;
+
+      if (from < 1) {
+        from = 1;
+      }
+
+      var to = from + this.offset * 2;
+
+      if (to >= this.pagination.last_page) {
+        to = this.pagination.last_page;
+      }
+
+      var pagesArray = [];
+
+      while (from <= to) {
+        pagesArray.push(from);
+        from++;
+      }
+
+      return pagesArray;
+    }
+  },
   methods: {
-    mostrarDepartamento: function mostrarDepartamento() {
+    mostrarDepartamento: function mostrarDepartamento(pagina) {
       var me = this;
-      axios.get('/departamento').then(function (response) {
-        me.Departamentos = response.data;
+      var url = '/departamento?page=' + pagina;
+      axios.get(url).then(function (response) {
+        var respuesta = response.data;
+        me.Departamentos = respuesta.departamentos.data;
+        me.pagination = respuesta.pagination;
       })["catch"](function (error) {
         console.log(error);
       });
+    },
+    cambiarPagina: function cambiarPagina(pagina) {
+      var me = this;
+      me.pagination.current_page = pagina;
+      me.mostrarDepartamento(pagina);
     },
     registrarDepartamento: function registrarDepartamento() {
       if (this.validarFrmDepartamento()) {
@@ -3516,7 +3569,87 @@ var render = function() {
                 )
               ]),
               _vm._v(" "),
-              _vm._m(3)
+              _c(
+                "nav",
+                { attrs: { "aria-label": "page navigation example" } },
+                [
+                  _c(
+                    "ul",
+                    {
+                      staticClass: "pagination justify-content-end",
+                      attrs: { id: "pagination" }
+                    },
+                    [
+                      _vm.pagination.current_page > 1
+                        ? _c("li", { staticClass: "page-item" }, [
+                            _c(
+                              "a",
+                              {
+                                staticClass: "page-link",
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.cambiarPagina(
+                                      _vm.pagination.current_page - 1
+                                    )
+                                  }
+                                }
+                              },
+                              [_c("span", [_vm._v("«")]), _vm._v(" Ant")]
+                            )
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm._l(_vm.pagesNumber, function(pagina) {
+                        return _c(
+                          "li",
+                          {
+                            key: pagina,
+                            staticClass: "page-item",
+                            class: _vm.page == _vm.isActived ? "active" : ""
+                          },
+                          [
+                            _c("a", {
+                              staticClass: "page-link",
+                              attrs: { href: "#" },
+                              domProps: { textContent: _vm._s(pagina) },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.cambiarPagina(pagina)
+                                }
+                              }
+                            })
+                          ]
+                        )
+                      }),
+                      _vm._v(" "),
+                      _vm.pagination.current_page < _vm.pagination.last_page
+                        ? _c("li", { staticClass: "page-item" }, [
+                            _c(
+                              "a",
+                              {
+                                staticClass: "page-link",
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.cambiarPagina(
+                                      _vm.pagination.current_page + 1
+                                    )
+                                  }
+                                }
+                              },
+                              [_vm._v("Sig "), _c("span", [_vm._v("»")])]
+                            )
+                          ])
+                        : _vm._e()
+                    ],
+                    2
+                  )
+                ]
+              )
             ]
           )
         ]
@@ -3608,53 +3741,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Estados")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
-      _c(
-        "ul",
-        {
-          staticClass: "pagination justify-content-end",
-          attrs: { id: "pagination" }
-        },
-        [
-          _c("li", { staticClass: "page-item" }, [
-            _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-              _c("span", [_vm._v("«")]),
-              _vm._v(" Ant")
-            ])
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-              _vm._v("1")
-            ])
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-              _vm._v("2")
-            ])
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-              _vm._v("3")
-            ])
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-              _vm._v("Sig "),
-              _c("span", [_vm._v("»")])
-            ])
-          ])
-        ]
-      )
     ])
   }
 ]
