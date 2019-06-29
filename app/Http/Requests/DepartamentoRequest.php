@@ -24,6 +24,7 @@ class DepartamentoRequest extends FormRequest
     public function rules()
     {
         return [
+            'id'=>'integer',
             'Nombre'=>'required|max:45',
             'Estado'=>'max:10'
         ];

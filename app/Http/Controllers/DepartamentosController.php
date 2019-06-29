@@ -42,25 +42,28 @@ class DepartamentosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(DepartamentoRequest $request, $id)
+    public function update(DepartamentoRequest $request)
     {
-        // $departamento = Departamento::findOrFail($request->$id);
-        $departamento = Departamento::findOrFail($id);
+        $departamento = Departamento::findOrFail($request->id);
+        // $departamento = Departamento::findOrFail($id);
         $departamento->Nombre = $request->Nombre;
         $departamento->Estado = 'Activo';
+        // dd($departamento);
         $departamento->save();
     }
 
-    public function desactivar(Request $request, $id)
+    public function desactivar(Request $request)
     {
-        $departamento = Departamento::findOrFail($id);
+        $departamento = Departamento::findOrFail($request->id);
+        // $departamento = Departamento::findOrFail($id); 
         $departamento->Estado = 'Inactivo';
         $departamento->save();
     }
 
-    public function activar(Request $request, $id)
+    public function activar(Request $request)
     {
-        $departamento = Departamento::findOrFail($id);
+        $departamento = Departamento::findOrFail($request->id);
+        // $departamento = Departamento::findOrFail($id);
         $departamento->Estado = 'Activo';
         $departamento->save();
     }

@@ -21,7 +21,12 @@
                                     <div class="form-group">
                                         <label for="nombre">Nombre: </label>
                                         <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre">
-                                        <small class="form-text text-muted">* Ingrese un departamento ejm.: Managua</small>
+                                        <!-- <small class="form-text text-muted">* Ingrese un departamento ejm.: Managua</small> -->
+                                    </div>
+                                    <div v-show="errorDepartamento" class="form-group msjerror">
+                                        <div class="text-center texterror" v-for="error in msjErrores" :key="error" v-text="error">
+
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -73,7 +78,7 @@
                         <tbody>
                             <tr v-for="departamento in Departamentos" :key="departamento.id">
                                 <td>
-                                    <button class="boton boton-edit" @click="abrirModal('departamento','actualizar',departamento)"><i class="fa fa-pencil"></i></button>
+                                    <button class="boton boton-edit" @click="abrirModal('departamento','actualizar', departamento)"><i class="fa fa-pencil"></i></button>
                                     <button class="boton boton-eliminar" data-toggle="modal" data-target="#btn-eliminar"><i class="fa fa-remove"></i></button>
                                 </td>
                                 <td v-text="departamento.Nombre"></td>
@@ -103,11 +108,14 @@
     export default {
         data(){
             return {
+                idDepartamento: 0,
                 nombre: '',
                 Departamentos: [],
                 modal: 0,
                 tituloModal: '',
                 btnFuncion: 0,
+                errorDepartamento: 0,
+                msjErrores: [],
             }
         },
         methods:{
@@ -115,24 +123,54 @@
                 let me = this;
                 axios.get('/departamento').then(function(response) {
                     me.Departamentos = response.data;
-                    // console.log(response);
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
             registrarDepartamento(){
-                let me = this;
-                axios.post('/departamento/registrar', {'Nombre' : this.nombre}).then(function(response) {
-                    me.cerrarModal();
-                    me.mostrarDepartamento();
-                 })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                if(this.validarFrmDepartamento()){
+                    return;
+                }
+                else{
+                    let me = this;
+                    axios.post('/departamento/registrar', {'Nombre' : this.nombre}).then(function(response) {
+                        me.cerrarModal();
+                        me.mostrarDepartamento();
+                        })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                }
             },
             actualizarDepartamento(){
+                if(this.validarFrmDepartamento()){
+                    return;
+                }
+                else{
+                    let me = this;
+                    axios.put('/departamento/actualizar', {'Nombre' : this.nombre, 'id' : this.idDepartamento}).then(function(response) {
+                        me.cerrarModal();
+                        me.mostrarDepartamento();
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            },
+            validarFrmDepartamento(){
+                this.errorDepartamento=0;
+                this.msjErrores= [];
 
+                if(this.nombre == ''){
+                    this.msjErrores.push("* El campo nombre no puede estar vacío");
+                    this.errorDepartamento= 1;
+                }
+
+                // if(this.msjErrores.length) 
+                // {
+                // }
+                return this.errorDepartamento;
             },
             abrirModal(modelo, accion, data=[]){
                 switch (modelo) {
@@ -149,9 +187,12 @@
                             }
                             case 'actualizar':
                             {
-								this.modal = 1;
+                                this.modal = 1;
                                 this.tituloModal = 'Actualizar Departamento';
                                 this.btnFuncion = 2;
+                                this.idDepartamento = data['id'];
+                                this.nombre = data['Nombre'];
+                                break;
                             }
                         }
                     }
@@ -161,6 +202,8 @@
                 this.modal = 0;
                 this.tituloModal = '';
                 this.nombre = '';
+                this.msjErrores = [];
+                this.errorDepartamento = 0;
             },         
         },
         mounted() {
@@ -169,7 +212,7 @@
     }
 </script>
 <style>
-     .modal-content{
+    .modal-content{
          width: 100% !important;
          position: absolute !important;
      }
@@ -178,5 +221,14 @@
         opacity: 1 !important;
         /* position: absolute !important; */
         background-color: #3c29297a !important;
+    }
+    .msjerror{
+        display: flex;
+        justify-content: center;
+    }
+    .texterror{
+        color: red;
+        font-weight: bold;
+        font-size: 12px;
     }
 </style>

@@ -1862,37 +1862,80 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      idDepartamento: 0,
       nombre: '',
       Departamentos: [],
       modal: 0,
       tituloModal: '',
-      btnFuncion: 0
+      btnFuncion: 0,
+      errorDepartamento: 0,
+      msjErrores: []
     };
   },
   methods: {
     mostrarDepartamento: function mostrarDepartamento() {
       var me = this;
       axios.get('/departamento').then(function (response) {
-        me.Departamentos = response.data; // console.log(response);
+        me.Departamentos = response.data;
       })["catch"](function (error) {
         console.log(error);
       });
     },
     registrarDepartamento: function registrarDepartamento() {
-      var me = this;
-      axios.post('/departamento/registrar', {
-        'Nombre': this.nombre
-      }).then(function (response) {
-        me.cerrarModal();
-        me.mostrarDepartamento();
-      })["catch"](function (error) {
-        console.log(error);
-      });
+      if (this.validarFrmDepartamento()) {
+        return;
+      } else {
+        var me = this;
+        axios.post('/departamento/registrar', {
+          'Nombre': this.nombre
+        }).then(function (response) {
+          me.cerrarModal();
+          me.mostrarDepartamento();
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
     },
-    actualizarDepartamento: function actualizarDepartamento() {},
+    actualizarDepartamento: function actualizarDepartamento() {
+      if (this.validarFrmDepartamento()) {
+        return;
+      } else {
+        var me = this;
+        axios.put('/departamento/actualizar', {
+          'Nombre': this.nombre,
+          'id': this.idDepartamento
+        }).then(function (response) {
+          me.cerrarModal();
+          me.mostrarDepartamento();
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
+    },
+    validarFrmDepartamento: function validarFrmDepartamento() {
+      this.errorDepartamento = 0;
+      this.msjErrores = [];
+
+      if (this.nombre == '') {
+        this.msjErrores.push("* El campo nombre no puede estar vacío");
+        this.errorDepartamento = 1;
+      } // if(this.msjErrores.length) 
+      // {
+      // }
+
+
+      return this.errorDepartamento;
+    },
     abrirModal: function abrirModal(modelo, accion) {
       var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
@@ -1913,6 +1956,10 @@ __webpack_require__.r(__webpack_exports__);
                 {
                   this.modal = 1;
                   this.tituloModal = 'Actualizar Departamento';
+                  this.btnFuncion = 2;
+                  this.idDepartamento = data['id'];
+                  this.nombre = data['Nombre'];
+                  break;
                 }
             }
           }
@@ -1922,6 +1969,8 @@ __webpack_require__.r(__webpack_exports__);
       this.modal = 0;
       this.tituloModal = '';
       this.nombre = '';
+      this.msjErrores = [];
+      this.errorDepartamento = 0;
     }
   },
   mounted: function mounted() {
@@ -1943,7 +1992,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n     width: 100% !important;\n     position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    /* position: absolute !important; */\n    background-color: #3c29297a !important;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n     width: 100% !important;\n     position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    /* position: absolute !important; */\n    background-color: #3c29297a !important;\n}\n.msjerror{\n    display: flex;\n    justify-content: center;\n}\n.texterror{\n    color: red;\n    font-weight: bold;\n    font-size: 12px;\n}\n", ""]);
 
 // exports
 
@@ -3198,18 +3247,31 @@ var render = function() {
                                   _vm.nombre = $event.target.value
                                 }
                               }
+                            })
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: _vm.errorDepartamento,
+                                  expression: "errorDepartamento"
+                                }
+                              ],
+                              staticClass: "form-group msjerror"
+                            },
+                            _vm._l(_vm.msjErrores, function(error) {
+                              return _c("div", {
+                                key: error,
+                                staticClass: "text-center texterror",
+                                domProps: { textContent: _vm._s(error) }
+                              })
                             }),
-                            _vm._v(" "),
-                            _c(
-                              "small",
-                              { staticClass: "form-text text-muted" },
-                              [
-                                _vm._v(
-                                  "* Ingrese un departamento ejm.: Managua"
-                                )
-                              ]
-                            )
-                          ])
+                            0
+                          )
                         ])
                       ]),
                       _vm._v(" "),
@@ -3363,13 +3425,7 @@ var staticRenderFns = [
         _c(
           "select",
           { staticClass: "option-search", attrs: { name: "filtro", id: "" } },
-          [
-            _c("option", { attrs: { value: "nombre" } }, [_vm._v("Nombre")]),
-            _vm._v(" "),
-            _c("option", { attrs: { value: "descripcion" } }, [
-              _vm._v("Descripción")
-            ])
-          ]
+          [_c("option", { attrs: { value: "nombre" } }, [_vm._v("Nombre")])]
         ),
         _vm._v(" "),
         _c("input", {
