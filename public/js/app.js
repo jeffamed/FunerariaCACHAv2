@@ -1897,7 +1897,9 @@ __webpack_require__.r(__webpack_exports__);
         'from': 0,
         'to': 0
       },
-      offset: 3
+      offset: 3,
+      criterio: 'Nombre',
+      buscar: ''
     };
   },
   computed: {
@@ -1933,9 +1935,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    mostrarDepartamento: function mostrarDepartamento(pagina) {
+    mostrarDepartamento: function mostrarDepartamento(pagina, buscar, criterio) {
       var me = this;
-      var url = '/departamento?page=' + pagina;
+      var url = '/departamento?page=' + pagina + '&buscar=' + buscar + '&criterio=' + criterio;
       axios.get(url).then(function (response) {
         var respuesta = response.data;
         me.Departamentos = respuesta.departamentos.data;
@@ -1944,10 +1946,10 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    cambiarPagina: function cambiarPagina(pagina) {
+    cambiarPagina: function cambiarPagina(pagina, buscar, criterio) {
       var me = this;
       me.pagination.current_page = pagina;
-      me.mostrarDepartamento(pagina);
+      me.mostrarDepartamento(pagina, buscar, criterio);
     },
     registrarDepartamento: function registrarDepartamento() {
       if (this.validarFrmDepartamento()) {
@@ -1958,7 +1960,7 @@ __webpack_require__.r(__webpack_exports__);
           'Nombre': this.nombre
         }).then(function (response) {
           me.cerrarModal();
-          me.mostrarDepartamento();
+          me.mostrarDepartamento(1, '', 'Nombre');
         })["catch"](function (error) {
           console.log(error);
         });
@@ -1974,7 +1976,7 @@ __webpack_require__.r(__webpack_exports__);
           'id': this.idDepartamento
         }).then(function (response) {
           me.cerrarModal();
-          me.mostrarDepartamento();
+          me.mostrarDepartamento(1, '', 'Nombre');
         })["catch"](function (error) {
           console.log(error);
         });
@@ -2016,7 +2018,7 @@ __webpack_require__.r(__webpack_exports__);
           axios.put('/departamento/activar', {
             'id': id
           }).then(function (response) {
-            me.mostrarDepartamento();
+            me.mostrarDepartamento(1, '', 'Nombre');
             swal('Activado', 'El registro fue activado correctamente', 'success');
           })["catch"](function (error) {
             console.log(error);
@@ -2051,7 +2053,7 @@ __webpack_require__.r(__webpack_exports__);
           axios.put('/departamento/desactivar', {
             'id': id
           }).then(function (response) {
-            me.mostrarDepartamento();
+            me.mostrarDepartamento(1, '', 'Nombre');
             swal('Desactivado', 'El registro fue desactivado correctamente', 'success');
           })["catch"](function (error) {
             console.log(error);
@@ -2102,7 +2104,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.mostrarDepartamento();
+    this.mostrarDepartamento(1, this.buscar, this.criterio);
   }
 });
 
@@ -3461,7 +3463,82 @@ var render = function() {
                 ]
               ),
               _vm._v(" "),
-              _vm._m(0)
+              _c(
+                "div",
+                { staticClass: "buscador d-flex ml-auto hidden-md-down" },
+                [
+                  _c("label", { staticClass: "etiqueta", attrs: { for: "" } }, [
+                    _vm._v("Buscar por: ")
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.criterio,
+                          expression: "criterio"
+                        }
+                      ],
+                      staticClass: "option-search",
+                      attrs: { name: "filtro", id: "" },
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.criterio = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { value: "Nombre" } }, [
+                        _vm._v("Departamento")
+                      ])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.buscar,
+                        expression: "buscar"
+                      }
+                    ],
+                    staticClass: "buscar",
+                    attrs: { type: "text", placeholder: "Buscar..." },
+                    domProps: { value: _vm.buscar },
+                    on: {
+                      keyup: function($event) {
+                        return _vm.mostrarDepartamento(
+                          1,
+                          _vm.buscar,
+                          _vm.criterio
+                        )
+                      },
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.buscar = $event.target.value
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm._m(0)
+                ]
+              )
             ]
           ),
           _vm._v(" "),
@@ -3473,7 +3550,85 @@ var render = function() {
             },
             [
               _c("div", { staticClass: "table-responsive tabla-contenido" }, [
-                _vm._m(1),
+                _c("div", { staticClass: "form-inline mt-2 mb-2" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "hidden-lg-up ml-1",
+                      attrs: { for: "buscar" }
+                    },
+                    [_vm._v("Buscar por: ")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.criterio,
+                          expression: "criterio"
+                        }
+                      ],
+                      staticClass: "custom-select hidden-lg-up mb-1 mr-1 w-25",
+                      attrs: { id: "select-opciones" },
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.criterio = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { value: "Nombre" } }, [
+                        _vm._v("Departamento")
+                      ])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.buscar,
+                        expression: "buscar"
+                      }
+                    ],
+                    staticClass: "form-control hidden-lg-up mb-1 w-50",
+                    attrs: {
+                      type: "text",
+                      id: "txtbuscar",
+                      placeholder: "Buscar..."
+                    },
+                    domProps: { value: _vm.buscar },
+                    on: {
+                      keypress: function($event) {
+                        return _vm.mostrarDepartamento(
+                          1,
+                          _vm.buscar,
+                          _vm.criterio
+                        )
+                      },
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.buscar = $event.target.value
+                      }
+                    }
+                  })
+                ]),
                 _vm._v(" "),
                 _c(
                   "table",
@@ -3483,7 +3638,7 @@ var render = function() {
                     attrs: { id: "tabla" }
                   },
                   [
-                    _vm._m(2),
+                    _vm._m(1),
                     _vm._v(" "),
                     _c(
                       "tbody",
@@ -3591,7 +3746,9 @@ var render = function() {
                                   click: function($event) {
                                     $event.preventDefault()
                                     return _vm.cambiarPagina(
-                                      _vm.pagination.current_page - 1
+                                      _vm.pagination.current_page - 1,
+                                      _vm.buscar,
+                                      _vm.criterio
                                     )
                                   }
                                 }
@@ -3617,7 +3774,11 @@ var render = function() {
                               on: {
                                 click: function($event) {
                                   $event.preventDefault()
-                                  return _vm.cambiarPagina(pagina)
+                                  return _vm.cambiarPagina(
+                                    pagina,
+                                    _vm.buscar,
+                                    _vm.criterio
+                                  )
                                 }
                               }
                             })
@@ -3636,7 +3797,9 @@ var render = function() {
                                   click: function($event) {
                                     $event.preventDefault()
                                     return _vm.cambiarPagina(
-                                      _vm.pagination.current_page + 1
+                                      _vm.pagination.current_page + 1,
+                                      _vm.buscar,
+                                      _vm.criterio
                                     )
                                   }
                                 }
@@ -3662,71 +3825,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "buscador d-flex ml-auto hidden-md-down" },
-      [
-        _c("label", { staticClass: "etiqueta", attrs: { for: "" } }, [
-          _vm._v("Buscar por: ")
-        ]),
-        _vm._v(" "),
-        _c(
-          "select",
-          { staticClass: "option-search", attrs: { name: "filtro", id: "" } },
-          [_c("option", { attrs: { value: "nombre" } }, [_vm._v("Nombre")])]
-        ),
-        _vm._v(" "),
-        _c("input", {
-          staticClass: "buscar",
-          attrs: {
-            type: "text",
-            name: "buscar",
-            id: "buscar",
-            placeholder: "Buscar..."
-          }
-        }),
-        _vm._v(" "),
-        _c("div", { staticClass: "icon-buscar" }, [
-          _c("i", { staticClass: "fa fa-search hidden-md-down" })
-        ])
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-inline mt-2 mb-2" }, [
-      _c(
-        "label",
-        { staticClass: "hidden-lg-up ml-1", attrs: { for: "buscar" } },
-        [_vm._v("Buscar por: ")]
-      ),
-      _vm._v(" "),
-      _c(
-        "select",
-        {
-          staticClass: "custom-select hidden-lg-up mb-1 mr-1 w-25",
-          attrs: { name: "", id: "select-opciones" }
-        },
-        [
-          _c("option", { attrs: { value: "nombre" } }, [_vm._v("Nombre")]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "descripcion" } }, [
-            _vm._v("Descripción")
-          ])
-        ]
-      ),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "form-control hidden-lg-up mb-1 w-50",
-        attrs: {
-          type: "text",
-          name: "buscar",
-          id: "txtbuscar",
-          placeholder: "Buscar..."
-        }
-      })
+    return _c("div", { staticClass: "icon-buscar" }, [
+      _c("i", { staticClass: "fa fa-search hidden-md-down" })
     ])
   },
   function() {

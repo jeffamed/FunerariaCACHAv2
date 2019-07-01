@@ -23,7 +23,15 @@ class DepartamentosController extends Controller
         // Con QueryBuilder
         // $departamentos=DB::table('departamentos')->paginate(2);
         // if (!$request->ajax()) return redirect('/');
-        $departamentos = Departamento::paginate(2);
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
+
+        if($buscar == ''){
+            $departamentos = Departamento::orderBy('id','desc')->paginate(5);
+        }else{
+            $departamentos = Departamento::where($criterio,'like','%'.$buscar.'%')->orderBy('id','desc')->paginate(5);
+        }
+
         return[
             'pagination' => [
                 'total'         => $departamentos->total(),

@@ -42,11 +42,11 @@
                 <!-- buscador -->
                 <div class="buscador d-flex ml-auto hidden-md-down">
                     <label for="" class="etiqueta">Buscar por: </label>
-                    <select name="filtro" id="" class="option-search">
-                        <option value="nombre">Nombre</option>
+                    <select name="filtro" id="" class="option-search" v-model="criterio">
+                        <option value="Nombre">Departamento</option>
                         <!-- <option value="descripcion">Descripción</option> -->
                     </select>
-                    <input type="text" name="buscar" id="buscar" class="buscar" placeholder="Buscar...">
+                    <input type="text" v-model="buscar" @keyup="mostrarDepartamento(1,buscar,criterio)" class="buscar" placeholder="Buscar...">
                     <div class="icon-buscar">
                         <i class="fa fa-search hidden-md-down"></i>
                     </div> 
@@ -59,11 +59,11 @@
                     <!-- Buscar  segundo-->
                     <div class="form-inline mt-2 mb-2">
                         <label for="buscar" class="hidden-lg-up ml-1">Buscar por: </label>
-                        <select name="" id="select-opciones" class="custom-select hidden-lg-up mb-1 mr-1 w-25">
-                            <option value="nombre">Nombre</option>
-                            <option value="descripcion">Descripción</option>
+                        <select id="select-opciones" class="custom-select hidden-lg-up mb-1 mr-1 w-25" v-model="criterio">
+                            <option value="Nombre">Departamento</option>
+                            <!-- <option value="descripcion">Descripción</option> -->
                         </select>
-                        <input type="text" name="buscar" id="txtbuscar" class="form-control hidden-lg-up mb-1 w-50" placeholder="Buscar...">
+                        <input type="text" id="txtbuscar" v-model="buscar" @keypress="mostrarDepartamento(1,buscar,criterio)" class="form-control hidden-lg-up mb-1 w-50" placeholder="Buscar...">
                     </div>
                     <!-- fin del buscador segundo -->
                     <!-- TABLA -->
@@ -98,13 +98,13 @@
                 <nav aria-label="page navigation example">
                     <ul class="pagination justify-content-end" id="pagination">
                         <li class="page-item" v-if="pagination.current_page > 1">
-                            <a href="#" class="page-link" @click.prevent="cambiarPagina(pagination.current_page - 1)"><span>&laquo;</span> Ant</a>
+                            <a href="#" class="page-link" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)"><span>&laquo;</span> Ant</a>
                         </li>
                         <li class="page-item" v-for="pagina in pagesNumber" :key="pagina" :class="page == isActived ? 'active' : ''">
-                            <a href="#" class="page-link"  @click.prevent="cambiarPagina(pagina)" v-text="pagina"></a>
+                            <a href="#" class="page-link"  @click.prevent="cambiarPagina(pagina,buscar,criterio)" v-text="pagina"></a>
                         </li>
                         <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                            <a href="#" class="page-link" @click.prevent="cambiarPagina(pagination.current_page + 1)">Sig <span>&raquo;</span></a>
+                            <a href="#" class="page-link" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig <span>&raquo;</span></a>
                         </li>
                     </ul>
                 </nav>
@@ -134,6 +134,8 @@
                     'to': 0,
                 },
                 offset: 3,
+                criterio: 'Nombre',
+                buscar: '',
             }
         },
         computed: {
@@ -165,9 +167,9 @@
             }
         },
         methods:{
-            mostrarDepartamento(pagina){
+            mostrarDepartamento(pagina,buscar,criterio){
                 let me = this;
-                var url= '/departamento?page=' + pagina;
+                var url= '/departamento?page=' + pagina + '&buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url).then(function(response) {
                     var respuesta = response.data;
                     me.Departamentos = respuesta.departamentos.data;
@@ -177,10 +179,10 @@
                     console.log(error);
                 });
             },
-            cambiarPagina(pagina){
+            cambiarPagina(pagina,buscar,criterio){
                 let me = this;
                 me.pagination.current_page = pagina;
-                me.mostrarDepartamento(pagina);
+                me.mostrarDepartamento(pagina,buscar,criterio);
             },
             registrarDepartamento(){
                 if(this.validarFrmDepartamento()){
@@ -190,7 +192,7 @@
                     let me = this;
                     axios.post('/departamento/registrar', {'Nombre' : this.nombre}).then(function(response) {
                         me.cerrarModal();
-                        me.mostrarDepartamento();
+                        me.mostrarDepartamento(1,'','Nombre');
                         })
                     .catch(function (error) {
                         console.log(error);
@@ -205,7 +207,7 @@
                     let me = this;
                     axios.put('/departamento/actualizar', {'Nombre' : this.nombre, 'id' : this.idDepartamento}).then(function(response) {
                         me.cerrarModal();
-                        me.mostrarDepartamento();
+                        me.mostrarDepartamento(1,'','Nombre');
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -244,7 +246,7 @@
                         if (result.value) {
                             let me = this;
                             axios.put('/departamento/activar', {'id' : id}).then(function(response) {
-                                me.mostrarDepartamento();
+                                me.mostrarDepartamento(1,'','Nombre');
                                 swal(
                                     'Activado',
                                     'El registro fue activado correctamente',
@@ -281,7 +283,7 @@
                         if (result.value) {
                             let me = this;
                             axios.put('/departamento/desactivar', {'id' : id}).then(function(response) {
-                                me.mostrarDepartamento();
+                                me.mostrarDepartamento(1,'','Nombre');
                                 swal(
                                     'Desactivado',
                                     'El registro fue desactivado correctamente',
@@ -335,7 +337,7 @@
             },         
         },
         mounted() {
-            this.mostrarDepartamento();
+            this.mostrarDepartamento(1,this.buscar,this.criterio);
         }
     }
 </script>
