@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Departamento;
-use App\Http\Requests\DepartamentoRequest;
 
 class DepartamentosController extends Controller
 {
@@ -17,12 +16,6 @@ class DepartamentosController extends Controller
     //  SE ESTA UTILIZANDO ELOQUENT
     public function index(Request $request)
     {
-        // Llamar todos los registros
-        //    $departamentos = Departamento::all();
-        // con eloquent
-        // Con QueryBuilder
-        // $departamentos=DB::table('departamentos')->paginate(2);
-        // if (!$request->ajax()) return redirect('/');
         $buscar = $request->buscar;
         $criterio = $request->criterio;
 
@@ -45,15 +38,21 @@ class DepartamentosController extends Controller
         ];
     }
 
+
+    public function seleccionar()
+    {
+        $departamentos = Departamento::select('Nombre')->where('Estado','=','Activo');
+        return ['departamento'=>$departamentos];
+    }
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(DepartamentoRequest $request)
+    public function store(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $departamento = new Departamento();
         $departamento->Nombre = $request->Nombre;
         $departamento->Estado = 'Activo';
@@ -67,9 +66,9 @@ class DepartamentosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(DepartamentoRequest $request)
+    public function update(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $departamento = Departamento::findOrFail($request->id);
         $departamento->Nombre = $request->Nombre;
         $departamento->Estado = 'Activo';

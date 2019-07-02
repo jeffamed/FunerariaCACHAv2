@@ -22,3 +22,10 @@ Route::post('/departamento/registrar','DepartamentosController@store');
 Route::put('/departamento/actualizar','DepartamentosController@update');
 Route::put('/departamento/desactivar','DepartamentosController@desactivar');
 Route::put('/departamento/activar','DepartamentosController@activar');
+Route::get('/departamento/seleccionarDepartamento','DepartamentosController@seleccionar');
+
+Route::get('/municipio','MunicipiosController@index');
+Route::post('/municipio/registrar','MunicipiosController@store');
+Route::put('/municipio/actualizar','MunicipiosController@update');
+Route::put('/municipio/desactivar','MunicipiosController@desactivar');
+Route::put('/municipio/activar','MunicipiosController@activar');

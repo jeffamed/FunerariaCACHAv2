@@ -3,9 +3,9 @@
         <div class="section-contenido mt-4 ml-2 mr-4 mb-4" id="contenido">
         <!-- ENCABEZADO -->
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
-                <h5 class="titulo">Departamentos</h5>
+                <h5 class="titulo">Municipios</h5>
             <!-- Boton nuevo -->
-                <button class="btn-new"  @click="abrirModal('departamento','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
+                <button class="btn-new"  @click="abrirModal('municipio','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- Abrir Modal-->
                 <div class="modal fade" id="btn-new" tabindex="-1" :class="{'mostrar' : modal}" role="dialog" aria-labelledby="btn-new" aria-hidden="true">
                     <div class="modal-dialog">
@@ -21,9 +21,14 @@
                                     <div class="form-group">
                                         <label for="nombre">Nombre: </label>
                                         <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre">
-                                        <!-- <small class="form-text text-muted">* Ingrese un departamento ejm.: Managua</small> -->
                                     </div>
-                                    <div v-show="errorDepartamento" class="form-group msjerror">
+                                    <div class="form-group">
+                                         <label for="nombre">Departamento: </label>
+                                         <select class="form-control" v-model="idDepartamento">
+                                            <option value="0">Seleccione un departamento..</option>
+                                        </select>
+                                    </div>
+                                    <div v-show="errorMunicipio" class="form-group msjerror">
                                         <div class="text-center texterror" v-for="error in msjErrores" :key="error" v-text="error">
 
                                         </div>
@@ -31,8 +36,8 @@
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button class="btn btn-success" v-if="btnFuncion == 1" @click="registrarDepartamento()"><i class="fa fa-check"></i> Guardar</button>
-                                <button class="btn btn-success" v-if="btnFuncion == 2" @click="actualizarDepartamento()"><i class="fa fa-check"></i> Actualizar</button>
+                                <button class="btn btn-success" v-if="btnFuncion == 1" @click="registrarMunicipio()"><i class="fa fa-check"></i> Guardar</button>
+                                <button class="btn btn-success" v-if="btnFuncion == 2" @click="actualizarMunicipio()"><i class="fa fa-check"></i> Actualizar</button>
                                 <button class="btn btn-danger" @click="cerrarModal()"><i class="fa fa-remove"></i> Cerrar</button>
                             </div>    
                         </div>
@@ -43,10 +48,10 @@
                 <div class="buscador d-flex ml-auto hidden-md-down">
                     <label for="" class="etiqueta">Buscar por: </label>
                     <select name="filtro" id="" class="option-search" v-model="criterio">
-                        <option value="Nombre">Departamento</option>
+                        <option value="Nombre">Municipio</option>
                         <!-- <option value="descripcion">Descripción</option> -->
                     </select>
-                    <input type="text" v-model="buscar" @keyup="mostrarDepartamento(1,buscar,criterio)" class="buscar" placeholder="Buscar...">
+                    <input type="text" v-model="buscar" @keyup="mostrarMunicipio(1,buscar,criterio)" class="buscar" placeholder="Buscar...">
                     <div class="icon-buscar">
                         <i class="fa fa-search hidden-md-down"></i>
                     </div> 
@@ -60,10 +65,10 @@
                     <div class="form-inline mt-2 mb-2">
                         <label for="buscar" class="hidden-lg-up ml-1">Buscar por: </label>
                         <select id="select-opciones" class="custom-select hidden-lg-up mb-1 mr-1 w-25" v-model="criterio">
-                            <option value="Nombre">Departamento</option>
+                            <option value="Nombre">Municipio</option>
                             <!-- <option value="descripcion">Descripción</option> -->
                         </select>
-                        <input type="text" id="txtbuscar" v-model="buscar" @keypress.enter="mostrarDepartamento(1,buscar,criterio)" class="form-control hidden-lg-up mb-1 w-50" placeholder="Buscar...">
+                        <input type="text" id="txtbuscar" v-model="buscar" @keypress.enter="mostrarMunicipio(1,buscar,criterio)" class="form-control hidden-lg-up mb-1 w-50" placeholder="Buscar...">
                     </div>
                     <!-- fin del buscador segundo -->
                     <!-- TABLA -->
@@ -71,23 +76,25 @@
                         <thead class="enc-tabla">
                             <tr>
                                 <th>Opciones</th>
-                                <th>Departamentos</th>
+                                <th>Municipios</th>
+                                <th>Departamento</th>
                                 <th>Estados</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="departamento in Departamentos" :key="departamento.id">
+                            <tr v-for="municipio in municipios" :key="municipio.id">
                                 <td>
-                                    <button class="boton boton-edit" @click="abrirModal('departamento','actualizar', departamento)"><i class="fa fa-pencil"></i></button>
-                                    <template v-if="departamento.Estado == 'Activo'">
-                                        <button class="boton boton-eliminar" @click="desactivarDepartamento(departamento.id)"><i class="fa fa-trash"></i></button>
+                                    <button class="boton boton-edit" @click="abrirModal('municipio','actualizar', municipio)"><i class="fa fa-pencil"></i></button>
+                                    <template v-if="municipio.Estado == 'Activo'">
+                                        <button class="boton boton-eliminar" @click="desactivarMunicipio(municipio.id)"><i class="fa fa-trash"></i></button>
                                     </template>
                                     <template v-else>
-                                        <button class="boton boton-activar" @click="activarDepartamento(departamento.id)"><i class="fa fa-check-circle"></i></button>
+                                        <button class="boton boton-activar" @click="activarMunicipio(municipio.id)"><i class="fa fa-check-circle"></i></button>
                                     </template>
                                 </td>
-                                <td v-text="departamento.Nombre"></td>
-                                <td v-text="departamento.Estado"></td>
+                                <td v-text="municipio.Nombre"></td>
+                                <td v-text="municipio.Departamento"></td>
+                                <td v-text="municipio.Estado"></td>
                             </tr>
                            
                         </tbody>
@@ -117,13 +124,14 @@
     export default {
         data(){
             return {
-                idDepartamento: 0,
+                idMunicipio: 0,
                 nombre: '',
-                Departamentos: [],
+                idDepartamento: '',
+                municipios: [],
                 modal: 0,
                 tituloModal: '',
                 btnFuncion: 0,
-                errorDepartamento: 0,
+                errorMunicipio: 0,
                 msjErrores: [],
                 pagination: {
                     'total': 0,    
@@ -167,12 +175,12 @@
             }
         },
         methods:{
-            mostrarDepartamento(pagina,buscar,criterio){
+            mostrarMunicipio(pagina,buscar,criterio){
                 let me = this;
-                var url= '/departamento?page=' + pagina + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url= '/municipio?page=' + pagina + '&buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url).then(function(response) {
                     var respuesta = response.data;
-                    me.Departamentos = respuesta.departamentos.data;
+                    me.municipios = respuesta.municipios.data;
                     me.pagination= respuesta.pagination;
                 })
                 .catch(function (error) {
@@ -182,56 +190,61 @@
             cambiarPagina(pagina,buscar,criterio){
                 let me = this;
                 me.pagination.current_page = pagina;
-                me.mostrarDepartamento(pagina,buscar,criterio);
+                me.mostrarMunicipio(pagina,buscar,criterio);
             },
-            registrarDepartamento(){
-                if(this.validarFrmDepartamento()){
+            registrarMunicipio(){
+                if(this.validarFrmMunicipio()){
                     return;
                 }
                 else{
                     let me = this;
-                    axios.post('/departamento/registrar', {'Nombre' : this.nombre}).then(function(response) {
+                    axios.post('/municipio/registrar', {'Nombre' : this.nombre}).then(function(response) {
                         me.cerrarModal();
-                        me.mostrarDepartamento(1,'','Nombre');
+                        me.mostrarMunicipio(1,'','Nombre');
                         })
                     .catch(function (error) {
                         console.log(error);
                     });
                 }
             },
-            actualizarDepartamento(){
-                if(this.validarFrmDepartamento()){
+            actualizarMunicipio(){
+                if(this.validarFrmMunicipio()){
                     return;
                 }
                 else{
                     let me = this;
-                    axios.put('/departamento/actualizar', {'Nombre' : this.nombre, 'id' : this.idDepartamento}).then(function(response) {
+                    axios.put('/municipio/actualizar', {'Nombre' : this.nombre, 'id' : this.idMunicipio}).then(function(response) {
                         me.cerrarModal();
-                        me.mostrarDepartamento(1,'','Nombre');
+                        me.mostrarMunicipio(1,'','Nombre');
                     })
                     .catch(function (error) {
                         console.log(error);
                     });
                 }
             },
-            validarFrmDepartamento(){
-                this.errorDepartamento=0;
+            validarFrmMunicipio(){
+                this.errorMunicipio=0;
                 this.msjErrores= [];
 
-                if(this.nombre == ''){
+                if(this.nombre == '' && this.idDepartamento == 0){
                     this.msjErrores.push("* El campo nombre no puede estar vacío");
-                    this.errorDepartamento= 1;
+                    this.msjErrores.push("* Debe seleccionar una opción en el departamento");
+                }else if(this.nombre == ''){
+                    this.msjErrores.push("* El campo nombre no puede estar vacío");
+                } else{
+                    this.msjErrores.push("* Debe seleccionar una opción en el departamento");
                 }
 
-                // if(this.msjErrores.length) 
-                // {
-                // }
-                return this.errorDepartamento;
+                if(this.msjErrores.length) 
+                {
+                    this.errorMunicipio= 1;
+                }
+                return this.errorMunicipio;
             },
-            activarDepartamento(id){
+            activarMunicipio(id){
                 swal({
                     title: '¿Estas seguro?',
-                    text: 'Deseas activar este departamento',
+                    text: 'Deseas activar este municipio',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -245,8 +258,8 @@
                     }).then((result) => {
                         if (result.value) {
                             let me = this;
-                            axios.put('/departamento/activar', {'id' : id}).then(function(response) {
-                                me.mostrarDepartamento(1,'','Nombre');
+                            axios.put('/municipio/activar', {'id' : id}).then(function(response) {
+                                me.mostrarMunicipio(1,'','Nombre');
                                 swal(
                                     'Activado',
                                     'El registro fue activado correctamente',
@@ -265,10 +278,10 @@
                         }
                     })
             },
-            desactivarDepartamento(id){
+            desactivarMunicipio(id){
                 swal({
                     title: '¿Estas seguro?',
-                    text: 'Deseas desactivar este departamento',
+                    text: 'Deseas desactivar este municipio',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -282,8 +295,8 @@
                     }).then((result) => {
                         if (result.value) {
                             let me = this;
-                            axios.put('/departamento/desactivar', {'id' : id}).then(function(response) {
-                                me.mostrarDepartamento(1,'','Nombre');
+                            axios.put('/municipio/desactivar', {'id' : id}).then(function(response) {
+                                me.mostrarMunicipio(1,'','Nombre');
                                 swal(
                                     'Desactivado',
                                     'El registro fue desactivado correctamente',
@@ -304,13 +317,13 @@
             },
             abrirModal(modelo, accion, data=[]){
                 switch (modelo) {
-                    case "departamento":
+                    case "municipio":
                     {
                         switch (accion) {
                             case 'registrar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Registrar Departamento';
+                                this.tituloModal = 'Registrar Municipio';
                                 this.nombre = '';
                                 this.btnFuncion = 1;
                                 break;
@@ -318,9 +331,9 @@
                             case 'actualizar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Actualizar Departamento';
+                                this.tituloModal = 'Actualizar Municipio';
                                 this.btnFuncion = 2;
-                                this.idDepartamento = data['id'];
+                                this.idmunicipio = data['id'];
                                 this.nombre = data['Nombre'];
                                 break;
                             }
@@ -333,11 +346,11 @@
                 this.tituloModal = '';
                 this.nombre = '';
                 this.msjErrores = [];
-                this.errorDepartamento = 0;
+                this.errorMunicipio = 0;
             },         
         },
         mounted() {
-            this.mostrarDepartamento(1,this.buscar,this.criterio);
+            this.mostrarMunicipio(1,this.buscar,this.criterio);
         }
     }
 </script>

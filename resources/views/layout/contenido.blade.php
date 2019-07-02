@@ -17,7 +17,7 @@
         <departamento></departamento>
     </template>
     <template v-if="menu==5">
-        <h3 class="pt-5">Menu 5</h3>
+        <municipio></municipio>
     </template>
     <template v-if="menu==6">
         <h3 class="pt-5">Menu 6</h3>

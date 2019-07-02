@@ -17,6 +17,7 @@ class CreateMunicipiosTable extends Migration
             $table->bigIncrements('id');
             $table->integer('idDepartamento');
             $table->string('Nombre', 100);
+            $table->string('Estado', 10);
             $table->timestamps();
         });
     }

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Departamento extends Model
 {
@@ -14,4 +15,8 @@ class Departamento extends Model
         'Nombre',
         'Estado'
     ];
+
+    public function municipios(){
+        return $this->hasMany('App\Municipio');
+    }
 }

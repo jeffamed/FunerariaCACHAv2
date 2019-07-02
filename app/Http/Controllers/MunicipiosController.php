@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Municipio;
 
 class MunicipiosController extends Controller
 {
@@ -11,22 +12,38 @@ class MunicipiosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
+
+        if($buscar == ''){
+            $municipios = Municipio::join('departamentos','municipios.idDepartamento','departamentos.id')
+                                    ->select('municipios.Nombre','departamentos.Nombre as Departamento','municipios.Estado')
+                                    ->orderBy('id','desc')
+                                    ->paginate(5);
+        }else{
+            $municipios = Municipio::join('departamentos','municipios.idDepartamento','departamentos.id')
+                                    ->select('municipios.Nombre','departamentos.Nombre as Departamento','municipios.Estado')
+                                    ->orderBy('id','desc')
+                                    ->where($criterio,'like','%'.$buscar.'%')->orderBy('id','desc')
+                                    ->paginate(5);
+        }
+
+        return[
+            'pagination' => [
+                'total'         => $municipios->total(),
+                'current_page'  => $municipios->currentPage(),
+                'per_page'      => $municipios->perPage(),
+                'last_page'     => $municipios->lastPage(),
+                'from'          => $municipios->firstItem(),
+                'to'            => $municipios->lastItem(),
+            ],
+            'municipios'  =>  $municipios
+        ];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
+      /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -34,29 +51,11 @@ class MunicipiosController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        if (!$request->ajax()) return redirect('/');
+        $municipio = new Municipio();
+        $municipio->Nombre = $request->Nombre;
+        $municipio->Estado = 'Activo';
+        $municipio->save();
     }
 
     /**
@@ -66,19 +65,30 @@ class MunicipiosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        if (!$request->ajax()) return redirect('/');
+        $municipio = Municipio::findOrFail($request->id);
+        $municipio->Nombre = $request->Nombre;
+        $municipio->Estado = 'Activo';
+        $municipio->save();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function desactivar(Request $request)
     {
-        //
+        if (!$request->ajax()) return redirect('/');
+        $municipio = Municipio::findOrFail($request->id);
+        // $municipio = municipio::findOrFail($id); 
+        $municipio->Estado = 'Inactivo';
+        $municipio->save();
+    }
+
+    public function activar(Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+        $municipio = Municipio::findOrFail($request->id);
+        // $municipio = municipio::findOrFail($id);
+        $municipio->Estado = 'Activo';
+        $municipio->save();
     }
 }
