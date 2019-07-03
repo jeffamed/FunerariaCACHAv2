@@ -3,9 +3,9 @@
         <div class="section-contenido mt-4 ml-2 mr-4 mb-4" id="contenido">
         <!-- ENCABEZADO -->
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
-                <h5 class="titulo">Municipios</h5>
+                <h5 class="titulo">Empleados</h5>
             <!-- Boton nuevo -->
-                <button class="btn-new"  @click="abrirModal('municipio','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
+                <button class="btn-new"  @click="abrirModal('empleado','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- Abrir Modal-->
                 <div class="modal fade" id="btn-new" tabindex="-1" :class="{'mostrar' : modal}" role="dialog" aria-labelledby="btn-new" aria-hidden="true">
                     <div class="modal-dialog">
@@ -18,27 +18,27 @@
                             </div>
                             <div class="modal-body">
                                 <form action="">
-                                    <div class="form-group">
-                                        <label for="nombre">Nombre: </label>
+                                    <div class="form-group form-inline">
+                                        <label for="nombre">Nombres: </label>
                                         <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre">
+                                        <label for="apellido">Apellidos: </label>
+                                        <input type="text" class="form-control" placeholder="Apellidos..." v-model="apellido">
                                     </div>
-                                    <div class="form-group">
-                                         <label for="nombre">Departamento: </label>
-                                         <select class="form-control" v-model="idDepartamento">
-                                            <option value="0" disabled>Seleccione...</option>
-                                            <option v-for="departamento in infoDepartamento" :value="departamento.id" :key="departamento.id" v-text="departamento.Nombre"></option>
-                                        </select>
+                                    <div class="form-group form-inline">
+                                        <label for="nombre">Nombres: </label>
+                                        <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre">
+                                        <label for="nombre">Apellidos: </label>
+                                        <input type="text" class="form-control" placeholder="Apellidos..." v-model="nombre">
                                     </div>
-                                    <div v-show="errorMunicipio" class="form-group msjerror">
+                                    <div v-show="errorEmpleado" class="form-group msjerror">
                                         <div class="text-center texterror" v-for="error in msjErrores" :key="error" v-text="error">
-
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button class="btn btn-success" v-if="btnFuncion == 1" @click="registrarMunicipio()"><i class="fa fa-check"></i> Guardar</button>
-                                <button class="btn btn-success" v-if="btnFuncion == 2" @click="actualizarMunicipio()"><i class="fa fa-check"></i> Actualizar</button>
+                                <button class="btn btn-success" v-if="btnFuncion == 1" @click="registrarEmpleado()"><i class="fa fa-check"></i> Guardar</button>
+                                <button class="btn btn-success" v-if="btnFuncion == 2" @click="actualizarEmpleado()"><i class="fa fa-check"></i> Actualizar</button>
                                 <button class="btn btn-danger" @click="cerrarModal()"><i class="fa fa-remove"></i> Cerrar</button>
                             </div>    
                         </div>
@@ -48,11 +48,11 @@
                 <!-- buscador -->
                 <div class="buscador d-flex ml-auto hidden-md-down">
                     <label for="" class="etiqueta">Buscar por: </label>
-                    <select name="filtro" id="" class="option-search" v-model="criterio">
-                        <option value="Nombre">Municipio</option>
-                        <!-- <option value="descripcion">Descripción</option> -->
+                    <select name="filtro" class="option-search" v-model="criterio">
+                        <option value="Nombre">Nombre</option>
+                        <option value="Apellido">Apellido</option>
                     </select>
-                    <input type="text" v-model="buscar" @keyup="mostrarMunicipio(1,buscar,criterio)" class="buscar" placeholder="Buscar...">
+                    <input type="text" v-model="buscar" @keyup="mostrarEmpleado(1,buscar,criterio)" class="buscar" placeholder="Buscar...">
                     <div class="icon-buscar">
                         <i class="fa fa-search hidden-md-down"></i>
                     </div> 
@@ -66,10 +66,10 @@
                     <div class="form-inline mt-2 mb-2">
                         <label for="buscar" class="hidden-lg-up ml-1">Buscar por: </label>
                         <select id="select-opciones" class="custom-select hidden-lg-up mb-1 mr-1 w-25" v-model="criterio">
-                            <option value="Nombre">Municipio</option>
-                            <!-- <option value="descripcion">Descripción</option> -->
+                            <option value="Nombre">Nombre</option>
+                            <option value="Apellido">Apellido</option>
                         </select>
-                        <input type="text" id="txtbuscar" v-model="buscar" @keypress.enter="mostrarMunicipio(1,buscar,criterio)" class="form-control hidden-lg-up mb-1 w-50" placeholder="Buscar...">
+                        <input type="text" id="txtbuscar" v-model="buscar" @keypress.enter="mostrarEmpleado(1,buscar,criterio)" class="form-control hidden-lg-up mb-1 w-50" placeholder="Buscar...">
                     </div>
                     <!-- fin del buscador segundo -->
                     <!-- TABLA -->
@@ -77,25 +77,29 @@
                         <thead class="enc-tabla">
                             <tr>
                                 <th>Opciones</th>
-                                <th>Municipios</th>
-                                <th>Departamento</th>
-                                <th>Estados</th>
+                                <th>Nombres</th>
+                                <th>Apellidos</th>
+                                <th>Telefóno</th>
+                                <th>Dirección</th>
+                                <th>Estado</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="municipio in Municipios" :key="municipio.id" :style="municipio.Estado=='Activo'?'':'color:red'">
+                            <tr v-for="empleado in Empleados" :key="empleado.id">
                                 <td>
-                                    <button class="boton boton-edit" @click="abrirModal('municipio','actualizar', municipio)"><i class="fa fa-pencil"></i></button>
-                                    <template v-if="municipio.Estado == 'Activo'">
-                                        <button class="boton boton-eliminar" @click="desactivarMunicipio(municipio.id)"><i class="fa fa-trash"></i></button>
+                                    <button class="boton boton-edit" @click="abrirModal('empleado','actualizar', empleado)"><i class="fa fa-pencil"></i></button>
+                                    <template v-if="Empleado.Estado == 'Activo'">
+                                        <button class="boton boton-eliminar" @click="desactivarEmpleado(empleado.id)"><i class="fa fa-trash"></i></button>
                                     </template>
                                     <template v-else>
-                                        <button class="boton boton-activar" @click="activarMunicipio(municipio.id)"><i class="fa fa-check-circle"></i></button>
+                                        <button class="boton boton-activar" @click="activarEmpleado(empleado.id)"><i class="fa fa-check-circle"></i></button>
                                     </template>
                                 </td>
-                                <td v-text="municipio.Nombre"></td>
-                                <td v-text="municipio.Departamento"></td>
-                                <td v-text="municipio.Estado"></td>
+                                <td v-text="empleado.Nombre"></td>
+                                <td v-text="empleado.Apellido"></td>
+                                <td v-text="empleado.Telefono"></td>
+                                <td v-text="empleado.Direccion"></td>
+                                <td v-text="empleado.Estado"></td>
                             </tr>
                            
                         </tbody>
@@ -125,15 +129,17 @@
     export default {
         data(){
             return {
-                idMunicipio: 0,
+                idEmpleado: 0,
                 nombre: '',
-                idDepartamento: 0,
-                Municipios: [],
-                infoDepartamento: [],
+                apellido: '',
+                telefono: '',
+                cedula: '',
+                direccion: '',
+                Empleados: [],
                 modal: 0,
                 tituloModal: '',
                 btnFuncion: 0,
-                errorMunicipio: 0,
+                errorEmpleado: 0,
                 msjErrores: [],
                 pagination: {
                     'total': 0,    
@@ -177,90 +183,92 @@
             }
         },
         methods:{
-            mostrarMunicipio(pagina,buscar,criterio){
+            mostrarEmpleado(pagina,buscar,criterio){
                 let me = this;
-                var url= '/municipio?page=' + pagina + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url= '/empleado?page=' + pagina + '&buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url).then(function(response) {
                     var respuesta = response.data;
-                    me.Municipios = respuesta.municipios.data;
+                    me.Empleados = respuesta.Empleados.data;
                     me.pagination= respuesta.pagination;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
-            mostrarDepartamento(){
+            cambiarPagina(pagina,buscar,criterio){
                 let me = this;
-                var url= '/departamento/seleccionarDepartamento';
-                axios.get(url).then(function(response) {
-                    // console.log(response);
-                    var respuesta = response.data;
-                    me.infoDepartamento = respuesta.departamentos;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                me.pagination.current_page = pagina;
+                me.mostrarEmpleado(pagina,buscar,criterio);
             },
-            registrarMunicipio(){
-                if(this.validarFrmMunicipio()){
+            registrarEmpleado(){
+                if(this.validarFrmEmpleado()){
                     return;
                 }
                 else{
                     let me = this;
-                    axios.post('/municipio/registrar', {
-                        'Nombre' : this.nombre, 
-                        'idDepartamento': this.idDepartamento
+                    axios.post('/empleado/registrar', {
+                        'Nombre' : this.nombre,
+                        'Apellido' : this.apellido,
+                        'Telefono' : this.telefono,
+                        'Cedula' : this.cedula,
+                        'Direccion' : this.direccion
                         }).then(function(response) {
                         me.cerrarModal();
-                        me.mostrarMunicipio(1,'','Nombre');
+                        me.mostrarEmpleado(1,'','Nombre');
                         })
                     .catch(function (error) {
                         console.log(error);
                     });
                 }
             },
-            actualizarMunicipio(){
-                if(this.validarFrmMunicipio()){
+            actualizarEmpleado(){
+                if(this.validarFrmEmpleado()){
                     return;
                 }
                 else{
                     let me = this;
-                    axios.put('/municipio/actualizar', {
+                    axios.put('/empleado/actualizar', {
                         'Nombre' : this.nombre, 
-                        'id' : this.idMunicipio, 
-                        'idDepartamento' : this.idDepartamento
+                        'Apellido' : this.apellido,
+                        'Telefono' : this.telefono,
+                        'Cedula' : this.cedula,
+                        'Direccion' : this.direccion,
+                        'id' : this.idEmpleado
                         }).then(function(response) {
                         me.cerrarModal();
-                        me.mostrarMunicipio(1,'','Nombre');
+                        me.mostrarEmpleado(1,'','Nombre');
                     })
                     .catch(function (error) {
                         console.log(error);
                     });
                 }
             },
-            validarFrmMunicipio(){
-                this.errorMunicipio=0;
+            validarFrmEmpleado(){
+                this.errorEmpleado=0;
                 this.msjErrores= [];
 
-                if(this.nombre == '' && this.idDepartamento == 0){
+                if(this.nombre == ''){
                     this.msjErrores.push("* El campo nombre no puede estar vacío");
-                    this.msjErrores.push("* Debe seleccionar una opción en el departamento");
-                }else if(this.nombre == ''){
-                    this.msjErrores.push("* El campo nombre no puede estar vacío");
-                } else if(this.idDepartamento == 0){
-                    this.msjErrores.push("* Debe seleccionar una opción en el departamento");
+                }else if(this.apellido == ''){
+                    this.msjErrores.push("* El campo apellido no puede estar vacío");
+                }else if(this.telefono == ''){
+                    this.msjErrores.push("* El campo telefono no puede estar vacío o el formato no es valido");
+                }else if(this.cedulo == ''){
+                    this.msjErrores.push("* El campo cedulo no puede estar vacío o el formato no es valido");
+                }else if(this.direccion == ''){
+                    this.msjErrores.push("* El campo direccion no puede estar vacío");
                 }
 
                 if(this.msjErrores.length) 
                 {
-                    this.errorMunicipio= 1;
+                    this.errorEmpleado= 1;
                 }
-                return this.errorMunicipio;
+                return this.errorEmpleado;
             },
-            activarMunicipio(id){
+            activarEmpleado(id){
                 swal({
                     title: '¿Estas seguro?',
-                    text: 'Deseas activar este municipio',
+                    text: 'Deseas activar este empleado',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -274,8 +282,8 @@
                     }).then((result) => {
                         if (result.value) {
                             let me = this;
-                            axios.put('/municipio/activar', {'id' : id}).then(function(response) {
-                                me.mostrarMunicipio(1,'','Nombre');
+                            axios.put('/empleado/activar', {'id' : id}).then(function(response) {
+                                me.mostrarEmpleado(1,'','Nombre');
                                 swal(
                                     'Activado',
                                     'El registro fue activado correctamente',
@@ -286,13 +294,14 @@
                                 console.log(error);
                             });
                         }else if(result.dismiss === swal.DismissReason.cancel){
+
                         }
                     })
             },
-            desactivarMunicipio(id){
+            desactivarEmpleado(id){
                 swal({
                     title: '¿Estas seguro?',
-                    text: 'Deseas desactivar este municipio',
+                    text: 'Deseas desactivar este empleado',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -306,8 +315,8 @@
                     }).then((result) => {
                         if (result.value) {
                             let me = this;
-                            axios.put('/municipio/desactivar', {'id' : id}).then(function(response) {
-                                me.mostrarMunicipio(1,'','Nombre');
+                            axios.put('/empleado/desactivar', {'id' : id}).then(function(response) {
+                                me.mostrarEmpleado(1,'','Nombre');
                                 swal(
                                     'Desactivado',
                                     'El registro fue desactivado correctamente',
@@ -322,52 +331,54 @@
                         }
                     })
             },
-            cambiarPagina(pagina,buscar,criterio){
-                let me = this;
-                me.pagination.current_page = pagina;
-                me.mostrarMunicipio(pagina,buscar,criterio);
-            },
             abrirModal(modelo, accion, data=[]){
                 switch (modelo) {
-                    case "municipio":
+                    case "empleado":
                     {
                         switch (accion) {
                             case 'registrar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Registrar Municipio';
+                                this.tituloModal = 'Registrar Empleado';
                                 this.nombre = '';
-                                this.idDepartamento = 0;
+                                this.apellido= '';
+                                this.telefono= '';
+                                this.cedula= '';
+                                this.direccion= '';
                                 this.btnFuncion = 1;
                                 break;
                             }
                             case 'actualizar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Actualizar Municipio';
+                                this.tituloModal = 'Actualizar Empleado';
                                 this.btnFuncion = 2;
-                                this.idMunicipio = data['id'];
+                                this.idEmpleado = data['id'];
                                 this.nombre = data['Nombre'];
-                                this.idDepartamento = data['idDepartamento'];
+                                this.apellido= data['Apellido'];
+                                this.telefono= data['Telefono'];
+                                this.cedula= data['Cedula'];
+                                this.direccion= data['Direccion'];
                                 break;
                             }
                         }
                     }
                 }
-
-                this.mostrarDepartamento();
             },
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
                 this.nombre = '';
+                this.apellido= '';
+                this.telefono= '';
+                this.cedula= '';
+                this.direccion= '';
                 this.msjErrores = [];
-                this.errorMunicipio = 0;
-                this.idDepartamento = 0;
+                this.errorEmpleado = 0;
             },         
         },
         mounted() {
-            this.mostrarMunicipio(1,this.buscar,this.criterio);
+            this.mostrarEmpleado(1,this.buscar,this.criterio);
         }
     }
 </script>
@@ -384,9 +395,7 @@
     }
     .msjerror{
         display: flex;
-        flex-direction: column;
-        justify-content: left;
-        align-content: left;
+        justify-content: center;
     }
     .texterror{
         color: red;
@@ -394,3 +403,4 @@
         font-size: 12px;
     }
 </style>
+

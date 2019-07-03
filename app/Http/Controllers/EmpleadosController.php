@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Empleado;
 
 class EmpleadosController extends Controller
 {
@@ -11,19 +12,35 @@ class EmpleadosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
+
+        if($buscar == ''){
+            $empleados = Empleado::orderBy('id','desc')->paginate(5);
+        }else{
+            $empleados = Empleado::where($criterio,'like','%'.$buscar.'%')->orderBy('id','desc')->paginate(5);
+        }
+
+        return[
+            'pagination' => [
+                'total'         => $empleados->total(),
+                'current_page'  => $empleados->currentPage(),
+                'per_page'      => $empleados->perPage(),
+                'last_page'     => $empleados->lastPage(),
+                'from'          => $empleados->firstItem(),
+                'to'            => $empleados->lastItem(),
+            ],
+            'empleados'  =>  $empleados
+        ];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function seleccionar()
     {
-        //
+        $empleados = Empleado::where('Estado','=','Activo')->select('id','Nombre')
+                        ->orderBy('nombre','desc')->get();
+        return ['empleados'=>$empleados];
     }
 
     /**
@@ -34,29 +51,15 @@ class EmpleadosController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+         // if (!$request->ajax()) return redirect('/');
+         $empleado = new Empleado();
+         $empleado->Nombre = $request->Nombre;
+         $empleado->Apellido = $request->Apellido;
+         $empleado->Direccion = $request->Direccion;
+         $empleado->Telefono = $request->Telefono;
+         $empleado->Cedula = $request->Cedula;
+         $empleado->Estado = 'Activo';
+         $empleado->save();
     }
 
     /**
@@ -66,19 +69,32 @@ class EmpleadosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+         // if (!$request->ajax()) return redirect('/');
+         $empleado = Empleado::findOrFail($request->id);
+         $empleado->Nombre = $request->Nombre;
+         $empleado->Apellido = $request->Apellido;
+         $empleado->Direccion = $request->Direccion;
+         $empleado->Telefono = $request->Telefono;
+         $empleado->Cedula = $request->Cedula;
+         $empleado->Estado = 'Activo';
+         $empleado->save();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function desactivar(Request $request)
     {
-        //
+        // if (!$request->ajax()) return redirect('/');
+        $empleado = Empleado::findOrFail($request->id);
+        $empleado->Estado = 'Inactivo';
+        $empleado->save();
+    }
+
+    public function activar(Request $request)
+    {
+        // if (!$request->ajax()) return redirect('/');
+        $empleado = Empleado::findOrFail($request->id);
+        $empleado->Estado = 'Activo';
+        $empleado->save();
     }
 }

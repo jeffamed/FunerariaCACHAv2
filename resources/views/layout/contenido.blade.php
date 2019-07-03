@@ -23,7 +23,7 @@
         <h3 class="pt-5">Menu 6</h3>
     </template>   
     <template v-if="menu==7">
-        <h3 class="pt-5">Menu 7</h3>
+        <empleado></empleado>
     </template>
     <template v-if="menu==8">
         <h3 class="pt-5">Menu 8</h3>

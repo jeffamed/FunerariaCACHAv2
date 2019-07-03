@@ -9,7 +9,7 @@
    <a class="bvmenu__item" href="#inicio" id="btnInicio" aria-expanded="false" aria-controls="inicio" data-toggle="collapse">
 	{{-- <a class="bvmenu__item" href="#" id="btnInicio"> --}}
         <i class="fa fa-home hidden-md-down ocultar-elemento"></i>
-        Inicio
+        Facturas
         <i id="flecha_izq" class="fa fa-angle-right pull-right"></i>
     </a>
     <div class="collapse" id="inicio">
@@ -33,13 +33,13 @@
         </div>
     <a class="bvmenu__item" href="#facturacion" id="btnfacturacion" aria-expanded="false" aria-controls="facturacion" data-toggle="collapse">
         <i class="fa fa-book hidden-md-down ocultar-elemento"></i>
-        Facturacion
+        Usuarios
         <i id="flecha1" class="fa fa-angle-right pull-right"></i>
     </a>
         <div class="collapse" id="facturacion">
         <ul class="bvmenu__sub">
-            <a class="bvmenu__subitem" href="#" @click="menu=7"><i class="fa fa-circle-o"></i>Opción 1</a>
-            <a class="bvmenu__subitem" href="#" @click="menu=8"><i class="fa fa-circle-o"></i>Opción 2</a>
+            <a class="bvmenu__subitem" href="#" @click="menu=7"><i class="fa fa-circle-o"></i>Empleado</a>
+            <a class="bvmenu__subitem" href="#" @click="menu=8"><i class="fa fa-circle-o"></i>Usuario</a>
             <a class="bvmenu__subitem" href="#" @click="menu=9"><i class="fa fa-circle-o"></i>Opción 3</a>
         </ul>
     </div>
