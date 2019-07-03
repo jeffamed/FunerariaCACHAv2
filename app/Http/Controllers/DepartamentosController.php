@@ -16,6 +16,7 @@ class DepartamentosController extends Controller
     //  SE ESTA UTILIZANDO ELOQUENT
     public function index(Request $request)
     {
+        // if (!$request->ajax()) return redirect('/');
         $buscar = $request->buscar;
         $criterio = $request->criterio;
 
@@ -41,8 +42,8 @@ class DepartamentosController extends Controller
 
     public function seleccionar()
     {
-        $departamentos = Departamento::select('Nombre')->where('Estado','=','Activo');
-        return ['departamento'=>$departamentos];
+        $departamentos = Departamento::select('id','Nombre')->where('Estado','=','Activo')->get();
+        return ['departamentos'=>$departamentos];
     }
     /**
      * Store a newly created resource in storage.
@@ -52,7 +53,7 @@ class DepartamentosController extends Controller
      */
     public function store(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        // if (!$request->ajax()) return redirect('/');
         $departamento = new Departamento();
         $departamento->Nombre = $request->Nombre;
         $departamento->Estado = 'Activo';
@@ -68,7 +69,7 @@ class DepartamentosController extends Controller
      */
     public function update(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        // if (!$request->ajax()) return redirect('/');
         $departamento = Departamento::findOrFail($request->id);
         $departamento->Nombre = $request->Nombre;
         $departamento->Estado = 'Activo';

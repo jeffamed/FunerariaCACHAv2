@@ -14,19 +14,20 @@ class MunicipiosController extends Controller
      */
     public function index(Request $request)
     {
+        // if (!$request->ajax()) return redirect('/');
         $buscar = $request->buscar;
         $criterio = $request->criterio;
 
         if($buscar == ''){
-            $municipios = Municipio::join('departamentos','municipios.idDepartamento','departamentos.id')
+            $municipios = Municipio::join('departamentos','municipios.idDepartamento','=','departamentos.id')
                                     ->select('municipios.Nombre','departamentos.Nombre as Departamento','municipios.Estado')
-                                    ->orderBy('id','desc')
+                                    ->orderBy('municipios.id','desc')
                                     ->paginate(5);
         }else{
-            $municipios = Municipio::join('departamentos','municipios.idDepartamento','departamentos.id')
+            $municipios = Municipio::join('departamentos','municipios.idDepartamento','=','departamentos.id')
                                     ->select('municipios.Nombre','departamentos.Nombre as Departamento','municipios.Estado')
-                                    ->orderBy('id','desc')
-                                    ->where($criterio,'like','%'.$buscar.'%')->orderBy('id','desc')
+                                    ->where('municipios.'.$criterio,'like','%'.$buscar.'%')
+                                    ->orderBy('municipios.id','desc')
                                     ->paginate(5);
         }
 
@@ -51,7 +52,7 @@ class MunicipiosController extends Controller
      */
     public function store(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        // if (!$request->ajax()) return redirect('/');
         $municipio = new Municipio();
         $municipio->Nombre = $request->Nombre;
         $municipio->Estado = 'Activo';
@@ -67,7 +68,7 @@ class MunicipiosController extends Controller
      */
     public function update(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        // if (!$request->ajax()) return redirect('/');
         $municipio = Municipio::findOrFail($request->id);
         $municipio->Nombre = $request->Nombre;
         $municipio->Estado = 'Activo';
@@ -76,18 +77,16 @@ class MunicipiosController extends Controller
 
     public function desactivar(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        // if (!$request->ajax()) return redirect('/');
         $municipio = Municipio::findOrFail($request->id);
-        // $municipio = municipio::findOrFail($id); 
         $municipio->Estado = 'Inactivo';
         $municipio->save();
     }
 
     public function activar(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        // if (!$request->ajax()) return redirect('/');
         $municipio = Municipio::findOrFail($request->id);
-        // $municipio = municipio::findOrFail($id);
         $municipio->Estado = 'Activo';
         $municipio->save();
     }

@@ -2241,13 +2241,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       idMunicipio: 0,
       nombre: '',
-      idDepartamento: '',
-      municipios: [],
+      idDepartamento: 0,
+      Municipios: [],
+      infoDepartamento: [],
       modal: 0,
       tituloModal: '',
       btnFuncion: 0,
@@ -2304,16 +2306,21 @@ __webpack_require__.r(__webpack_exports__);
       var url = '/municipio?page=' + pagina + '&buscar=' + buscar + '&criterio=' + criterio;
       axios.get(url).then(function (response) {
         var respuesta = response.data;
-        me.municipios = respuesta.municipios.data;
+        me.Municipios = respuesta.municipios.data;
         me.pagination = respuesta.pagination;
       })["catch"](function (error) {
         console.log(error);
       });
     },
-    cambiarPagina: function cambiarPagina(pagina, buscar, criterio) {
+    mostrarDepartamento: function mostrarDepartamento() {
       var me = this;
-      me.pagination.current_page = pagina;
-      me.mostrarMunicipio(pagina, buscar, criterio);
+      var url = '/departamento/seleccionarDepartamento';
+      axios.get(url).then(function (response) {
+        var respuesta = response.data;
+        me.infoDepartamento = respuesta.departamentos;
+      })["catch"](function (error) {
+        console.log(error);
+      });
     },
     registrarMunicipio: function registrarMunicipio() {
       if (this.validarFrmMunicipio()) {
@@ -2321,7 +2328,8 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         var me = this;
         axios.post('/municipio/registrar', {
-          'Nombre': this.nombre
+          'Nombre': this.nombre,
+          'idDepartamento': this.idDepartamento
         }).then(function (response) {
           me.cerrarModal();
           me.mostrarMunicipio(1, '', 'Nombre');
@@ -2392,12 +2400,7 @@ __webpack_require__.r(__webpack_exports__);
           })["catch"](function (error) {
             console.log(error);
           });
-        } else if (result.dismiss === swal.DismissReason.cancel) {// swal(
-          //     'Cancelado',
-          //     'No se desactivo el registro',
-          //     'error'
-          // )
-        }
+        } else if (result.dismiss === swal.DismissReason.cancel) {}
       });
     },
     desactivarMunicipio: function desactivarMunicipio(id) {
@@ -2427,13 +2430,13 @@ __webpack_require__.r(__webpack_exports__);
           })["catch"](function (error) {
             console.log(error);
           });
-        } else if (result.dismiss === swal.DismissReason.cancel) {// swal(
-          //     'Cancelado',
-          //     'No se desactivo el registro',
-          //     'error'
-          // )
-        }
+        } else if (result.dismiss === swal.DismissReason.cancel) {}
       });
+    },
+    cambiarPagina: function cambiarPagina(pagina, buscar, criterio) {
+      var me = this;
+      me.pagination.current_page = pagina;
+      me.mostrarMunicipio(pagina, buscar, criterio);
     },
     abrirModal: function abrirModal(modelo, accion) {
       var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
@@ -2510,7 +2513,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n     width: 100% !important;\n     position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    /* position: absolute !important; */\n    background-color: #3c29297a !important;\n}\n.msjerror{\n    display: flex;\n    justify-content: center;\n}\n.texterror{\n    color: red;\n    font-weight: bold;\n    font-size: 12px;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n     width: 100% !important;\n     position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    /* position: absolute !important; */\n    background-color: #3c29297a !important;\n}\n.msjerror{\n    display: flex;\n    flex-direction: column;\n    justify-content: left;\n    align-content: left;\n}\n.texterror{\n    color: red;\n    font-weight: bold;\n    font-size: 12px;\n}\n", ""]);
 
 // exports
 
@@ -4440,10 +4443,25 @@ var render = function() {
                                 }
                               },
                               [
-                                _c("option", { attrs: { value: "0" } }, [
-                                  _vm._v("Seleccione un departamento..")
-                                ])
-                              ]
+                                _c(
+                                  "option",
+                                  { attrs: { value: "0", disabled: "" } },
+                                  [_vm._v("Seleccione...")]
+                                ),
+                                _vm._v(" "),
+                                _vm._l(_vm.infoDepartamento, function(
+                                  departamento
+                                ) {
+                                  return _c("option", {
+                                    key: departamento.id,
+                                    domProps: {
+                                      value: departamento.id,
+                                      textContent: _vm._s(departamento.nombre)
+                                    }
+                                  })
+                                })
+                              ],
+                              2
                             )
                           ]),
                           _vm._v(" "),
@@ -4713,7 +4731,7 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "tbody",
-                      _vm._l(_vm.municipios, function(municipio) {
+                      _vm._l(_vm.Municipios, function(municipio) {
                         return _c("tr", { key: municipio.id }, [
                           _c(
                             "td",

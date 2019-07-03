@@ -25,7 +25,8 @@
                                     <div class="form-group">
                                          <label for="nombre">Departamento: </label>
                                          <select class="form-control" v-model="idDepartamento">
-                                            <option value="0">Seleccione un departamento..</option>
+                                            <option value="0" disabled>Seleccione...</option>
+                                            <option v-for="departamento in infoDepartamento" :value="departamento.id" :key="departamento.id" v-text="departamento.nombre"></option>
                                         </select>
                                     </div>
                                     <div v-show="errorMunicipio" class="form-group msjerror">
@@ -82,7 +83,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="municipio in municipios" :key="municipio.id">
+                            <tr v-for="municipio in Municipios" :key="municipio.id">
                                 <td>
                                     <button class="boton boton-edit" @click="abrirModal('municipio','actualizar', municipio)"><i class="fa fa-pencil"></i></button>
                                     <template v-if="municipio.Estado == 'Activo'">
@@ -126,8 +127,9 @@
             return {
                 idMunicipio: 0,
                 nombre: '',
-                idDepartamento: '',
-                municipios: [],
+                idDepartamento: 0,
+                Municipios: [],
+                infoDepartamento: [],
                 modal: 0,
                 tituloModal: '',
                 btnFuncion: 0,
@@ -180,17 +182,23 @@
                 var url= '/municipio?page=' + pagina + '&buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url).then(function(response) {
                     var respuesta = response.data;
-                    me.municipios = respuesta.municipios.data;
+                    me.Municipios = respuesta.municipios.data;
                     me.pagination= respuesta.pagination;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
-            cambiarPagina(pagina,buscar,criterio){
+            mostrarDepartamento(){
                 let me = this;
-                me.pagination.current_page = pagina;
-                me.mostrarMunicipio(pagina,buscar,criterio);
+                var url= '/departamento/seleccionarDepartamento';
+                axios.get(url).then(function(response) {
+                    var respuesta = response.data;
+                    me.infoDepartamento = respuesta.departamentos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
             registrarMunicipio(){
                 if(this.validarFrmMunicipio()){
@@ -198,7 +206,11 @@
                 }
                 else{
                     let me = this;
-                    axios.post('/municipio/registrar', {'Nombre' : this.nombre}).then(function(response) {
+                    axios.post('/municipio/registrar', 
+                        {
+                        'Nombre' : this.nombre, 
+                        'idDepartamento': this.idDepartamento
+                        }).then(function(response) {
                         me.cerrarModal();
                         me.mostrarMunicipio(1,'','Nombre');
                         })
@@ -270,11 +282,6 @@
                                 console.log(error);
                             });
                         }else if(result.dismiss === swal.DismissReason.cancel){
-                            // swal(
-                            //     'Cancelado',
-                            //     'No se desactivo el registro',
-                            //     'error'
-                            // )
                         }
                     })
             },
@@ -307,13 +314,14 @@
                                 console.log(error);
                             });
                         }else if(result.dismiss === swal.DismissReason.cancel){
-                            // swal(
-                            //     'Cancelado',
-                            //     'No se desactivo el registro',
-                            //     'error'
-                            // )
+
                         }
                     })
+            },
+            cambiarPagina(pagina,buscar,criterio){
+                let me = this;
+                me.pagination.current_page = pagina;
+                me.mostrarMunicipio(pagina,buscar,criterio);
             },
             abrirModal(modelo, accion, data=[]){
                 switch (modelo) {
@@ -367,7 +375,9 @@
     }
     .msjerror{
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        justify-content: left;
+        align-content: left;
     }
     .texterror{
         color: red;
