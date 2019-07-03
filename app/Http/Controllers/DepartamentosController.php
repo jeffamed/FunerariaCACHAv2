@@ -42,7 +42,8 @@ class DepartamentosController extends Controller
 
     public function seleccionar()
     {
-        $departamentos = Departamento::select('id','Nombre')->where('Estado','=','Activo')->get();
+        $departamentos = Departamento::where('Estado','=','Activo')->select('id','Nombre')
+                        ->orderBy('nombre','desc')->get();
         return ['departamentos'=>$departamentos];
     }
     /**

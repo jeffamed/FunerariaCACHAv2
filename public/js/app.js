@@ -2316,6 +2316,7 @@ __webpack_require__.r(__webpack_exports__);
       var me = this;
       var url = '/departamento/seleccionarDepartamento';
       axios.get(url).then(function (response) {
+        // console.log(response);
         var respuesta = response.data;
         me.infoDepartamento = respuesta.departamentos;
       })["catch"](function (error) {
@@ -2345,7 +2346,8 @@ __webpack_require__.r(__webpack_exports__);
         var me = this;
         axios.put('/municipio/actualizar', {
           'Nombre': this.nombre,
-          'id': this.idMunicipio
+          'id': this.idMunicipio,
+          'idDepartamento': this.idDepartamento
         }).then(function (response) {
           me.cerrarModal();
           me.mostrarMunicipio(1, '', 'Nombre');
@@ -2363,7 +2365,7 @@ __webpack_require__.r(__webpack_exports__);
         this.msjErrores.push("* Debe seleccionar una opción en el departamento");
       } else if (this.nombre == '') {
         this.msjErrores.push("* El campo nombre no puede estar vacío");
-      } else {
+      } else if (this.idDepartamento == 0) {
         this.msjErrores.push("* Debe seleccionar una opción en el departamento");
       }
 
@@ -2450,6 +2452,7 @@ __webpack_require__.r(__webpack_exports__);
                   this.modal = 1;
                   this.tituloModal = 'Registrar Municipio';
                   this.nombre = '';
+                  this.idDepartamento = 0;
                   this.btnFuncion = 1;
                   break;
                 }
@@ -2459,13 +2462,16 @@ __webpack_require__.r(__webpack_exports__);
                   this.modal = 1;
                   this.tituloModal = 'Actualizar Municipio';
                   this.btnFuncion = 2;
-                  this.idmunicipio = data['id'];
+                  this.idMunicipio = data['id'];
                   this.nombre = data['Nombre'];
+                  this.idDepartamento = data['idDepartamento'];
                   break;
                 }
             }
           }
       }
+
+      this.mostrarDepartamento();
     },
     cerrarModal: function cerrarModal() {
       this.modal = 0;
@@ -2473,6 +2479,7 @@ __webpack_require__.r(__webpack_exports__);
       this.nombre = '';
       this.msjErrores = [];
       this.errorMunicipio = 0;
+      this.idDepartamento = 0;
     }
   },
   mounted: function mounted() {
@@ -4456,7 +4463,7 @@ var render = function() {
                                     key: departamento.id,
                                     domProps: {
                                       value: departamento.id,
-                                      textContent: _vm._s(departamento.nombre)
+                                      textContent: _vm._s(departamento.Nombre)
                                     }
                                   })
                                 })

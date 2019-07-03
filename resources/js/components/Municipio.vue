@@ -26,7 +26,7 @@
                                          <label for="nombre">Departamento: </label>
                                          <select class="form-control" v-model="idDepartamento">
                                             <option value="0" disabled>Seleccione...</option>
-                                            <option v-for="departamento in infoDepartamento" :value="departamento.id" :key="departamento.id" v-text="departamento.nombre"></option>
+                                            <option v-for="departamento in infoDepartamento" :value="departamento.id" :key="departamento.id" v-text="departamento.Nombre"></option>
                                         </select>
                                     </div>
                                     <div v-show="errorMunicipio" class="form-group msjerror">
@@ -193,6 +193,7 @@
                 let me = this;
                 var url= '/departamento/seleccionarDepartamento';
                 axios.get(url).then(function(response) {
+                    // console.log(response);
                     var respuesta = response.data;
                     me.infoDepartamento = respuesta.departamentos;
                 })
@@ -206,8 +207,7 @@
                 }
                 else{
                     let me = this;
-                    axios.post('/municipio/registrar', 
-                        {
+                    axios.post('/municipio/registrar', {
                         'Nombre' : this.nombre, 
                         'idDepartamento': this.idDepartamento
                         }).then(function(response) {
@@ -225,7 +225,11 @@
                 }
                 else{
                     let me = this;
-                    axios.put('/municipio/actualizar', {'Nombre' : this.nombre, 'id' : this.idMunicipio}).then(function(response) {
+                    axios.put('/municipio/actualizar', {
+                        'Nombre' : this.nombre, 
+                        'id' : this.idMunicipio, 
+                        'idDepartamento' : this.idDepartamento
+                        }).then(function(response) {
                         me.cerrarModal();
                         me.mostrarMunicipio(1,'','Nombre');
                     })
@@ -243,7 +247,7 @@
                     this.msjErrores.push("* Debe seleccionar una opción en el departamento");
                 }else if(this.nombre == ''){
                     this.msjErrores.push("* El campo nombre no puede estar vacío");
-                } else{
+                } else if(this.idDepartamento == 0){
                     this.msjErrores.push("* Debe seleccionar una opción en el departamento");
                 }
 
@@ -333,6 +337,7 @@
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Municipio';
                                 this.nombre = '';
+                                this.idDepartamento = 0;
                                 this.btnFuncion = 1;
                                 break;
                             }
@@ -341,13 +346,16 @@
                                 this.modal = 1;
                                 this.tituloModal = 'Actualizar Municipio';
                                 this.btnFuncion = 2;
-                                this.idmunicipio = data['id'];
+                                this.idMunicipio = data['id'];
                                 this.nombre = data['Nombre'];
+                                this.idDepartamento = data['idDepartamento'];
                                 break;
                             }
                         }
                     }
                 }
+
+                this.mostrarDepartamento();
             },
             cerrarModal(){
                 this.modal = 0;
@@ -355,6 +363,7 @@
                 this.nombre = '';
                 this.msjErrores = [];
                 this.errorMunicipio = 0;
+                this.idDepartamento = 0;
             },         
         },
         mounted() {

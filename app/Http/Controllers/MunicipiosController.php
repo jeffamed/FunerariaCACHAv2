@@ -20,7 +20,7 @@ class MunicipiosController extends Controller
 
         if($buscar == ''){
             $municipios = Municipio::join('departamentos','municipios.idDepartamento','=','departamentos.id')
-                                    ->select('municipios.Nombre','departamentos.Nombre as Departamento','municipios.Estado')
+                                    ->select('municipios.id','municipios.Nombre','departamentos.Nombre as Departamento','departamentos.id as idDepartamento','municipios.Estado')
                                     ->orderBy('municipios.id','desc')
                                     ->paginate(5);
         }else{
@@ -55,6 +55,7 @@ class MunicipiosController extends Controller
         // if (!$request->ajax()) return redirect('/');
         $municipio = new Municipio();
         $municipio->Nombre = $request->Nombre;
+        $municipio->idDepartamento = $request->idDepartamento;
         $municipio->Estado = 'Activo';
         $municipio->save();
     }
@@ -71,6 +72,7 @@ class MunicipiosController extends Controller
         // if (!$request->ajax()) return redirect('/');
         $municipio = Municipio::findOrFail($request->id);
         $municipio->Nombre = $request->Nombre;
+        $municipio->idDepartamento = $request->idDepartamento;
         $municipio->Estado = 'Activo';
         $municipio->save();
     }
