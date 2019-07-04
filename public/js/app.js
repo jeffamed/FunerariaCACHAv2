@@ -2311,8 +2311,9 @@ __webpack_require__.r(__webpack_exports__);
       var me = this;
       var url = '/empleado?page=' + pagina + '&buscar=' + buscar + '&criterio=' + criterio;
       axios.get(url).then(function (response) {
+        // console.log(response);
         var respuesta = response.data;
-        me.Empleados = respuesta.Empleados.data;
+        me.Empleados = respuesta.empleados.data;
         me.pagination = respuesta.pagination;
       })["catch"](function (error) {
         console.log(error);
@@ -2372,7 +2373,7 @@ __webpack_require__.r(__webpack_exports__);
         this.msjErrores.push("* El campo apellido no puede estar vacío");
       } else if (this.telefono == '') {
         this.msjErrores.push("* El campo telefono no puede estar vacío o el formato no es valido");
-      } else if (this.cedulo == '') {
+      } else if (this.cedula == '') {
         this.msjErrores.push("* El campo cedulo no puede estar vacío o el formato no es valido");
       } else if (this.direccion == '') {
         this.msjErrores.push("* El campo direccion no puede estar vacío");
@@ -2910,7 +2911,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n     width: 100% !important;\n     position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    /* position: absolute !important; */\n    background-color: #3c29297a !important;\n}\n.msjerror{\n    display: flex;\n    justify-content: center;\n}\n.texterror{\n    color: red;\n    font-weight: bold;\n    font-size: 12px;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n     width: 100% !important;\n     position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    /* position: absolute !important; */\n    background-color: #3c29297a !important;\n}\n.msjerror{\n    display: flex;\n    justify-content: center;\n}\n.texterror{\n    color: red;\n    font-weight: bold;\n    font-size: 12px;\n} \n", ""]);
 
 // exports
 
@@ -4234,7 +4235,11 @@ var render = function() {
                                 }
                               ],
                               staticClass: "form-control",
-                              attrs: { type: "text", placeholder: "Nombre..." },
+                              attrs: {
+                                type: "text",
+                                placeholder: "Nombre...",
+                                required: ""
+                              },
                               domProps: { value: _vm.nombre },
                               on: {
                                 input: function($event) {
@@ -4826,7 +4831,7 @@ var render = function() {
                       _vm._v(" "),
                       _c("div", { staticClass: "modal-body" }, [
                         _c("form", { attrs: { action: "" } }, [
-                          _c("div", { staticClass: "form-group form-inline" }, [
+                          _c("div", { staticClass: "form-group" }, [
                             _c("label", { attrs: { for: "nombre" } }, [
                               _vm._v("Nombres: ")
                             ]),
@@ -4841,7 +4846,11 @@ var render = function() {
                                 }
                               ],
                               staticClass: "form-control",
-                              attrs: { type: "text", placeholder: "Nombre..." },
+                              attrs: {
+                                type: "text",
+                                placeholder: "Nombre...",
+                                required: ""
+                              },
                               domProps: { value: _vm.nombre },
                               on: {
                                 input: function($event) {
@@ -4862,56 +4871,29 @@ var render = function() {
                                 {
                                   name: "model",
                                   rawName: "v-model",
-                                  value: _vm.nombre,
-                                  expression: "nombre"
+                                  value: _vm.apellido,
+                                  expression: "apellido"
                                 }
                               ],
                               staticClass: "form-control",
                               attrs: {
                                 type: "text",
-                                placeholder: "Apellidos..."
+                                placeholder: "Apellidos...",
+                                required: ""
                               },
-                              domProps: { value: _vm.nombre },
+                              domProps: { value: _vm.apellido },
                               on: {
                                 input: function($event) {
                                   if ($event.target.composing) {
                                     return
                                   }
-                                  _vm.nombre = $event.target.value
-                                }
-                              }
-                            })
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "form-group form-inline" }, [
-                            _c("label", { attrs: { for: "nombre" } }, [
-                              _vm._v("Nombres: ")
-                            ]),
-                            _vm._v(" "),
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.nombre,
-                                  expression: "nombre"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              attrs: { type: "text", placeholder: "Nombre..." },
-                              domProps: { value: _vm.nombre },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.nombre = $event.target.value
+                                  _vm.apellido = $event.target.value
                                 }
                               }
                             }),
                             _vm._v(" "),
-                            _c("label", { attrs: { for: "nombre" } }, [
-                              _vm._v("Apellidos: ")
+                            _c("label", { attrs: { for: "telefono" } }, [
+                              _vm._v("Teléfono: ")
                             ]),
                             _vm._v(" "),
                             _c("input", {
@@ -4919,22 +4901,81 @@ var render = function() {
                                 {
                                   name: "model",
                                   rawName: "v-model",
-                                  value: _vm.nombre,
-                                  expression: "nombre"
+                                  value: _vm.telefono,
+                                  expression: "telefono"
                                 }
                               ],
                               staticClass: "form-control",
                               attrs: {
                                 type: "text",
-                                placeholder: "Apellidos..."
+                                placeholder: "8123-4567",
+                                pattern: "[0-9]{4}-[0-9]{4}",
+                                required: ""
                               },
-                              domProps: { value: _vm.nombre },
+                              domProps: { value: _vm.telefono },
                               on: {
                                 input: function($event) {
                                   if ($event.target.composing) {
                                     return
                                   }
-                                  _vm.nombre = $event.target.value
+                                  _vm.telefono = $event.target.value
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("label", { attrs: { for: "cedula" } }, [
+                              _vm._v("Cédula: ")
+                            ]),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.cedula,
+                                  expression: "cedula"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: {
+                                type: "text",
+                                placeholder: "000-000000-0000X",
+                                pattern: "[0-9]{3}-[0-9]{6}-[0-9]{4}[A-Z]{1}",
+                                required: ""
+                              },
+                              domProps: { value: _vm.cedula },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.cedula = $event.target.value
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("label", { attrs: { for: "direccion" } }, [
+                              _vm._v("Dirección: ")
+                            ]),
+                            _vm._v(" "),
+                            _c("textarea", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.direccion,
+                                  expression: "direccion"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: { required: "" },
+                              domProps: { value: _vm.direccion },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.direccion = $event.target.value
                                 }
                               }
                             })
@@ -5062,7 +5103,7 @@ var render = function() {
                     },
                     [
                       _c("option", { attrs: { value: "Nombre" } }, [
-                        _vm._v("Empleado")
+                        _vm._v("Nombre")
                       ]),
                       _vm._v(" "),
                       _c("option", { attrs: { value: "Apellido" } }, [
@@ -5215,90 +5256,106 @@ var render = function() {
                     _c(
                       "tbody",
                       _vm._l(_vm.Empleados, function(empleado) {
-                        return _c("tr", { key: empleado.id }, [
-                          _c(
-                            "td",
-                            [
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "boton boton-edit",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.abrirModal(
-                                        "empleado",
-                                        "actualizar",
-                                        empleado
-                                      )
+                        return _c(
+                          "tr",
+                          {
+                            key: empleado.id,
+                            style:
+                              empleado.Estado == "Activo" ? "" : "color:red"
+                          },
+                          [
+                            _c(
+                              "td",
+                              [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "boton boton-edit",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.abrirModal(
+                                          "empleado",
+                                          "actualizar",
+                                          empleado
+                                        )
+                                      }
                                     }
-                                  }
-                                },
-                                [_c("i", { staticClass: "fa fa-pencil" })]
-                              ),
-                              _vm._v(" "),
-                              _vm.Empleado.Estado == "Activo"
-                                ? [
-                                    _c(
-                                      "button",
-                                      {
-                                        staticClass: "boton boton-eliminar",
-                                        on: {
-                                          click: function($event) {
-                                            return _vm.desactivarEmpleado(
-                                              empleado.id
-                                            )
+                                  },
+                                  [_c("i", { staticClass: "fa fa-pencil" })]
+                                ),
+                                _vm._v(" "),
+                                empleado.Estado == "Activo"
+                                  ? [
+                                      _c(
+                                        "button",
+                                        {
+                                          staticClass: "boton boton-eliminar",
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.desactivarEmpleado(
+                                                empleado.id
+                                              )
+                                            }
                                           }
-                                        }
-                                      },
-                                      [_c("i", { staticClass: "fa fa-trash" })]
-                                    )
-                                  ]
-                                : [
-                                    _c(
-                                      "button",
-                                      {
-                                        staticClass: "boton boton-activar",
-                                        on: {
-                                          click: function($event) {
-                                            return _vm.activarEmpleado(
-                                              empleado.id
-                                            )
+                                        },
+                                        [
+                                          _c("i", {
+                                            staticClass: "fa fa-trash"
+                                          })
+                                        ]
+                                      )
+                                    ]
+                                  : [
+                                      _c(
+                                        "button",
+                                        {
+                                          staticClass: "boton boton-activar",
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.activarEmpleado(
+                                                empleado.id
+                                              )
+                                            }
                                           }
-                                        }
-                                      },
-                                      [
-                                        _c("i", {
-                                          staticClass: "fa fa-check-circle"
-                                        })
-                                      ]
-                                    )
-                                  ]
-                            ],
-                            2
-                          ),
-                          _vm._v(" "),
-                          _c("td", {
-                            domProps: { textContent: _vm._s(empleado.Nombre) }
-                          }),
-                          _vm._v(" "),
-                          _c("td", {
-                            domProps: { textContent: _vm._s(empleado.Apellido) }
-                          }),
-                          _vm._v(" "),
-                          _c("td", {
-                            domProps: { textContent: _vm._s(empleado.Telefono) }
-                          }),
-                          _vm._v(" "),
-                          _c("td", {
-                            domProps: {
-                              textContent: _vm._s(empleado.Direccion)
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("td", {
-                            domProps: { textContent: _vm._s(empleado.Estado) }
-                          })
-                        ])
+                                        },
+                                        [
+                                          _c("i", {
+                                            staticClass: "fa fa-check-circle"
+                                          })
+                                        ]
+                                      )
+                                    ]
+                              ],
+                              2
+                            ),
+                            _vm._v(" "),
+                            _c("td", {
+                              domProps: { textContent: _vm._s(empleado.Nombre) }
+                            }),
+                            _vm._v(" "),
+                            _c("td", {
+                              domProps: {
+                                textContent: _vm._s(empleado.Apellido)
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("td", {
+                              domProps: {
+                                textContent: _vm._s(empleado.Telefono)
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("td", {
+                              domProps: {
+                                textContent: _vm._s(empleado.Direccion)
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("td", {
+                              domProps: { textContent: _vm._s(empleado.Cedula) }
+                            })
+                          ]
+                        )
                       }),
                       0
                     )
@@ -5423,11 +5480,11 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Apellidos")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Telefóno")]),
+        _c("th", [_vm._v("Teléfono")]),
         _vm._v(" "),
         _c("th", [_vm._v("Dirección")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Estado")])
+        _c("th", [_vm._v("Cédula")])
       ])
     ])
   }
@@ -5550,7 +5607,11 @@ var render = function() {
                                 }
                               ],
                               staticClass: "form-control",
-                              attrs: { type: "text", placeholder: "Nombre..." },
+                              attrs: {
+                                type: "text",
+                                placeholder: "Nombre...",
+                                required: ""
+                              },
                               domProps: { value: _vm.nombre },
                               on: {
                                 input: function($event) {
@@ -5580,6 +5641,7 @@ var render = function() {
                                   }
                                 ],
                                 staticClass: "form-control",
+                                attrs: { required: "" },
                                 on: {
                                   change: function($event) {
                                     var $$selectedVal = Array.prototype.filter

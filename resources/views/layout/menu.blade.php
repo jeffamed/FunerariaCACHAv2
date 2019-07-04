@@ -21,7 +21,7 @@
     </div>
     <a class="bvmenu__item" href="#ubicacion" id="btnUbicacion" aria-expanded="false" aria-controls="ubicacion" data-toggle="collapse">
         <i class="fa fa-map hidden-md-down ocultar-elemento"></i>
-        Ubicacion
+        Ubicación
         <i id="flecha" class="fa fa-angle-right pull-right"></i>
     </a>
         <div class="collapse" id="ubicacion">
@@ -32,7 +32,7 @@
             </ul>
         </div>
     <a class="bvmenu__item" href="#facturacion" id="btnfacturacion" aria-expanded="false" aria-controls="facturacion" data-toggle="collapse">
-        <i class="fa fa-book hidden-md-down ocultar-elemento"></i>
+        <i class="fa fa-users hidden-md-down ocultar-elemento"></i>
         Usuarios
         <i id="flecha1" class="fa fa-angle-right pull-right"></i>
     </a>
@@ -44,7 +44,7 @@
         </ul>
     </div>
     <a class="bvmenu__item" href="#" @click="menu=10">
-        <i class="fa fa-users hidden-md-down ocultar-elemento"></i>
+        <i class="fa fa-user hidden-md-down ocultar-elemento"></i>
         Empleados
     </a>
     <a  class="bvmenu__item" href="#" @click="menu=11">

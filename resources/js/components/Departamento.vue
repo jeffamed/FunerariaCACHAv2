@@ -20,7 +20,7 @@
                                 <form action="">
                                     <div class="form-group">
                                         <label for="nombre">Nombre: </label>
-                                        <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre">
+                                        <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre" required>
                                         <!-- <small class="form-text text-muted">* Ingrese un departamento ejm.: Managua</small> -->
                                     </div>
                                     <div v-show="errorDepartamento" class="form-group msjerror">

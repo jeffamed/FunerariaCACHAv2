@@ -20,11 +20,11 @@
                                 <form action="">
                                     <div class="form-group">
                                         <label for="nombre">Nombre: </label>
-                                        <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre">
+                                        <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre" required>
                                     </div>
                                     <div class="form-group">
                                          <label for="nombre">Departamento: </label>
-                                         <select class="form-control" v-model="idDepartamento">
+                                         <select class="form-control" v-model="idDepartamento" required>
                                             <option value="0" disabled>Seleccione...</option>
                                             <option v-for="departamento in infoDepartamento" :value="departamento.id" :key="departamento.id" v-text="departamento.Nombre"></option>
                                         </select>

@@ -18,17 +18,17 @@
                             </div>
                             <div class="modal-body">
                                 <form action="">
-                                    <div class="form-group form-inline">
+                                    <div class="form-group">
                                         <label for="nombre">Nombres: </label>
-                                        <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre">
+                                        <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre" required>
                                         <label for="apellido">Apellidos: </label>
-                                        <input type="text" class="form-control" placeholder="Apellidos..." v-model="apellido">
-                                    </div>
-                                    <div class="form-group form-inline">
-                                        <label for="nombre">Nombres: </label>
-                                        <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre">
-                                        <label for="nombre">Apellidos: </label>
-                                        <input type="text" class="form-control" placeholder="Apellidos..." v-model="nombre">
+                                        <input type="text" class="form-control" placeholder="Apellidos..." v-model="apellido" required>
+                                        <label for="telefono">Teléfono: </label>
+                                        <input type="text" class="form-control" placeholder="8123-4567" pattern="[0-9]{4}-[0-9]{4}" v-model="telefono" required>
+                                        <label for="cedula">Cédula: </label>
+                                        <input type="text" class="form-control" placeholder="000-000000-0000X" pattern="[0-9]{3}-[0-9]{6}-[0-9]{4}[A-Z]{1}" v-model="cedula" required>
+                                        <label for="direccion">Dirección: </label>
+                                        <textarea class="form-control" v-model="direccion" required></textarea>
                                     </div>
                                     <div v-show="errorEmpleado" class="form-group msjerror">
                                         <div class="text-center texterror" v-for="error in msjErrores" :key="error" v-text="error">
@@ -79,16 +79,16 @@
                                 <th>Opciones</th>
                                 <th>Nombres</th>
                                 <th>Apellidos</th>
-                                <th>Telefóno</th>
+                                <th>Teléfono</th>
                                 <th>Dirección</th>
-                                <th>Estado</th>
+                                <th>Cédula</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="empleado in Empleados" :key="empleado.id">
+                            <tr v-for="empleado in Empleados" :key="empleado.id" :style="empleado.Estado == 'Activo' ? '':'color:red'">
                                 <td>
                                     <button class="boton boton-edit" @click="abrirModal('empleado','actualizar', empleado)"><i class="fa fa-pencil"></i></button>
-                                    <template v-if="Empleado.Estado == 'Activo'">
+                                    <template v-if="empleado.Estado == 'Activo'">
                                         <button class="boton boton-eliminar" @click="desactivarEmpleado(empleado.id)"><i class="fa fa-trash"></i></button>
                                     </template>
                                     <template v-else>
@@ -99,7 +99,7 @@
                                 <td v-text="empleado.Apellido"></td>
                                 <td v-text="empleado.Telefono"></td>
                                 <td v-text="empleado.Direccion"></td>
-                                <td v-text="empleado.Estado"></td>
+                                <td v-text="empleado.Cedula"></td>
                             </tr>
                            
                         </tbody>
@@ -187,8 +187,9 @@
                 let me = this;
                 var url= '/empleado?page=' + pagina + '&buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url).then(function(response) {
+                    // console.log(response);
                     var respuesta = response.data;
-                    me.Empleados = respuesta.Empleados.data;
+                    me.Empleados = respuesta.empleados.data;
                     me.pagination= respuesta.pagination;
                 })
                 .catch(function (error) {
@@ -253,7 +254,7 @@
                     this.msjErrores.push("* El campo apellido no puede estar vacío");
                 }else if(this.telefono == ''){
                     this.msjErrores.push("* El campo telefono no puede estar vacío o el formato no es valido");
-                }else if(this.cedulo == ''){
+                }else if(this.cedula == ''){
                     this.msjErrores.push("* El campo cedulo no puede estar vacío o el formato no es valido");
                 }else if(this.direccion == ''){
                     this.msjErrores.push("* El campo direccion no puede estar vacío");
@@ -380,7 +381,7 @@
         mounted() {
             this.mostrarEmpleado(1,this.buscar,this.criterio);
         }
-    }
+    } 
 </script>
 <style>
     .modal-content{
@@ -401,6 +402,6 @@
         color: red;
         font-weight: bold;
         font-size: 12px;
-    }
+    } 
 </style>
 
