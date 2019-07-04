@@ -29,6 +29,7 @@ Route::post('/municipio/registrar','MunicipiosController@store');
 Route::put('/municipio/actualizar','MunicipiosController@update');
 Route::put('/municipio/desactivar','MunicipiosController@desactivar');
 Route::put('/municipio/activar','MunicipiosController@activar');
+Route::get('/municipio/seleccionarMunicipio','MunicipiosController@seleccionar');
 
 Route::get('/empleado','EmpleadosController@index');
 Route::post('/empleado/registrar','EmpleadosController@store');
@@ -36,3 +37,9 @@ Route::put('/empleado/actualizar','EmpleadosController@update');
 Route::put('/empleado/desactivar','EmpleadosController@desactivar');
 Route::put('/empleado/activar','EmpleadosController@activar');
 Route::get('/empleado/seleccionarEmpleado','EmpleadosController@seleccionar');
+
+Route::get('/zona','ZonasController@index');
+Route::post('/zona/registrar','ZonasController@store');
+Route::put('/zona/actualizar','ZonasController@update');
+Route::put('/zona/desactivar','ZonasController@desactivar');
+Route::put('/zona/activar','ZonasController@activar');

@@ -44,6 +44,13 @@ class MunicipiosController extends Controller
         ];
     }
 
+    public function seleccionar()
+    {
+        $municipios = Municipio::where('Estado','=','Activo')->select('id','Nombre')
+                        ->orderBy('nombre','desc')->get();
+        return ['municipios'=>$municipios];
+    }
+
       /**
      * Store a newly created resource in storage.
      *

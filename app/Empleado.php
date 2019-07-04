@@ -15,4 +15,9 @@ class Empleado extends Model
         'Cedulo',
         'Estado'
     ];
+
+    public function zona()
+    {
+        return $this->belongsTo('App\Zona');
+    }
 }

@@ -14,19 +14,19 @@
         <h3 class="pt-5">Menu 3</h3>
     </template>
     <template v-if="menu==4">
-        <departamento></departamento>
+        <h3 class="pt-5">Menu 4</h3>       
     </template>
     <template v-if="menu==5">
-        <municipio></municipio>
+        <zona></zona>
     </template>
     <template v-if="menu==6">
-        <h3 class="pt-5">Menu 6</h3>
+        <departamento></departamento>
     </template>   
     <template v-if="menu==7">
-        <empleado></empleado>
+        <municipio></municipio>
     </template>
     <template v-if="menu==8">
-        <h3 class="pt-5">Menu 8</h3>
+        <empleado></empleado>
     </template>
     <template v-if="menu==9">
         <h3 class="pt-5">Menu 9</h3>

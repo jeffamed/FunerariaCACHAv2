@@ -16,8 +16,9 @@ class CreateZonasTable extends Migration
         Schema::create('zonas', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('idColector');
+            $table->integer('idMunicipio');
             $table->string('Nombre', 45);
-            $table->string('Descripcion', 250)->nullable();
+            // $table->string('Descripcion', 250)->nullable();
             $table->string('Estado', 10)->default('Activo');
             $table->timestamps();
         });

@@ -25,6 +25,7 @@ window.Vue = require('vue');
 Vue.component('departamento', require('./components/Departamento.vue').default);
 Vue.component('municipio', require('./components/Municipio.vue').default);
 Vue.component('empleado', require('./components/Empleado.vue').default);
+Vue.component('zona', require('./components/Zona.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -17,4 +17,8 @@ class Municipio extends Model
     {
         return $this->belongsTo('App\Departamento');
     }
+    public function zonas()
+    {
+        return $this->hasMany('App\Zonas');
+    }
 }
