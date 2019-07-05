@@ -71,15 +71,15 @@ class EmpleadosController extends Controller
      */
     public function update(Request $request)
     {
-         // if (!$request->ajax()) return redirect('/');
-         $empleado = Empleado::findOrFail($request->id);
-         $empleado->Nombre = $request->Nombre;
-         $empleado->Apellido = $request->Apellido;
-         $empleado->Direccion = $request->Direccion;
-         $empleado->Telefono = $request->Telefono;
-         $empleado->Cedula = $request->Cedula;
-         $empleado->Estado = 'Activo';
-         $empleado->save();
+        // if (!$request->ajax()) return redirect('/');
+        $empleado = Empleado::findOrFail($request->id);
+        $empleado->Nombre = $request->Nombre;
+        $empleado->Apellido = $request->Apellido;
+        $empleado->Direccion = $request->Direccion;
+        $empleado->Telefono = $request->Telefono;
+        $empleado->Cedula = $request->Cedula;
+        $empleado->Estado = 'Activo';
+        $empleado->save();
     }
 
     public function desactivar(Request $request)

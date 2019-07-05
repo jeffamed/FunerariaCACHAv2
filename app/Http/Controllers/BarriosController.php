@@ -25,7 +25,7 @@ class BarriosController extends Controller
                                     ->paginate(9);
         }else{
             $barrios = Barrio::join('zonas','barrios.idZona','=','zonas.id')
-                                    ->select('barrios.Nombre','zonas.Nombre as Zona')
+                                    ->select('barrios.id','barrios.Nombre','zonas.Nombre as Zona','zonas.id as idZona')
                                     ->where('barrios.'.$criterio,'like','%'.$buscar.'%')
                                     ->orderBy('barrios.id','desc')
                                     ->paginate(9);
@@ -46,8 +46,7 @@ class BarriosController extends Controller
 
     public function seleccionar()
     {
-        $barrios = Barrio::select('id','Nombre')
-                        ->orderBy('nombre','desc')->get();
+        $barrios = Barrio::select('id','Nombre')->orderBy('nombre','desc')->get();
         return ['barrios'=>$barrios];
     }
 

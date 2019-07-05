@@ -11,7 +11,7 @@
         <h3 class="pt-5">Menu 2</h3>
     </template>
     <template v-if="menu==3">
-        <h3 class="pt-5">Menu 3</h3>
+        <cliente></cliente>
     </template>
     <template v-if="menu==4">
         <barrio></barrio>     
