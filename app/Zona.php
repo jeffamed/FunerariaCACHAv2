@@ -22,4 +22,7 @@ class Zona extends Model
     {
         return $this->belongsTo('App\Municipios');
     }
+    public function barrios(){
+        return $this->hasMany('App\Barrio');
+    }
 }

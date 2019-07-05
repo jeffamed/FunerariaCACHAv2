@@ -43,3 +43,11 @@ Route::post('/zona/registrar','ZonasController@store');
 Route::put('/zona/actualizar','ZonasController@update');
 Route::put('/zona/desactivar','ZonasController@desactivar');
 Route::put('/zona/activar','ZonasController@activar');
+Route::get('/zona/seleccionarZona','ZonasController@seleccionar');
+
+Route::get('/barrio','BarriosController@index');
+Route::post('/barrio/registrar','BarriosController@store');
+Route::put('/barrio/actualizar','BarriosController@update');
+Route::put('/barrio/desactivar','BarriosController@desactivar');
+Route::put('/barrio/activar','BarriosController@activar');
+Route::get('/barrio/seleccionarBarrio','BarriosController@seleccionar');

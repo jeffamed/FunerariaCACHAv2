@@ -22,13 +22,13 @@ class MunicipiosController extends Controller
             $municipios = Municipio::join('departamentos','municipios.idDepartamento','=','departamentos.id')
                                     ->select('municipios.id','municipios.Nombre','departamentos.Nombre as Departamento','departamentos.id as idDepartamento','municipios.Estado')
                                     ->orderBy('municipios.id','desc')
-                                    ->paginate(5);
+                                    ->paginate(8);
         }else{
             $municipios = Municipio::join('departamentos','municipios.idDepartamento','=','departamentos.id')
                                     ->select('municipios.Nombre','departamentos.Nombre as Departamento','municipios.Estado')
                                     ->where('municipios.'.$criterio,'like','%'.$buscar.'%')
                                     ->orderBy('municipios.id','desc')
-                                    ->paginate(5);
+                                    ->paginate(8);
         }
 
         return[

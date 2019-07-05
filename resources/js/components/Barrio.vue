@@ -3,9 +3,9 @@
         <div class="section-contenido mt-4 ml-2 mr-4 mb-4" id="contenido">
         <!-- ENCABEZADO -->
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
-                <h5 class="titulo">Zonas</h5>
+                <h5 class="titulo">Barrios</h5>
             <!-- Boton nuevo -->
-                <button class="btn-new"  @click="abrirModal('zona','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
+                <button class="btn-new"  @click="abrirModal('barrio','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- Abrir Modal-->
                 <div class="modal fade" id="btn-new" tabindex="-1" :class="{'mostrar' : modal}" role="dialog" aria-labelledby="btn-new" aria-hidden="true">
                     <div class="modal-dialog">
@@ -23,20 +23,13 @@
                                         <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre" required>
                                     </div>
                                     <div class="form-group">
-                                         <label for="empleado">Empleado: </label>
-                                         <select class="form-control" v-model="idColector" required>
+                                         <label for="nombre">Zona: </label>
+                                         <select class="form-control" v-model="idZona" required>
                                             <option value="0" disabled>Seleccione...</option>
-                                            <option v-for="empleado in infoEmpleado" :value="empleado.id" :key="empleado.id" v-text="empleado.Nombre"></option>
+                                            <option v-for="zona in infoZona" :value="zona.id" :key="zona.id" v-text="zona.Nombre"></option>
                                         </select>
                                     </div>
-                                    <div class="form-group">
-                                         <label for="municipio">Municipio: </label>
-                                         <select class="form-control" v-model="idMunicipio" required>
-                                            <option value="0" disabled>Seleccione...</option>
-                                            <option v-for="municipio in infoMunicipio" :value="municipio.id" :key="municipio.id" v-text="municipio.Nombre"></option>
-                                        </select>
-                                    </div>
-                                    <div v-show="errorZona" class="form-group msjerror">
+                                    <div v-show="errorBarrio" class="form-group msjerror">
                                         <div class="text-center texterror" v-for="error in msjErrores" :key="error" v-text="error">
 
                                         </div>
@@ -44,8 +37,8 @@
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button class="btn btn-success" v-if="btnFuncion == 1" @click="registrarZona()"><i class="fa fa-check"></i> Guardar</button>
-                                <button class="btn btn-success" v-if="btnFuncion == 2" @click="actualizarZona()"><i class="fa fa-check"></i> Actualizar</button>
+                                <button class="btn btn-success" v-if="btnFuncion == 1" @click="registrarBarrio()"><i class="fa fa-check"></i> Guardar</button>
+                                <button class="btn btn-success" v-if="btnFuncion == 2" @click="actualizarBarrio()"><i class="fa fa-check"></i> Actualizar</button>
                                 <button class="btn btn-danger" @click="cerrarModal()"><i class="fa fa-remove"></i> Cerrar</button>
                             </div>    
                         </div>
@@ -56,10 +49,10 @@
                 <div class="buscador d-flex ml-auto hidden-md-down">
                     <label for="" class="etiqueta">Buscar por: </label>
                     <select name="filtro" id="" class="option-search" v-model="criterio">
-                        <option value="Nombre">Zona</option>
+                        <option value="Nombre">Barrio</option>
                         <!-- <option value="descripcion">Descripción</option> -->
                     </select>
-                    <input type="text" v-model="buscar" @keyup="mostrarZona(1,buscar,criterio)" class="buscar" placeholder="Buscar...">
+                    <input type="text" v-model="buscar" @keyup="mostrarBarrio(1,buscar,criterio)" class="buscar" placeholder="Buscar...">
                     <div class="icon-buscar">
                         <i class="fa fa-search hidden-md-down"></i>
                     </div> 
@@ -73,10 +66,10 @@
                     <div class="form-inline mt-2 mb-2">
                         <label for="buscar" class="hidden-lg-up ml-1">Buscar por: </label>
                         <select id="select-opciones" class="custom-select hidden-lg-up mb-1 mr-1 w-25" v-model="criterio">
-                            <option value="Nombre">Zona</option>
+                            <option value="Nombre">Barrio</option>
                             <!-- <option value="descripcion">Descripción</option> -->
                         </select>
-                        <input type="text" id="txtbuscar" v-model="buscar" @keypress.enter="mostrarZona(1,buscar,criterio)" class="form-control hidden-lg-up mb-1 w-50" placeholder="Buscar...">
+                        <input type="text" id="txtbuscar" v-model="buscar" @keypress.enter="mostrarBarrio(1,buscar,criterio)" class="form-control hidden-lg-up mb-1 w-50" placeholder="Buscar...">
                     </div>
                     <!-- fin del buscador segundo -->
                     <!-- TABLA -->
@@ -84,27 +77,23 @@
                         <thead class="enc-tabla">
                             <tr>
                                 <th>Opciones</th>
-                                <th>Zonas</th>
-                                <th>Empleado</th>
-                                <th>Municipio</th>
-                                <th>Estados</th>
+                                <th>Barrios</th>
+                                <th>Zona</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="zona in Zonas" :key="zona.id" :style="zona.Estado=='Activo'?'':'color:red'">
+                            <tr v-for="barrio in Barrios" :key="barrio.id">
                                 <td>
-                                    <button class="boton boton-edit" @click="abrirModal('zona','actualizar', zona)"><i class="fa fa-pencil"></i></button>
-                                    <template v-if="zona.Estado == 'Activo'">
-                                        <button class="boton boton-eliminar" @click="desactivarZona(zona.id)"><i class="fa fa-trash"></i></button>
+                                    <button class="boton boton-edit" @click="abrirModal('barrio','actualizar', barrio)"><i class="fa fa-pencil"></i></button>
+                                    <!-- <template v-if="barrio.Estado == 'Activo'">
+                                        <button class="boton boton-eliminar" @click="desactivarBarrio(barrio.id)"><i class="fa fa-trash"></i></button>
                                     </template>
                                     <template v-else>
-                                        <button class="boton boton-activar" @click="activarZona(zona.id)"><i class="fa fa-check-circle"></i></button>
-                                    </template>
+                                        <button class="boton boton-activar" @click="activarBarrio(barrio.id)"><i class="fa fa-check-circle"></i></button>
+                                    </template> -->
                                 </td>
-                                <td v-text="zona.Nombre"></td>
-                                <td v-text="zona.Empleado"></td>
-                                <td v-text="zona.Municipio"></td>
-                                <td v-text="zona.Estado"></td>
+                                <td v-text="barrio.Nombre"></td>
+                                <td v-text="barrio.Zona"></td>
                             </tr>
                            
                         </tbody>
@@ -134,17 +123,15 @@
     export default {
         data(){
             return {
-                idZona: 0,
+                idBarrio: 0,
                 nombre: '',
-                idColector: 0,
-                idMunicipio: 0,
-                infoMunicipio: [],
-                Zonas: [],
-                infoEmpleado: [],
+                idZona: 0,
+                Barrios: [],
+                infoZona: [],
                 modal: 0,
                 tituloModal: '',
                 btnFuncion: 0,
-                errorZona: 0,
+                errorBarrio: 0,
                 msjErrores: [],
                 pagination: {
                     'total': 0,    
@@ -188,104 +175,90 @@
             }
         },
         methods:{
-            mostrarZona(pagina,buscar,criterio){
+            mostrarBarrio(pagina,buscar,criterio){
                 let me = this;
-                var url= '/zona?page=' + pagina + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url= '/barrio?page=' + pagina + '&buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url).then(function(response) {
                     var respuesta = response.data;
-                    me.Zonas = respuesta.zonas.data;
+                    me.Barrios = respuesta.barrios.data;
                     me.pagination= respuesta.pagination;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
-            mostrarEmpleado(){
+            mostrarZona(){
                 let me = this;
-                var url= '/empleado/seleccionarEmpleado';
+                var url= '/zona/seleccionarZona';
                 axios.get(url).then(function(response) {
                     // console.log(response);
                     var respuesta = response.data;
-                    me.infoEmpleado = respuesta.empleados;
+                    me.infoZona = respuesta.zonas;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
-            mostrarMunicipio(){
-                let me = this;
-                var url= '/municipio/seleccionarMunicipio';
-                axios.get(url).then(function(response) {
-                    // console.log(response);
-                    var respuesta = response.data;
-                    me.infoMunicipio = respuesta.municipios;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            registrarZona(){
-                if(this.validarFrmZona()){
+            registrarBarrio(){
+                if(this.validarFrmBarrio()){
                     return;
                 }
                 else{
                     let me = this;
-                    axios.post('/zona/registrar', {
+                    axios.post('/barrio/registrar', {
                         'Nombre' : this.nombre, 
-                        'idColector': this.idColector,
-                        'idMunicipio': this.idMunicipio
+                        'idZona': this.idZona
                         }).then(function(response) {
                         me.cerrarModal();
-                        me.mostrarZona(1,'','Nombre');
+                        me.mostrarBarrio(1,'','Nombre');
                         })
                     .catch(function (error) {
                         console.log(error);
                     });
                 }
             },
-            actualizarZona(){
-                if(this.validarFrmZona()){
+            actualizarBarrio(){
+                if(this.validarFrmBarrio()){
                     return;
                 }
                 else{
                     let me = this;
-                    axios.put('/zona/actualizar', {
-                        'id' : this.idZona, 
+                    axios.put('/barrio/actualizar', {
                         'Nombre' : this.nombre, 
-                        'idColector' : this.idColector,
-                        'idMunicipio' : this.idMunicipio
+                        'id' : this.idBarrio, 
+                        'idZona' : this.idZona
                         }).then(function(response) {
                         me.cerrarModal();
-                        me.mostrarZona(1,'','Nombre');
+                        me.mostrarBarrio(1,'','Nombre');
                     })
                     .catch(function (error) {
                         console.log(error);
                     });
                 }
             },
-            validarFrmZona(){
-                this.errorZona=0;
+            validarFrmBarrio(){
+                this.errorBarrio=0;
                 this.msjErrores= [];
 
-                if(this.nombre == '' && this.idColector == 0){
+                if(this.nombre == '' && this.idZona == 0){
                     this.msjErrores.push("* El campo nombre no puede estar vacío");
-                    this.msjErrores.push("* Debe seleccionar una opción en el empleado");
+                    this.msjErrores.push("* Debe seleccionar una opción en el zona");
                 }else if(this.nombre == ''){
                     this.msjErrores.push("* El campo nombre no puede estar vacío");
-                } else if(this.idColector == 0){
-                    this.msjErrores.push("* Debe seleccionar una opción en el empleado");
+                } else if(this.idZona == 0){
+                    this.msjErrores.push("* Debe seleccionar una opción en el zona");
                 }
 
                 if(this.msjErrores.length) 
                 {
-                    this.errorZona= 1;
+                    this.errorBarrio= 1;
                 }
-                return this.errorZona;
+                return this.errorBarrio;
             },
-            activarZona(id){
+            activarBarrio(id){
                 swal({
                     title: '¿Estas seguro?',
-                    text: 'Deseas activar este Zona',
+                    text: 'Deseas activar este Barrio',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -299,8 +272,8 @@
                     }).then((result) => {
                         if (result.value) {
                             let me = this;
-                            axios.put('/zona/activar', {'id' : id}).then(function(response) {
-                                me.mostrarZona(1,'','Nombre');
+                            axios.put('/barrio/activar', {'id' : id}).then(function(response) {
+                                me.mostrarBarrio(1,'','Nombre');
                                 swal(
                                     'Activado',
                                     'El registro fue activado correctamente',
@@ -314,10 +287,10 @@
                         }
                     })
             },
-            desactivarZona(id){
+            desactivarBarrio(id){
                 swal({
                     title: '¿Estas seguro?',
-                    text: 'Deseas desactivar este Zona',
+                    text: 'Deseas desactivar este Barrio',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -331,8 +304,8 @@
                     }).then((result) => {
                         if (result.value) {
                             let me = this;
-                            axios.put('/zona/desactivar', {'id' : id}).then(function(response) {
-                                me.mostrarZona(1,'','Nombre');
+                            axios.put('/barrio/desactivar', {'id' : id}).then(function(response) {
+                                me.mostrarBarrio(1,'','Nombre');
                                 swal(
                                     'Desactivado',
                                     'El registro fue desactivado correctamente',
@@ -350,60 +323,56 @@
             cambiarPagina(pagina,buscar,criterio){
                 let me = this;
                 me.pagination.current_page = pagina;
-                me.mostrarZona(pagina,buscar,criterio);
+                me.mostrarBarrio(pagina,buscar,criterio);
             },
             abrirModal(modelo, accion, data=[]){
                 switch (modelo) {
-                    case "zona":
+                    case "barrio":
                     {
                         switch (accion) {
                             case 'registrar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Registrar Zona';
+                                this.tituloModal = 'Registrar Barrio';
                                 this.nombre = '';
-                                this.idColector = 0;
-                                this.idMunicipio = 0;
+                                this.idZona = 0;
                                 this.btnFuncion = 1;
                                 break;
                             }
                             case 'actualizar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Actualizar Zona';
+                                this.tituloModal = 'Actualizar Barrio';
                                 this.btnFuncion = 2;
-                                this.idZona = data['id'];
+                                this.idBarrio = data['id'];
                                 this.nombre = data['Nombre'];
-                                this.idColector = data['idEmpleado'];
-                                this.idMunicipio = data['idMunicipio'];
+                                this.idZona = data['idZona'];
                                 break;
                             }
                         }
                     }
                 }
 
-                this.mostrarEmpleado();
-                this.mostrarMunicipio();
+                this.mostrarZona();
             },
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
                 this.nombre = '';
-                this.idMunicipio = 0;
                 this.msjErrores = [];
-                this.errorZona = 0;
-                this.idColector = 0;
+                this.errorBarrio = 0;
+                this.idZona = 0;
             },         
         },
         mounted() {
-            this.mostrarZona(1,this.buscar,this.criterio);
+            this.mostrarBarrio(1,this.buscar,this.criterio);
         }
     }
 </script>
 <style>
     .modal-content{
-        width: 100% !important;
-        position: absolute !important;
+         width: 100% !important;
+         position: absolute !important;
      }
     .mostrar{
         display: list-item !important;
