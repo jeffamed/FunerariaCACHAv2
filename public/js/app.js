@@ -6215,7 +6215,7 @@ var render = function() {
                               })
                             ]),
                             _vm._v(" "),
-                            _c("div", { staticClass: "col-12 col-lg-6" }, [
+                            _c("div", { staticClass: "col-6 col-lg-6" }, [
                               _c("label", { attrs: { for: "telefono" } }, [
                                 _vm._v("Teléfono: ")
                               ]),
@@ -6248,7 +6248,7 @@ var render = function() {
                               })
                             ]),
                             _vm._v(" "),
-                            _c("div", { staticClass: "col-12 col-lg-6" }, [
+                            _c("div", { staticClass: "col-6 col-lg-6" }, [
                               _c("label", { attrs: { for: "cedula" } }, [
                                 _vm._v("Cédula: ")
                               ]),

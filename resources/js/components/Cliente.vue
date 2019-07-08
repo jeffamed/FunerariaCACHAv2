@@ -27,11 +27,11 @@
                                                 <label for="apellido">Apellidos: </label>
                                                 <input type="text" class="form-control" placeholder="Apellidos..." v-model="apellido" required>
                                             </div>
-                                            <div class="col-12 col-lg-6">
+                                            <div class="col-6 col-lg-6">
                                                 <label for="telefono">Teléfono: </label>
                                                 <input type="text" class="form-control" placeholder="8123-4567" pattern="[0-9]{4}-[0-9]{4}" v-model="telefono" required>
                                             </div>
-                                            <div class="col-12 col-lg-6">
+                                            <div class="col-6 col-lg-6">
                                                 <label for="cedula">Cédula: </label>
                                                 <input type="text" class="form-control" placeholder="000-000000-0000X" pattern="[0-9]{3}-[0-9]{6}-[0-9]{4}[A-Z]{1}" v-model="cedula" required>
                                             </div>
