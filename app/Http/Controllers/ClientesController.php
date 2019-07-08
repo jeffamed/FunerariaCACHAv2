@@ -77,7 +77,7 @@ class ClientesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         // if (!$request->ajax()) return redirect('/');
         $cliente = Cliente::findOrFail($request->id);

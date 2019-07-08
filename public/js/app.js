@@ -2315,7 +2315,8 @@ __webpack_require__.r(__webpack_exports__);
         'per_page': 0,
         'last_page': 0,
         'from': 0,
-        'to': 0
+        'to': 0,
+        'page': 1
       },
       offset: 3,
       criterio: 'Nombre',
@@ -2414,10 +2415,10 @@ __webpack_require__.r(__webpack_exports__);
           'idBarrio': this.idBarrio,
           'Nombre': this.nombre,
           'Apellido': this.apellido,
-          'Telefono': this.telefono,
+          'Direccion': this.direccion,
           'Estado_Civil': this.estadoCivil,
-          'Cedula': this.cedula,
-          'Direccion': this.direccion
+          'Telefono': this.telefono,
+          'Cedula': this.cedula
         }).then(function (response) {
           me.cerrarModal();
           me.mostrarCliente(1, '', 'Nombre');
@@ -2483,9 +2484,9 @@ __webpack_require__.r(__webpack_exports__);
                   this.idBarrio = data['idBarrio'];
                   this.nombre = data['Nombre'];
                   this.apellido = data['Apellido'];
-                  this.telefono = data['Telefono'];
-                  this.estadoCivil = data['Estado_Civil'], this.cedula = data['Cedula'];
                   this.direccion = data['Direccion'];
+                  this.estadoCivil = data['Estado_Civil'], this.telefono = data['Telefono'];
+                  this.cedula = data['Cedula'];
                   break;
                 }
             }
@@ -2497,11 +2498,14 @@ __webpack_require__.r(__webpack_exports__);
     cerrarModal: function cerrarModal() {
       this.modal = 0;
       this.tituloModal = '';
+      this.idCliente = 0;
+      this.idBarrio = 0;
       this.nombre = '';
       this.apellido = '';
+      this.direccion = '';
+      this.estadoCivil = '';
       this.telefono = '';
       this.cedula = '';
-      this.direccion = '';
       this.msjErrores = [];
       this.errorCliente = 0;
     }
@@ -6726,7 +6730,7 @@ var render = function() {
                             _c(
                               "button",
                               {
-                                staticClass: "boton boton-edit",
+                                staticClass: "boton boton-mirar",
                                 on: {
                                   click: function($event) {
                                     return _vm.abrirModal(

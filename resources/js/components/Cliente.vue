@@ -116,7 +116,7 @@
                             <tr v-for="cliente in Clientes" :key="cliente.id">
                                 <td>
                                     <button class="boton boton-edit" @click="abrirModal('cliente','actualizar', cliente)"><i class="fa fa-pencil"></i></button>
-                                    <button class="boton boton-edit" @click="abrirModal('cliente','actualizar', cliente)"><i class="fa fa-eye"></i></button>
+                                    <button class="boton boton-mirar" @click="abrirModal('cliente','actualizar', cliente)"><i class="fa fa-eye"></i></button>
                                 </td>
                                 <td v-text="cliente.Nombre"></td>
                                 <td v-text="cliente.Apellido"></td>
@@ -175,6 +175,7 @@
                     'last_page': 0,
                     'from': 0,
                     'to': 0,
+                    'page':1,
                 },
                 offset: 3,
                 criterio: 'Nombre',
@@ -274,10 +275,10 @@
                         'idBarrio' : this.idBarrio,
                         'Nombre' : this.nombre,
                         'Apellido' : this.apellido,
-                        'Telefono' : this.telefono,
+                        'Direccion' : this.direccion,
                         'Estado_Civil' : this.estadoCivil,
-                        'Cedula' : this.cedula,
-                        'Direccion' : this.direccion
+                        'Telefono' : this.telefono,
+                        'Cedula' : this.cedula
                         }).then(function(response) {
                         me.cerrarModal();
                         me.mostrarCliente(1,'','Nombre');
@@ -342,10 +343,10 @@
                                 this.idBarrio = data['idBarrio'];
                                 this.nombre = data['Nombre'];
                                 this.apellido = data['Apellido'];
-                                this.telefono = data['Telefono'];
-                                this.estadoCivil = data['Estado_Civil'],
-                                this.cedula = data['Cedula'];
                                 this.direccion = data['Direccion'];
+                                this.estadoCivil = data['Estado_Civil'],
+                                this.telefono = data['Telefono'];
+                                this.cedula = data['Cedula'];
                                 break;
                             }
                         }
@@ -357,11 +358,14 @@
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
+                this.idCliente = 0;
+                this.idBarrio = 0;
                 this.nombre = '';
                 this.apellido= '';
-                this.telefono= '';
-                this.cedula= '';
-                this.direccion= '';
+                this.direccion = '';
+                this.estadoCivil = '';
+                this.telefono = '';
+                this.cedula = '';
                 this.msjErrores = [];
                 this.errorCliente = 0;
             },         
