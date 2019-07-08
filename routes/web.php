@@ -54,3 +54,10 @@ Route::get('/cliente','ClientesController@index');
 Route::post('/cliente/registrar','ClientesController@store');
 Route::put('/cliente/actualizar','ClientesController@update');
 Route::get('/cliente/seleccionarCliente','ClientesController@seleccionar');
+
+Route::get('/proyecto','ProyectosController@index');
+Route::post('/proyecto/registrar','ProyectosController@store');
+Route::put('/proyecto/actualizar','ProyectosController@update');
+Route::put('/proyecto/desactivar','ProyectosController@desactivar');
+Route::put('/proyecto/activar','ProyectosController@activar');
+Route::get('/proyecto/seleccionarProyecto','ProyectosController@seleccionar');

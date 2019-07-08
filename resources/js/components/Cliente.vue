@@ -18,7 +18,8 @@
                             </div>
                             <div class="modal-body">
                                 <form action="">
-                                    <div class="row">
+                                    <!-- Agragar o actualizar cliente -->
+                                    <div class="row" v-if="btnFuncion!=3">
                                             <div class="col-12 col-lg-6">
                                                 <label for="nombre">Nombres: </label>
                                                 <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre" required>
@@ -56,6 +57,38 @@
                                                 <label for="direccion">Dirección: </label>
                                                 <textarea class="form-control" v-model="direccion" required></textarea>
                                             </div>
+                                    </div>
+                                    <!-- Mostrar datos del cliente  -->
+                                    <div v-else>
+                                        <div class="d-flex">
+                                            <b><label for="">Nombre: </label></b>
+                                            <p v-text="nombre"></p>
+                                        </div>
+                                        <div class="d-flex">
+                                            <b><label for="">Apellido: </label></b>
+                                            <p v-text="apellido"></p>
+                                        </div>
+                                        <div class="d-flex">
+                                            <b><label for="">Teléfono: </label></b>
+                                            <p v-text="telefono"></p>
+                                        </div>
+                                        <div class="d-flex">
+                                            <b><label for="">Direccion: </label></b>
+                                            <p v-text="'Barrio'+ nombreBarrio+', '+direccion"></p>
+                                        </div>
+                                        <div class="d-flex">
+                                            <b><label for="">Estado Civil: </label></b>
+                                            <p v-text="estadoCivil"></p>
+                                        </div>
+                                        <div class="d-flex">
+                                            <b><label for="">Cedula: </label></b>
+                                            <p v-text="cedula"></p>
+                                        </div>
+                                        <div class="d-flex">
+                                            <b><label for="">Estado: </label></b>
+                                            <p v-text="estado"></p>
+                                        </div>
+
                                     </div>
                                     <div v-show="errorCliente" class="form-group msjerror">
                                         <div class="text-center texterror" v-for="error in msjErrores" :key="error" v-text="error">
@@ -116,7 +149,7 @@
                             <tr v-for="cliente in Clientes" :key="cliente.id">
                                 <td>
                                     <button class="boton boton-edit" @click="abrirModal('cliente','actualizar', cliente)"><i class="fa fa-pencil"></i></button>
-                                    <button class="boton boton-mirar" @click="abrirModal('cliente','actualizar', cliente)"><i class="fa fa-eye"></i></button>
+                                    <button class="boton boton-mirar" @click="abrirModal('cliente','mostrar', cliente)"><i class="fa fa-eye"></i></button>
                                 </td>
                                 <td v-text="cliente.Nombre"></td>
                                 <td v-text="cliente.Apellido"></td>
@@ -161,6 +194,8 @@
                 cedula: '',
                 direccion: '',
                 estadoCivil: '',
+                nombreBarrio: '',
+                estado: '',
                 infoBarrio: [],
                 Clientes: [],
                 modal: 0,
@@ -347,6 +382,23 @@
                                 this.estadoCivil = data['Estado_Civil'],
                                 this.telefono = data['Telefono'];
                                 this.cedula = data['Cedula'];
+                                break;
+                            }
+                            case 'mostrar':
+                            {
+                                this.modal = 1;
+                                this.tituloModal = 'Información del Cliente';
+                                this.btnFuncion = 3;
+                                // this.idCliente = data['id'];
+                                this.idBarrio = data['idBarrio'];
+                                this.nombre = data['Nombre'];
+                                this.apellido = data['Apellido'];
+                                this.direccion = data['Direccion'];
+                                this.estadoCivil = data['Estado_Civil'],
+                                this.telefono = data['Telefono'];
+                                this.cedula = data['Cedula'];
+                                this.nombreBarrio = data['Barrio'];
+                                this.estado = data['Estado'];
                                 break;
                             }
                         }

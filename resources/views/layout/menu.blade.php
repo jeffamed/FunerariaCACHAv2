@@ -9,14 +9,14 @@
    <a class="bvmenu__item" href="#inicio" id="btnInicio" aria-expanded="false" aria-controls="inicio" data-toggle="collapse">
 	{{-- <a class="bvmenu__item" href="#" id="btnInicio"> --}}
         <i class="fa fa-book hidden-md-down ocultar-elemento"></i>
-        Facturas
+        Catálogo
         <i id="flecha_izq" class="fa fa-angle-right pull-right"></i>
     </a>
     <div class="collapse" id="inicio">
         <ul class="bvmenu__sub">
-            <a class="bvmenu__subitem" href="#" @click="menu=1"><i class="fa fa-circle-o"></i>Opción 1</a>
-            <a class="bvmenu__subitem" href="#" @click="menu=2"><i class="fa fa-circle-o"></i>Opción 2</a>
-            <a class="bvmenu__subitem" href="#" @click="menu=3"><i class="fa fa-circle-o"></i>Cliente</a>            
+            <a class="bvmenu__subitem" href="#" @click="menu=1"><i class="fa fa-circle-o"></i>Clientes</a>            
+            <a class="bvmenu__subitem" href="#" @click="menu=2"><i class="fa fa-circle-o"></i>Servicios</a>
+            <a class="bvmenu__subitem" href="#" @click="menu=3"><i class="fa fa-circle-o"></i>Proyectos</a>
         </ul>
     </div>
     <a class="bvmenu__item" href="#ubicacion" id="btnUbicacion" aria-expanded="false" aria-controls="ubicacion" data-toggle="collapse">
@@ -34,19 +34,16 @@
         </div>
     <a class="bvmenu__item" href="#facturacion" id="btnfacturacion" aria-expanded="false" aria-controls="facturacion" data-toggle="collapse">
         <i class="fa fa-users hidden-md-down ocultar-elemento"></i>
-        Usuarios
+        Acceso
         <i id="flecha1" class="fa fa-angle-right pull-right"></i>
     </a>
         <div class="collapse" id="facturacion">
         <ul class="bvmenu__sub">
-            <a class="bvmenu__subitem" href="#" @click="menu=8"><i class="fa fa-circle-o"></i>Empleado</a>
-            <a class="bvmenu__subitem" href="#" @click="menu=9"><i class="fa fa-circle-o"></i>Usuario</a>
+            <a class="bvmenu__subitem" href="#" @click="menu=8"><i class="fa fa-circle-o"></i>Empleados</a>
+            <a class="bvmenu__subitem" href="#" @click="menu=9"><i class="fa fa-circle-o"></i>Usuarios</a>
         </ul>
     </div>
-    <a class="bvmenu__item" href="#" @click="menu=10">
-        <i class="fa fa-user hidden-md-down ocultar-elemento"></i>
-        Empleados
-    </a>
+
     <a  class="bvmenu__item" href="#" @click="menu=11">
         <i class="fa fa-question hidden-md-down ocultar-elemento"></i> 
         Ayuda 

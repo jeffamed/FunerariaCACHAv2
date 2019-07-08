@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Proyecto;
 
 class ProyectosController extends Controller
 {
@@ -11,19 +12,36 @@ class ProyectosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+         // if (!$request->ajax()) return redirect('/');
+         $buscar = $request->buscar;
+         $criterio = $request->criterio;
+ 
+         if($buscar == ''){
+             $proyectos = Proyecto::orderBy('id','desc')->paginate(8);
+         }else{
+             $proyectos = Proyecto::where($criterio,'like','%'.$buscar.'%')->orderBy('id','desc')->paginate(8);
+         }
+ 
+         return[
+             'pagination' => [
+                 'total'         => $proyectos->total(),
+                 'current_page'  => $proyectos->currentPage(),
+                 'per_page'      => $proyectos->perPage(),
+                 'last_page'     => $proyectos->lastPage(),
+                 'from'          => $proyectos->firstItem(),
+                 'to'            => $proyectos->lastItem(),
+             ],
+             'proyectos'  =>  $proyectos
+         ];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function seleccionar()
     {
-        //
+        $proyectos = Proyecto::where('Estado','=','Activo')->select('id','Nombre')
+                        ->orderBy('nombre','desc')->get();
+        return ['proyectos'=>$proyectos];
     }
 
     /**
@@ -34,31 +52,15 @@ class ProyectosController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // if (!$request->ajax()) return redirect('/');
+        $proyecto = new Proyecto();
+        $proyecto->Nombre = $request->Nombre;
+        $proyecto->Descripcion = $request->Descripcion;
+        $proyecto->Estado = 'Activo';
+        $proyecto->save();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
+   
     /**
      * Update the specified resource in storage.
      *
@@ -66,19 +68,31 @@ class ProyectosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        // if (!$request->ajax()) return redirect('/');
+        $proyecto = Proyecto::findOrFail($request->id);
+        $proyecto->Nombre = $request->Nombre;
+        $proyecto->Descripcion = $request->Descripcion;
+        $proyecto->Estado = 'Activo';
+        $proyecto->save();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function desactivar(Request $request)
     {
-        //
+        // if (!$request->ajax()) return redirect('/');
+        $proyecto = Proyecto::findOrFail($request->id);
+        // $proyecto = Proyecto::findOrFail($id); 
+        $proyecto->Estado = 'Inactivo';
+        $proyecto->save();
+    }
+
+    public function activar(Request $request)
+    {
+        // if (!$request->ajax()) return redirect('/');
+        $proyecto = Proyecto::findOrFail($request->id);
+        // $proyecto = Proyecto::findOrFail($id);
+        $proyecto->Estado = 'Activo';
+        $proyecto->save();
     }
 }

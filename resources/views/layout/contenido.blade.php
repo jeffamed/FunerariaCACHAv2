@@ -5,13 +5,13 @@
         <h3 class="pt-5">Menu 0</h3>
     </template>
     <template v-if="menu==1">
-        <h3 class="pt-5">Menu 1</h3>
+        <cliente></cliente>
     </template>
     <template v-if="menu==2">
-        <h3 class="pt-5">Menu 2</h3>
+        <servicio></servicio>
     </template>
     <template v-if="menu==3">
-        <cliente></cliente>
+        <proyecto></proyecto>
     </template>
     <template v-if="menu==4">
         <barrio></barrio>     

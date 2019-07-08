@@ -38,7 +38,7 @@ class EmpleadosController extends Controller
 
     public function seleccionar()
     {
-        $empleados = Empleado::where('Estado','=','Activo')->select('id','Nombre')
+        $empleados = Empleado::where('Estado','=','Activo')->select('id','Nombre','Apellido')
                         ->orderBy('nombre','desc')->get();
         return ['empleados'=>$empleados];
     }
