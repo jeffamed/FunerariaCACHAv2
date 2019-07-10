@@ -14,7 +14,7 @@ class MunicipiosController extends Controller
      */
     public function index(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $buscar = $request->buscar;
         $criterio = $request->criterio;
 
@@ -44,8 +44,9 @@ class MunicipiosController extends Controller
         ];
     }
 
-    public function seleccionar()
+    public function seleccionar(Request $request)
     {
+        if (!$request->ajax()) return redirect('/');
         $municipios = Municipio::where('Estado','=','Activo')->select('id','Nombre')
                         ->orderBy('nombre','desc')->get();
         return ['municipios'=>$municipios];
@@ -59,7 +60,7 @@ class MunicipiosController extends Controller
      */
     public function store(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $municipio = new Municipio();
         $municipio->Nombre = $request->Nombre;
         $municipio->idDepartamento = $request->idDepartamento;
@@ -76,7 +77,7 @@ class MunicipiosController extends Controller
      */
     public function update(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $municipio = Municipio::findOrFail($request->id);
         $municipio->Nombre = $request->Nombre;
         $municipio->idDepartamento = $request->idDepartamento;
@@ -86,7 +87,7 @@ class MunicipiosController extends Controller
 
     public function desactivar(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $municipio = Municipio::findOrFail($request->id);
         $municipio->Estado = 'Inactivo';
         $municipio->save();
@@ -94,7 +95,7 @@ class MunicipiosController extends Controller
 
     public function activar(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $municipio = Municipio::findOrFail($request->id);
         $municipio->Estado = 'Activo';
         $municipio->save();

@@ -22,28 +22,30 @@
                                     <div class="row" v-if="btnFuncion!=3">
                                             <div class="col-12 col-lg-6">
                                                 <label for="nombre">Nombres: </label>
-                                                <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre" required>
+                                                <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre">
                                             </div>
                                             <div class="col-12 col-lg-6">
                                                 <label for="apellido">Apellidos: </label>
-                                                <input type="text" class="form-control" placeholder="Apellidos..." v-model="apellido" required>
+                                                <input type="text" class="form-control" placeholder="Apellidos..." v-model="apellido">
                                             </div>
                                             <div class="col-6 col-lg-6">
                                                 <label for="telefono">Teléfono: </label>
-                                                <input type="text" class="form-control" placeholder="8123-4567" pattern="[0-9]{4}-[0-9]{4}" v-model="telefono" required>
+                                                <input type="text" class="form-control" placeholder="8123-4567" pattern="[0-9]{4}-[0-9]{4}" v-model="telefono">
                                             </div>
                                             <div class="col-6 col-lg-6">
                                                 <label for="cedula">Cédula: </label>
-                                                <input type="text" class="form-control" placeholder="000-000000-0000X" pattern="[0-9]{3}-[0-9]{6}-[0-9]{4}[A-Z]{1}" v-model="cedula" required>
+                                                <input type="text" class="form-control" placeholder="000-000000-0000X" pattern="[0-9]{3}-[0-9]{6}-[0-9]{4}[A-Z]{1}" v-model="cedula">
                                             </div>
                                             <div class="col-6 col-lg-6">
                                                 <label for="estadocivil">Estado Civil: </label>
                                                 <select class="form-control" v-model="estadoCivil">
                                                     <option value="" disabled>Seleccione...</option>
-                                                    <option value="Soltero">Soltero</option>
-                                                    <option value="Casado">Casado</option>
-                                                    <option value="Viudo">Viudo</option>
-                                                    <option value="Divorciado">Divorciado</option>
+                                                    <option value="Soltero">Soltero(a)</option>
+                                                    <option value="Comprometido">Comprometido(a)</option>
+                                                    <option value="Casado">Casado(a)</option>
+                                                    <option value="Union libre">Unión libre(a)</option>
+                                                    <option value="Viudo">Viudo(a)</option>
+                                                    <option value="Divorciado">Divorciado(a)</option>
                                                 </select>
                                             </div>
                                             <div class="col-6 col-lg-6">
@@ -55,7 +57,7 @@
                                             </div>
                                             <div class="col-lg-12">
                                                 <label for="direccion">Dirección: </label>
-                                                <textarea class="form-control" v-model="direccion" required></textarea>
+                                                <textarea class="form-control" v-model="direccion"></textarea>
                                             </div>
                                     </div>
                                     <!-- Mostrar datos del cliente  -->

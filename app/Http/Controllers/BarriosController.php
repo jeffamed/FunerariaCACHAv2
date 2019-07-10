@@ -14,7 +14,7 @@ class BarriosController extends Controller
      */
     public function index(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $buscar = $request->buscar;
         $criterio = $request->criterio;
 
@@ -22,13 +22,13 @@ class BarriosController extends Controller
             $barrios = Barrio::join('zonas','barrios.idZona','=','zonas.id')
                                     ->select('barrios.id','barrios.Nombre','zonas.Nombre as Zona','zonas.id as idZona')
                                     ->orderBy('barrios.id','desc')
-                                    ->paginate(9);
+                                    ->paginate(8);
         }else{
             $barrios = Barrio::join('zonas','barrios.idZona','=','zonas.id')
                                     ->select('barrios.id','barrios.Nombre','zonas.Nombre as Zona','zonas.id as idZona')
                                     ->where('barrios.'.$criterio,'like','%'.$buscar.'%')
                                     ->orderBy('barrios.id','desc')
-                                    ->paginate(9);
+                                    ->paginate(8);
         }
 
         return[
@@ -44,8 +44,9 @@ class BarriosController extends Controller
         ];
     }
 
-    public function seleccionar()
+    public function seleccionar(Request $request)
     {
+        if (!$request->ajax()) return redirect('/');
         $barrios = Barrio::select('id','Nombre')->orderBy('nombre','desc')->get();
         return ['barrios'=>$barrios];
     }
@@ -58,7 +59,7 @@ class BarriosController extends Controller
      */
     public function store(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $barrio = new Barrio();
         $barrio->Nombre = $request->Nombre;
         $barrio->idZona = $request->idZona;
@@ -74,26 +75,11 @@ class BarriosController extends Controller
      */
     public function update(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $barrio = Barrio::findOrFail($request->id);
         $barrio->Nombre = $request->Nombre;
         $barrio->idZona = $request->idZona;
         $barrio->save();
     }
-    
-    // public function desactivar(Request $request)
-    // {
-    //     // if (!$request->ajax()) return redirect('/');
-    //     $barrio = Barrio::findOrFail($request->id);
-    //     $barrio->Estado = 'Inactivo';
-    //     $barrio->save();
-    // }
 
-    // public function activar(Request $request)
-    // {
-    //     // if (!$request->ajax()) return redirect('/');
-    //     $barrio = Barrio::findOrFail($request->id);
-    //     $barrio->Estado = 'Activo';
-    //     $barrio->save();
-    // }
 }

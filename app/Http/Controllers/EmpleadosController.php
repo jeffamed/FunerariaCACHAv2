@@ -14,6 +14,7 @@ class EmpleadosController extends Controller
      */
     public function index(Request $request)
     {
+        if (!$request->ajax()) return redirect('/');
         $buscar = $request->buscar;
         $criterio = $request->criterio;
 
@@ -36,8 +37,9 @@ class EmpleadosController extends Controller
         ];
     }
 
-    public function seleccionar()
+    public function seleccionar(Request $request)
     {
+        if (!$request->ajax()) return redirect('/');
         $empleados = Empleado::where('Estado','=','Activo')->select('id','Nombre','Apellido')
                         ->orderBy('nombre','desc')->get();
         return ['empleados'=>$empleados];
@@ -51,7 +53,7 @@ class EmpleadosController extends Controller
      */
     public function store(Request $request)
     {
-         // if (!$request->ajax()) return redirect('/');
+         if (!$request->ajax()) return redirect('/');
          $empleado = new Empleado();
          $empleado->Nombre = $request->Nombre;
          $empleado->Apellido = $request->Apellido;
@@ -71,7 +73,7 @@ class EmpleadosController extends Controller
      */
     public function update(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $empleado = Empleado::findOrFail($request->id);
         $empleado->Nombre = $request->Nombre;
         $empleado->Apellido = $request->Apellido;
@@ -84,7 +86,7 @@ class EmpleadosController extends Controller
 
     public function desactivar(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $empleado = Empleado::findOrFail($request->id);
         $empleado->Estado = 'Inactivo';
         $empleado->save();
@@ -92,7 +94,7 @@ class EmpleadosController extends Controller
 
     public function activar(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $empleado = Empleado::findOrFail($request->id);
         $empleado->Estado = 'Activo';
         $empleado->save();

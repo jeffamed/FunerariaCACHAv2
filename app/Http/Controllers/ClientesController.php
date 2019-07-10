@@ -14,6 +14,7 @@ class ClientesController extends Controller
      */
     public function index(Request $request)
     {
+        if (!$request->ajax()) return redirect('/');
         $buscar = $request->buscar;
         $criterio = $request->criterio;
 
@@ -43,8 +44,9 @@ class ClientesController extends Controller
         ];
     }
 
-    public function seleccionar()
+    public function seleccionar(Request $request)
     {
+        if (!$request->ajax()) return redirect('/');
         $clientes = Cliente::select('id','Nombre')->orderBy('nombre','desc')->get();
         return ['clientes'=>$clientes];
     }
@@ -57,7 +59,7 @@ class ClientesController extends Controller
      */
     public function store(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $cliente = new Cliente();
         $cliente->idBarrio = $request->idBarrio;
         $cliente->Nombre = $request->Nombre;
@@ -79,7 +81,7 @@ class ClientesController extends Controller
      */
     public function update(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $cliente = Cliente::findOrFail($request->id);
         $cliente->idBarrio = $request->idBarrio;
         $cliente->Nombre = $request->Nombre;

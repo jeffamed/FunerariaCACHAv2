@@ -4,9 +4,8 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-// require('./bootstrap');
+require('./bootstrap');
 
-window.axios = require('axios');
 window.Vue = require('vue');
 
 // Vue.prototype.$http = windows.axios;

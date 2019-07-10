@@ -20,11 +20,11 @@
                                 <form action="">
                                     <div class="form-group">
                                         <label for="nombre">Nombre: </label>
-                                        <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre" required>
+                                        <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre">
                                     </div>
                                     <div class="form-group">
                                          <label for="nombre">Zona: </label>
-                                         <select class="form-control" v-model="idZona" required>
+                                         <select class="form-control" v-model="idZona">
                                             <option value="0" disabled>Seleccione...</option>
                                             <option v-for="zona in infoZona" :value="zona.id" :key="zona.id" v-text="zona.Nombre"></option>
                                         </select>
@@ -118,7 +118,7 @@
         </div>
     </section>
 </template>
-
+ Alessia Claudine  
 <script>
     export default {
         data(){

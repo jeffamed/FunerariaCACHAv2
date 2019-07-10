@@ -16,32 +16,33 @@ class DepartamentosController extends Controller
     //  SE ESTA UTILIZANDO ELOQUENT
     public function index(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
-        $buscar = $request->buscar;
-        $criterio = $request->criterio;
-
-        if($buscar == ''){
-            $departamentos = Departamento::orderBy('id','desc')->paginate(8);
-        }else{
-            $departamentos = Departamento::where($criterio,'like','%'.$buscar.'%')->orderBy('id','desc')->paginate(8);
-        }
-
-        return[
-            'pagination' => [
-                'total'         => $departamentos->total(),
-                'current_page'  => $departamentos->currentPage(),
-                'per_page'      => $departamentos->perPage(),
-                'last_page'     => $departamentos->lastPage(),
-                'from'          => $departamentos->firstItem(),
-                'to'            => $departamentos->lastItem(),
-            ],
-            'departamentos'  =>  $departamentos
-        ];
+        if (!$request->ajax()) return redirect('/');
+            $buscar = $request->buscar;
+            $criterio = $request->criterio;
+    
+            if($buscar == ''){
+                $departamentos = Departamento::orderBy('id','desc')->paginate(8);
+            }else{
+                $departamentos = Departamento::where($criterio,'like','%'.$buscar.'%')->orderBy('id','desc')->paginate(8);
+            }
+    
+            return[
+                'pagination' => [
+                    'total'         => $departamentos->total(),
+                    'current_page'  => $departamentos->currentPage(),
+                    'per_page'      => $departamentos->perPage(),
+                    'last_page'     => $departamentos->lastPage(),
+                    'from'          => $departamentos->firstItem(),
+                    'to'            => $departamentos->lastItem(),
+                ],
+                'departamentos'  =>  $departamentos
+            ];
     }
 
 
-    public function seleccionar()
+    public function seleccionar(Request $request)
     {
+        if (!$request->ajax()) return redirect('/');
         $departamentos = Departamento::where('Estado','=','Activo')->select('id','Nombre')
                         ->orderBy('nombre','desc')->get();
         return ['departamentos'=>$departamentos];
@@ -54,7 +55,7 @@ class DepartamentosController extends Controller
      */
     public function store(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $departamento = new Departamento();
         $departamento->Nombre = $request->Nombre;
         $departamento->Estado = 'Activo';
@@ -70,7 +71,7 @@ class DepartamentosController extends Controller
      */
     public function update(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $departamento = Departamento::findOrFail($request->id);
         $departamento->Nombre = $request->Nombre;
         $departamento->Estado = 'Activo';
@@ -79,18 +80,16 @@ class DepartamentosController extends Controller
 
     public function desactivar(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $departamento = Departamento::findOrFail($request->id);
-        // $departamento = Departamento::findOrFail($id); 
         $departamento->Estado = 'Inactivo';
         $departamento->save();
     }
 
     public function activar(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $departamento = Departamento::findOrFail($request->id);
-        // $departamento = Departamento::findOrFail($id);
         $departamento->Estado = 'Activo';
         $departamento->save();
     }

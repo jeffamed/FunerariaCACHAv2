@@ -14,6 +14,7 @@ class ZonasController extends Controller
      */
     public function index(Request $request)
     {
+        if (!$request->ajax()) return redirect('/');
         $buscar = $request->buscar;
         $criterio = $request->criterio;
 
@@ -45,8 +46,9 @@ class ZonasController extends Controller
         ];
     }
 
-    public function seleccionar()
+    public function seleccionar(Request $request)
     {
+        if (!$request->ajax()) return redirect('/');
         $zonas = Zona::where('Estado','=','Activo')->select('id','Nombre')
                         ->orderBy('nombre','desc')->get();
         return ['zonas'=>$zonas];
@@ -60,7 +62,7 @@ class ZonasController extends Controller
      */
     public function store(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $zona = new Zona();
         $zona->Nombre = $request->Nombre;
         $zona->idColector = $request->idColector;
@@ -77,7 +79,7 @@ class ZonasController extends Controller
      */
     public function update(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $zona = Zona::findOrFail($request->id);
         $zona->Nombre = $request->Nombre;
         $zona->idColector = $request->idColector;
@@ -88,7 +90,7 @@ class ZonasController extends Controller
 
     public function desactivar(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $zona = Zona::findOrFail($request->id);
         $zona->Estado = 'Inactivo';
         $zona->save();
@@ -96,7 +98,7 @@ class ZonasController extends Controller
 
     public function activar(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $zona = Zona::findOrFail($request->id);
         $zona->Estado = 'Activo';
         $zona->save();

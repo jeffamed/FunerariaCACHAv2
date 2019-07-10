@@ -14,8 +14,14 @@
             <div class="row">
                 <!-- BARRA HORIZONTAL -->
                 <header class="barrah hidden-sm-down col-md-10 d-flex ml-auto">
-                    <div class="col-md-5 barrah__encabezado1">
-                        <h5 class="barrah__titulo">Inicio <i class="fa fa-home"></i></h5>
+                    <div class="col-md-5 barrah__encabezado1" v-if="menu >= 1 && menu <= 3 ">
+                        <h5 class="barrah__titulo">Catálogo <i class="fa fa-book"></i></h5>
+                    </div>
+                    <div class="col-md-5 barrah__encabezado1" v-if="menu >= 4 && menu <=7">
+                        <h5 class="barrah__titulo">Ubicación <i class="fa fa-map"></i></h5>
+                    </div>
+                    <div class="col-md-5 barrah__encabezado1" v-if="menu == 8 || menu == 9">
+                        <h5 class="barrah__titulo">Acceso <i class="fa fa-users"></i></h5>
                     </div>
                     <!-- <div class="boxl"> </div>  -->
                 <!--  <div class="boxr"> </div> -->
