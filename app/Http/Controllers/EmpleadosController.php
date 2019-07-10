@@ -19,9 +19,9 @@ class EmpleadosController extends Controller
         $criterio = $request->criterio;
 
         if($buscar == ''){
-            $empleados = Empleado::orderBy('id','desc')->paginate(8);
+            $empleados = Empleado::orderBy('id','desc')->paginate(7);
         }else{
-            $empleados = Empleado::where($criterio,'like','%'.$buscar.'%')->orderBy('id','desc')->paginate(8);
+            $empleados = Empleado::where($criterio,'like','%'.$buscar.'%')->orderBy('id','desc')->paginate(7);
         }
 
         return[

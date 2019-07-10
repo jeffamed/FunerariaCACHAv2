@@ -23,14 +23,14 @@ class ZonasController extends Controller
                             ->join('municipios','zonas.idMunicipio','=','municipios.id')
                             ->select('zonas.id','zonas.Nombre','empleados.Nombre as Empleado','empleados.id as idEmpleado','municipios.Nombre as Municipio','municipios.id as idMunicipio','zonas.idMunicipio','zonas.Estado')
                             ->orderBy('zonas.id','desc')
-                            ->paginate(8);
+                            ->paginate(7);
         }else{
             $zonas = Zona::join('empleados','zonas.idColector','=','empleados.id')
                             ->join('municipios','zonas.idMunicipio','=','municipios.id')
                             ->select('zonas.id','zonas.Nombre','empleados.Nombre as Empleado','empleados.id as idEmpleado','municipios.Nombre as Municipio','municipios.id as idMunicipio','zonas.idMunicipio','zonas.Estado')
                             ->where('zonas.'.$criterio,'like','%'.$buscar.'%')
                             ->orderBy('zonas.id','desc')
-                            ->paginate(8);
+                            ->paginate(7);
         }
 
         return[

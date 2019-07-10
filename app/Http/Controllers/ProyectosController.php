@@ -19,9 +19,9 @@ class ProyectosController extends Controller
          $criterio = $request->criterio;
  
          if($buscar == ''){
-             $proyectos = Proyecto::orderBy('id','desc')->paginate(8);
+             $proyectos = Proyecto::orderBy('id','desc')->paginate(7);
          }else{
-             $proyectos = Proyecto::where($criterio,'like','%'.$buscar.'%')->orderBy('id','desc')->paginate(8);
+             $proyectos = Proyecto::where($criterio,'like','%'.$buscar.'%')->orderBy('id','desc')->paginate(7);
          }
  
          return[

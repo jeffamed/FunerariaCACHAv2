@@ -61,3 +61,10 @@ Route::put('/proyecto/actualizar','ProyectosController@update');
 Route::put('/proyecto/desactivar','ProyectosController@desactivar');
 Route::put('/proyecto/activar','ProyectosController@activar');
 Route::get('/proyecto/seleccionarProyecto','ProyectosController@seleccionar');
+
+Route::get('/servicio','ServiciosController@index');
+Route::post('/servicio/registrar','ServiciosController@store');
+Route::put('/servicio/actualizar','ServiciosController@update');
+Route::put('/servicio/desactivar','ServiciosController@desactivar');
+Route::put('/servicio/activar','ServiciosController@activar');
+Route::get('/servicio/seleccionarServicio','ServiciosController@seleccionar');
