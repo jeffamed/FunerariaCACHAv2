@@ -68,3 +68,9 @@ Route::put('/servicio/actualizar','ServiciosController@update');
 Route::put('/servicio/desactivar','ServiciosController@desactivar');
 Route::put('/servicio/activar','ServiciosController@activar');
 Route::get('/servicio/seleccionarServicio','ServiciosController@seleccionar');
+
+Route::get('/acceso','AccesoController@index');
+Route::post('/acceso/registrar','AccesoController@store');
+Route::put('/acceso/actualizar','AccesoController@update');
+Route::put('/acceso/desactivar','AccesoController@desactivar');
+Route::put('/acceso/activar','AccesoController@activar');

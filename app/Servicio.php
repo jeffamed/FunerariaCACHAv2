@@ -14,4 +14,9 @@ class Servicio extends Model
         'Monto',
         'Estado'
     ];
+
+    public function proyecto()
+    {
+        return $this->belongsTo('App\Proyecto');
+    }
 }

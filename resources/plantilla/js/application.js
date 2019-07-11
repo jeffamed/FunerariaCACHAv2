@@ -73,7 +73,10 @@ $(function(){
    
    $("#btnfacturacion").click(function(){
       $("#flecha1").toggleClass("fa-angle-down");
-   
+   });
+
+   $("#btnCartera").click(function(){
+      $("#flecha2").toggleClass("fa-angle-down");
    });
    
    // Tabla ordernar tabla

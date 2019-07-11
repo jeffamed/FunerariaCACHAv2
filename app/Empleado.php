@@ -20,4 +20,9 @@ class Empleado extends Model
     {
         return $this->belongsTo('App\Zona');
     }
+
+    public function accesos()
+    {
+        return $this->hasMany('App\Acceso');
+    }
 }

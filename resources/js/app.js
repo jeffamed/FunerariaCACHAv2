@@ -29,6 +29,7 @@ Vue.component('barrio', require('./components/Barrio.vue').default);
 Vue.component('cliente', require('./components/Cliente.vue').default);
 Vue.component('proyecto', require('./components/Proyecto.vue').default);
 Vue.component('servicio', require('./components/Servicio.vue').default);
+Vue.component('acceso', require('./components/Acceso.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

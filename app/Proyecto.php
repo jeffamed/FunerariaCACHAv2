@@ -12,4 +12,9 @@ class Proyecto extends Model
         'Descripcion',
         'Estado'
     ];
+
+    public function servicios()
+    {
+        return $this->hasMany('App\Servicio');
+    }
 }
