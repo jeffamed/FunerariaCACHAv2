@@ -2025,10 +2025,16 @@ __webpack_require__.r(__webpack_exports__);
       this.errorUsuario = 0;
       this.msjErrores = [];
 
-      if (this.usuario == '') {
+      if (this.idEmpleado == 0) {
+        this.msjErrores.push("* Debe seleccionar una opción en el empleado");
+      } else if (this.usuario == '') {
         this.msjErrores.push("* El campo usuario no puede estar vacío");
-      } else if (this.idEmpleado == 0) {
-        this.msjErrores.push("* Debe seleccionar una opción en el Empleado");
+      } else if (this.password.length <= 8) {
+        this.msjErrores.push("* La contraseña debe de tener como mínimo 8 caracteres");
+      } else if (this.password == '') {
+        this.msjErrores.push("* La contraseña no puede estar vacía");
+      } else if (this.rol == '') {
+        this.msjErrores.push("* Debe seleccionar una opción en el rol");
       }
 
       if (this.msjErrores.length) {
@@ -4605,6 +4611,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4613,6 +4640,8 @@ __webpack_require__.r(__webpack_exports__);
       monto: 0,
       descripcion: '',
       idProyecto: 0,
+      nombreProyecto: '',
+      estado: '',
       Servicios: [],
       infoProyecto: [],
       modal: 0,
@@ -4734,8 +4763,11 @@ __webpack_require__.r(__webpack_exports__);
       } else if (this.idProyecto == 0) {
         this.msjErrores.push("* Debe seleccionar una opción en el proyecto");
       } else if (this.descripcion == '') {
-        this.msjErrores.push("* Debe de agregar informacion del servicio");
-      }
+        this.msjErrores.push("* Debe de agregar informacion en el campo descripción");
+      } else if (this.monto < 0) {
+        this.msjErrores.push("* El costo del servicio no puede ser negativo");
+      } // this.monto.replace(/./i,",");
+
 
       if (this.msjErrores.length) {
         this.errorServicio = 1;
@@ -4837,6 +4869,19 @@ __webpack_require__.r(__webpack_exports__);
                   this.idProyecto = data['idProyecto'];
                   this.monto = data['Monto'];
                   this.descripcion = data['Descripcion'];
+                  break;
+                }
+
+              case 'mostrar':
+                {
+                  this.modal = 1;
+                  this.tituloModal = 'Información del Servicio';
+                  this.btnFuncion = 3;
+                  this.nombre = data['Nombre'];
+                  this.nombreProyecto = data['Proyecto'];
+                  this.monto = data['Monto'];
+                  this.descripcion = data['Descripcion'];
+                  this.estado = data['Estado'];
                   break;
                 }
             }
@@ -5415,7 +5460,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n     width: 100% !important;\n     position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    /* position: absolute !important; */\n    background-color: #3c29297a !important;\n}\n.msjerror{\n    display: flex;\n    flex-direction: column;\n    justify-content: left;\n    align-content: left;\n}\n.texterror{\n    color: red;\n    font-weight: bold;\n    font-size: 12px;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n     width: 100% !important;\n     position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    background-color: #3c29297a !important;\n}\n.msjerror{\n    display: flex;\n    flex-direction: column;\n    justify-content: left;\n    align-content: left;\n}\n.texterror{\n    color: red;\n    font-weight: bold;\n    font-size: 12px;\n}\n", ""]);
 
 // exports
 
@@ -25737,7 +25782,7 @@ var render = function() {
                                   _c("p", {
                                     domProps: {
                                       textContent: _vm._s(
-                                        "Barrio" +
+                                        "Barrio " +
                                           _vm.nombreBarrio +
                                           ", " +
                                           _vm.direccion
@@ -29098,171 +29143,236 @@ var render = function() {
                       _vm._v(" "),
                       _c("div", { staticClass: "modal-body" }, [
                         _c("form", { attrs: { action: "" } }, [
-                          _c("div", { staticClass: "form-group" }, [
-                            _c("label", { attrs: { for: "nombre" } }, [
-                              _vm._v("Nombre: ")
-                            ]),
-                            _vm._v(" "),
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.nombre,
-                                  expression: "nombre"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              attrs: { type: "text", placeholder: "Nombre..." },
-                              domProps: { value: _vm.nombre },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.nombre = $event.target.value
-                                }
-                              }
-                            })
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "form-group" }, [
-                            _c("label", { attrs: { for: "nombre" } }, [
-                              _vm._v("Proyecto: ")
-                            ]),
-                            _vm._v(" "),
-                            _c(
-                              "select",
-                              {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.idProyecto,
-                                    expression: "idProyecto"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                attrs: { required: "" },
-                                on: {
-                                  change: function($event) {
-                                    var $$selectedVal = Array.prototype.filter
-                                      .call($event.target.options, function(o) {
-                                        return o.selected
-                                      })
-                                      .map(function(o) {
-                                        var val =
-                                          "_value" in o ? o._value : o.value
-                                        return val
-                                      })
-                                    _vm.idProyecto = $event.target.multiple
-                                      ? $$selectedVal
-                                      : $$selectedVal[0]
-                                  }
-                                }
-                              },
-                              [
-                                _c(
-                                  "option",
-                                  { attrs: { value: "0", disabled: "" } },
-                                  [_vm._v("Seleccione...")]
-                                ),
-                                _vm._v(" "),
-                                _vm._l(_vm.infoProyecto, function(proyecto) {
-                                  return _c("option", {
-                                    key: proyecto.id,
-                                    domProps: {
-                                      value: proyecto.id,
-                                      textContent: _vm._s(proyecto.Nombre)
+                          _vm.btnFuncion != 3
+                            ? _c("div", [
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c("label", { attrs: { for: "nombre" } }, [
+                                    _vm._v("Nombre: ")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.nombre,
+                                        expression: "nombre"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    attrs: {
+                                      type: "text",
+                                      placeholder: "Nombre..."
+                                    },
+                                    domProps: { value: _vm.nombre },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.nombre = $event.target.value
+                                      }
                                     }
                                   })
-                                })
-                              ],
-                              2
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "form-group" }, [
-                            _c("label", { attrs: { for: "Monto" } }, [
-                              _vm._v("Costo (C$): ")
-                            ]),
-                            _vm._v(" "),
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.monto,
-                                  expression: "monto"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              attrs: {
-                                type: "number",
-                                min: "0",
-                                placeholder: "00,00"
-                              },
-                              domProps: { value: _vm.monto },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.monto = $event.target.value
-                                }
-                              }
-                            })
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "form-group" }, [
-                            _c("label", { attrs: { for: "descripcion" } }, [
-                              _vm._v("Descripción: ")
-                            ]),
-                            _vm._v(" "),
-                            _c("textarea", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.descripcion,
-                                  expression: "descripcion"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              domProps: { value: _vm.descripcion },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.descripcion = $event.target.value
-                                }
-                              }
-                            })
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            {
-                              directives: [
-                                {
-                                  name: "show",
-                                  rawName: "v-show",
-                                  value: _vm.errorServicio,
-                                  expression: "errorServicio"
-                                }
-                              ],
-                              staticClass: "form-group msjerror"
-                            },
-                            _vm._l(_vm.msjErrores, function(error) {
-                              return _c("div", {
-                                key: error,
-                                staticClass: "text-center texterror",
-                                domProps: { textContent: _vm._s(error) }
-                              })
-                            }),
-                            0
-                          )
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c("label", { attrs: { for: "nombre" } }, [
+                                    _vm._v("Proyecto: ")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "select",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.idProyecto,
+                                          expression: "idProyecto"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { required: "" },
+                                      on: {
+                                        change: function($event) {
+                                          var $$selectedVal = Array.prototype.filter
+                                            .call(
+                                              $event.target.options,
+                                              function(o) {
+                                                return o.selected
+                                              }
+                                            )
+                                            .map(function(o) {
+                                              var val =
+                                                "_value" in o
+                                                  ? o._value
+                                                  : o.value
+                                              return val
+                                            })
+                                          _vm.idProyecto = $event.target
+                                            .multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "option",
+                                        { attrs: { value: "0", disabled: "" } },
+                                        [_vm._v("Seleccione...")]
+                                      ),
+                                      _vm._v(" "),
+                                      _vm._l(_vm.infoProyecto, function(
+                                        proyecto
+                                      ) {
+                                        return _c("option", {
+                                          key: proyecto.id,
+                                          domProps: {
+                                            value: proyecto.id,
+                                            textContent: _vm._s(proyecto.Nombre)
+                                          }
+                                        })
+                                      })
+                                    ],
+                                    2
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c("label", { attrs: { for: "Monto" } }, [
+                                    _vm._v("Costo (C$): ")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.monto,
+                                        expression: "monto"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    attrs: {
+                                      type: "number",
+                                      min: "0",
+                                      placeholder: "00,00"
+                                    },
+                                    domProps: { value: _vm.monto },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.monto = $event.target.value
+                                      }
+                                    }
+                                  })
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c(
+                                    "label",
+                                    { attrs: { for: "descripcion" } },
+                                    [_vm._v("Descripción: ")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("textarea", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.descripcion,
+                                        expression: "descripcion"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    domProps: { value: _vm.descripcion },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.descripcion = $event.target.value
+                                      }
+                                    }
+                                  })
+                                ]),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "show",
+                                        rawName: "v-show",
+                                        value: _vm.errorServicio,
+                                        expression: "errorServicio"
+                                      }
+                                    ],
+                                    staticClass: "form-group msjerror"
+                                  },
+                                  _vm._l(_vm.msjErrores, function(error) {
+                                    return _c("div", {
+                                      key: error,
+                                      staticClass: "text-center texterror",
+                                      domProps: { textContent: _vm._s(error) }
+                                    })
+                                  }),
+                                  0
+                                )
+                              ])
+                            : _c("div", [
+                                _c("div", { staticClass: "d-flex" }, [
+                                  _vm._m(0),
+                                  _vm._v(" "),
+                                  _c("p", {
+                                    domProps: {
+                                      textContent: _vm._s(_vm.nombre)
+                                    }
+                                  })
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "d-flex" }, [
+                                  _vm._m(1),
+                                  _vm._v(" "),
+                                  _c("p", {
+                                    domProps: {
+                                      textContent: _vm._s(_vm.nombreProyecto)
+                                    }
+                                  })
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "d-flex" }, [
+                                  _vm._m(2),
+                                  _vm._v(" "),
+                                  _c("p", {
+                                    domProps: { textContent: _vm._s(_vm.monto) }
+                                  })
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "d-flex" }, [
+                                  _vm._m(3),
+                                  _vm._v(" "),
+                                  _c("p", {
+                                    domProps: {
+                                      textContent: _vm._s(_vm.descripcion)
+                                    }
+                                  })
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "d-flex" }, [
+                                  _vm._m(4),
+                                  _vm._v(" "),
+                                  _c("p", {
+                                    domProps: {
+                                      textContent: _vm._s(_vm.estado)
+                                    }
+                                  })
+                                ])
+                              ])
                         ])
                       ]),
                       _vm._v(" "),
@@ -29393,7 +29503,7 @@ var render = function() {
                     }
                   }),
                   _vm._v(" "),
-                  _vm._m(0)
+                  _vm._m(5)
                 ]
               )
             ]
@@ -29503,7 +29613,7 @@ var render = function() {
                     attrs: { id: "tabla" }
                   },
                   [
-                    _vm._m(1),
+                    _vm._m(6),
                     _vm._v(" "),
                     _c(
                       "tbody",
@@ -29576,7 +29686,24 @@ var render = function() {
                                           })
                                         ]
                                       )
-                                    ]
+                                    ],
+                                _vm._v(" "),
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "boton boton-mirar",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.abrirModal(
+                                          "servicio",
+                                          "mostrar",
+                                          servicio
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "fa fa-eye" })]
+                                )
                               ],
                               2
                             ),
@@ -29704,6 +29831,40 @@ var render = function() {
   )
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("b", [_c("label", { attrs: { for: "" } }, [_vm._v("Nombre: ")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("b", [
+      _c("label", { attrs: { for: "" } }, [_vm._v("Proyecto: ")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("b", [_c("label", { attrs: { for: "" } }, [_vm._v("Costo: ")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("b", [
+      _c("label", { attrs: { for: "" } }, [_vm._v("Descripción: ")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("b", [_c("label", { attrs: { for: "" } }, [_vm._v("Estado: ")])])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

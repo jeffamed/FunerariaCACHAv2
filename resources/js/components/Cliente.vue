@@ -76,7 +76,7 @@
                                         </div>
                                         <div class="d-flex">
                                             <b><label for="">Direccion: </label></b>
-                                            <p v-text="'Barrio'+ nombreBarrio+', '+direccion"></p>
+                                            <p v-text="'Barrio '+ nombreBarrio+', '+direccion"></p>
                                         </div>
                                         <div class="d-flex">
                                             <b><label for="">Estado Civil: </label></b>

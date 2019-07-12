@@ -18,28 +18,50 @@
                             </div>
                             <div class="modal-body">
                                 <form action="">
-                                    <div class="form-group">
-                                        <label for="nombre">Nombre: </label>
-                                        <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre">
+                                    <div v-if="btnFuncion!=3">
+                                        <div class="form-group">
+                                            <label for="nombre">Nombre: </label>
+                                            <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nombre">Proyecto: </label>
+                                            <select class="form-control" v-model="idProyecto" required>
+                                            <option value="0" disabled>Seleccione...</option>
+                                            <option v-for="proyecto in infoProyecto" :value="proyecto.id" :key="proyecto.id" v-text="proyecto.Nombre"></option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Monto">Costo (C$): </label>
+                                            <input type="number" min="0" v-model="monto" class="form-control" placeholder="00,00">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="descripcion">Descripción: </label>
+                                            <textarea class="form-control" v-model="descripcion"></textarea>
+                                        </div>
+                                        <div v-show="errorServicio" class="form-group msjerror">
+                                            <div class="text-center texterror" v-for="error in msjErrores" :key="error" v-text="error"></div>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="nombre">Proyecto: </label>
-                                        <select class="form-control" v-model="idProyecto" required>
-                                           <option value="0" disabled>Seleccione...</option>
-                                           <option v-for="proyecto in infoProyecto" :value="proyecto.id" :key="proyecto.id" v-text="proyecto.Nombre"></option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="Monto">Costo (C$): </label>
-                                        <input type="number" min="0" v-model="monto" class="form-control" placeholder="00,00">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="descripcion">Descripción: </label>
-                                        <textarea class="form-control" v-model="descripcion"></textarea>
-                                    </div>
-                                    <div v-show="errorServicio" class="form-group msjerror">
-                                        <div class="text-center texterror" v-for="error in msjErrores" :key="error" v-text="error">
-
+                                    <div v-else>
+                                         <div class="d-flex">
+                                            <b><label for="">Nombre: </label></b>
+                                            <p v-text="nombre"></p>
+                                        </div>
+                                        <div class="d-flex">
+                                            <b><label for="">Proyecto: </label></b>
+                                            <p v-text="nombreProyecto"></p>
+                                        </div>
+                                        <div class="d-flex">
+                                            <b><label for="">Costo: </label></b>
+                                            <p v-text="monto"></p>
+                                        </div>
+                                        <div class="d-flex">
+                                            <b><label for="">Descripción: </label></b>
+                                            <p v-text="descripcion"></p>
+                                        </div>
+                                        <div class="d-flex">
+                                            <b><label for="">Estado: </label></b>
+                                            <p v-text="estado"></p>
                                         </div>
                                     </div>
                                 </form>
@@ -87,7 +109,6 @@
                                 <th>Opciones</th>
                                 <th>Servicios</th>
                                 <th>Monto C$</th>
-                                <!-- <th>Descripción</th> -->
                                 <th>Proyecto</th>
                                 <th>Estados</th>
                             </tr>
@@ -102,10 +123,10 @@
                                     <template v-else>
                                         <button class="boton boton-activar" @click="activarServicio(servicio.id)"><i class="fa fa-check-circle"></i></button>
                                     </template>
+                                    <button class="boton boton-mirar" @click="abrirModal('servicio','mostrar', servicio)"><i class="fa fa-eye"></i></button>
                                 </td>
                                 <td v-text="servicio.Nombre"></td>
                                 <td v-text="servicio.Monto"></td>
-                                <!-- <td v-text="servicio.Descripcion"></td> -->
                                 <td v-text="servicio.Proyecto"></td>
                                 <td v-text="servicio.Estado"></td>
                             </tr>
@@ -142,6 +163,8 @@
                 monto: 0,
                 descripcion: '',
                 idProyecto: 0,
+                nombreProyecto: '',
+                estado: '',
                 Servicios: [],
                 infoProyecto: [],
                 modal: 0,
@@ -265,9 +288,12 @@
                 } else if(this.idProyecto == 0){
                     this.msjErrores.push("* Debe seleccionar una opción en el proyecto");
                 }else if(this.descripcion == ''){
-                    this.msjErrores.push("* Debe de agregar informacion del servicio");
+                    this.msjErrores.push("* Debe de agregar informacion en el campo descripción");
+                }else if(this.monto < 0){
+                    this.msjErrores.push("* El costo del servicio no puede ser negativo")
                 }
-
+                    // this.monto.replace(/./i,",");
+                    
                 if(this.msjErrores.length) 
                 {
                     this.errorServicio= 1;
@@ -372,6 +398,18 @@
                                 this.descripcion = data['Descripcion'];
                                 break;
                             }
+                            case 'mostrar':
+                            { 
+                                this.modal = 1;
+                                this.tituloModal = 'Información del Servicio';
+                                this.btnFuncion = 3;
+                                this.nombre = data['Nombre'];
+                                this.nombreProyecto = data['Proyecto'];
+                                this.monto = data['Monto'];
+                                this.descripcion = data['Descripcion'];
+                                this.estado = data['Estado'];
+                                break;
+                            }
                         }
                     }
                 }
@@ -402,7 +440,6 @@
     .mostrar{
         display: list-item !important;
         opacity: 1 !important;
-        /* position: absolute !important; */
         background-color: #3c29297a !important;
     }
     .msjerror{

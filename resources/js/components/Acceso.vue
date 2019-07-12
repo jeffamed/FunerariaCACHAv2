@@ -263,10 +263,16 @@
                 this.errorUsuario=0;
                 this.msjErrores= [];
 
-                if(this.usuario == ''){
-                    this.msjErrores.push("* El campo usuario no puede estar vacío");
-                } else if(this.idEmpleado == 0){
-                    this.msjErrores.push("* Debe seleccionar una opción en el Empleado");
+                if(this.idEmpleado == 0){
+                    this.msjErrores.push("* Debe seleccionar una opción en el empleado");
+                } else if(this.usuario == ''){
+                    this.msjErrores.push("* El campo usuario no puede estar vacío"); 
+                } else if (this.password.length <= 8) { 
+                    this.msjErrores.push("* La contraseña debe de tener como mínimo 8 caracteres");
+                }else if (this.password == '') { 
+                    this.msjErrores.push("* La contraseña no puede estar vacía");
+                }else if (this.rol == '') { 
+                    this.msjErrores.push("* Debe seleccionar una opción en el rol");
                 }
 
                 if(this.msjErrores.length) 
