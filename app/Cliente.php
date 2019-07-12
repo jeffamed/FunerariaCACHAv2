@@ -21,4 +21,8 @@ class Cliente extends Model
     {
         return $this->belongsTo('App\Barrio');
     }
+    public function contratos()
+    {
+        return $this->hasMany('App\Contrato');
+    }
 }

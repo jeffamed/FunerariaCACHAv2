@@ -19,4 +19,8 @@ class Servicio extends Model
     {
         return $this->belongsTo('App\Proyecto');
     }
+    public function contratos()
+    {
+        return $this->hasMany('App\Contrato');
+    }
 }
