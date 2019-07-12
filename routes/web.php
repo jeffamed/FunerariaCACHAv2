@@ -75,4 +75,6 @@ Route::put('/acceso/actualizar','AccesoController@update');
 Route::put('/acceso/desactivar','AccesoController@desactivar');
 Route::put('/acceso/activar','AccesoController@activar');
 
-Route::get('/contratos','ContratosController@index');
+Route::get('/contrato','ContratoController@index');
+Route::post('/contrato/registrar','ContratoController@store');
+Route::put('/contrato/actualizar','ContratoController@update');
