@@ -46,7 +46,7 @@
                             <tbody>
                                 <tr v-for="contrato in Contratos" :key="contrato.id">
                                     <td>
-                                        <button class="boton boton-edit" @click="mostrarFrm(actualizar, contrato)"><i class="fa fa-pencil"></i></button>
+                                        <button class="boton boton-edit" @click="mostrarFrm('actualizar', contrato)"><i class="fa fa-pencil"></i></button>
                                         <template v-if="contrato.Estado == 'Activo'">
                                             <button class="boton boton-eliminar" @click="desactivarContrato(contrato.id)"><i class="fa fa-trash"></i></button>
                                         </template>
@@ -78,25 +78,77 @@
                 </template>
                 <!-- mostrar Formulario -->
                 <template v-else>
-                    <div class="row">
-                        <div class="form-group col-md-3">
-                            <label for="Contrato">Contrato: </label>
-                            <input type="text" class="form-control" placeholder="No. Contrato" v-model="contrato">
+                    <div class="row m-1">
+                        <div class="col-md-3 form-group">
+                            <label for="Contrato" class="form-control-label">Contrato: </label>
+                            <input type="text" class="form-control" placeholder="# Contrato" v-model="contrato">
                         </div>
-                        <div class="form-group col-md-6">
-                            <label for="Cliente">Cliente: </label>
-                            <select class="form-control" v-model="idCliente">
-                                <option value="0" disabled>Seleccione...</option>
+                        <div class="col-md-6 form-group">
+                            <label for="Cliente" class="form-control-label">Cliente:</label>
+                            <select name="" id="" class="form-control" v-model="idCliente">
+                                <option value="" disabled>Seleccione...</option>
+                                <option value="">option 1</option>
+                                <option value="">option 2</option>
+                                <option value="">option 3</option>
                             </select>
                         </div>
-                        <div class="form-group col-md-3">
-                            <label for="Fecha de Emisión">Fecha de Emisión: </label>
-                            <input type="date" class="form-control" v-model="fechaEmision">
+                        <div class="col-md-3 form-group">
+                            <label for="FechaE" class="form-control-label">Fecha de Emisión:</label>
+                            <input type="date" name="" id="" class="form-control" v-model="fechaEmision">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="Servicio" class="form-control-label">Servicio:</label>
+                            <select name="" id="" class="form-control" v-model="idServicio">
+                                <option value="" disabled>Seleccione...</option>
+                                <option value="">option 1</option>
+                                <option value="">option 2</option>
+                                <option value="">option 3</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="Vendedor" class="form-control-label">Vendedor:</label>
+                            <select name="" id="" class="form-control" v-model="idVendedor">
+                                <option value="" disabled>Seleccione...</option>
+                                <option value="">option 1</option>
+                                <option value="">option 2</option>
+                                <option value="">option 3</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="Total" class="form-control-label">Costo del Servicio: </label>
+                            <input type="text" class="form-control" value="12500" readonly v-model="total">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="FechaC" class="form-control-label">Primer Cobro:</label>
+                            <input type="date" name="" id="" class="form-control" v-model="fechaCobro">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="Frecuencuia" class="form-control-label">Frecuencia de Cobro:</label>
+                            <input type="text" name="" id="" class="form-control" v-model="frecuenciaPago">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="Cuota" class="form-control-label">Cuota:</label>
+                            <input type="number" name="Cuota" min="0" value="0" class="form-control" v-model="cuota">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="Descuento" class="form-control-label">Descuento (%):</label>
+                            <input type="number" name="Descuento" min="0" value="0" class="form-control" v-model="descuento">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="Beneficiario" class="form-control-label">Beneficiario:</label>
+                            <textarea name="" id="" class="form-control" v-model="beneficiario"></textarea>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="Nota" class="form-control-label">Nota:</label>
+                            <textarea name="" id="" class="form-control" v-model="nota"></textarea>
+                        </div>
+                        <div v-show="errorContrato" class="form-group msjerror">
+                            <div class="col-12 text-center texterror" v-for="error in msjErrores" :key="error" v-text="error"></div>
                         </div>
                         <div class="mx-2 my-1 col-12">
                             <button class="btn btn-success" v-if="btnFuncion == 1" @click="registrarContrato()"><i class="fa fa-check"></i> Guardar</button>
                             <button class="btn btn-success" v-if="btnFuncion == 2" @click="actualizarContrato()"><i class="fa fa-check"></i> Actualizar</button>
-                            <button @click="mostrarTabla()" class="btn btn-danger"> Cerrar</button>
+                            <button @click="mostrarTabla()" class="btn btn-danger"><i class="fa fa-close"></i> Cerrar</button>
                         </div>
                     </div>
                 </template>
@@ -225,6 +277,21 @@
             },
             mostrarTabla(){
                 this.mostrar = 1;
+                this.tituloModal = '';
+                this.contrato = '',
+                this.idCliente = '';
+                this.idVendedor = '';
+                this.idServicio = '';
+                this.total = 0;
+                this.frecuenciaPago = '';
+                this.fechaEmision = '';
+                this.fechaCobro = '';
+                this.descuento = 0;
+                this.beneficiario = '';
+                this.nota = '';
+                this.cuota = 0;
+                this.msjErrores = [];
+                this.errorContrato = 0;
             },
             mostrarFrm(accion,data=[]){
                 this.mostrar = 2;
@@ -348,9 +415,9 @@
                     this.msjErrores.push("* El campo descuento no puede ser negativo");
                 }else if(this.cuota < 0){
                     this.msjErrores.push("* El campo cuota no puede ser negativo");
-                }else if(this.fechaEmision == ''){
+                }else if(this.fechaEmision == '' ){
                     this.msjErrores.push("* El campo fecha de emisión no puede estar vacío");
-                }else if(this.fechaCobro == ''){
+                }else if(this.fechaCobro == '' && this.fechaCobro >= this.fechaEmision){
                     this.msjErrores.push("* El campo fecha de cobro no puede estar vacío");
                 }else if(this.beneficiario == ''){
                     this.msjErrores.push("* El campo beneficiario no puede estrar vacío");
@@ -425,25 +492,7 @@
                         }else if(result.dismiss === swal.DismissReason.cancel){
                         }
                     })
-            },
-            cerrarModal(){
-                this.modal = 0;
-                this.tituloModal = '';
-                this.contrato = '',
-                this.idCliente = '';
-                this.idVendedor = '';
-                this.idServicio = '';
-                this.total = 0;
-                this.frecuenciaPago = '';
-                this.fechaEmision = '';
-                this.fechaCobro = '';
-                this.descuento = 0;
-                this.beneficiario = '';
-                this.nota = '';
-                this.cuota = 0;
-                this.msjErrores = [];
-                this.errorContrato = 0;
-            },         
+            },      
         },
         mounted() {
             this.mostrarContrato(1,this.buscar,this.criterio);
