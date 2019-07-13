@@ -5,92 +5,12 @@
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
                 <h5 class="titulo">Contratos</h5>
             <!-- Boton nuevo -->
-                <!-- <button class="btn-new"  @click="mostrarFrm('registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button> -->
-                <button class="btn-new"  @click="abrirModal('contrato','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
-                <!-- Abrir Modal-->
-                <div class="modal fade" id="btn-new" tabindex="-1" :class="{'mostrar' : modal}" role="dialog" aria-labelledby="btn-new" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header bg-primary">
-                                <h5 class="modal-title text-white" v-text="tituloModal"></h5>
-                                <button class="close" aria-label="Cerrar" @click="cerrarModal()">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="">
-                                    <div class="row" v-if="btnFuncion!=3">
-                                        <div class="col-6">
-                                            <label for="Contrato">Contrato: </label>
-                                            <input type="text" class="form-control" placeholder="No. Contrato" v-model="contrato">
-                                        </div>
-                                        <div class="col-6">
-                                            <label for="Cliente">Cliente: </label>
-                                            <select class="form-control" v-model="idCliente">
-                                                <option value="0" disabled>Seleccione...</option>
-                                                <option v-for="cliente in infoCliente" :key="cliente.id" :value="cliente.id" v-text="cliente.Nombre"></option>
-                                            </select>
-                                        </div>
-                                        <div class="col-6">
-                                            <label for="Vendedor">Vendedor: </label>
-                                            <select class="form-control" v-model="idVendedor">
-                                                <option value="0" disabled>Seleccione...</option>
-                                                <option v-for="vendedor in infoVendedor" :key="vendedor.id" :value="vendedor.id" v-text="vendedor.Nombre+vendedor.Apellido"></option>
-                                            </select>
-                                        </div>
-                                        <div class="col-6">
-                                            <label for="Servicio">Servicio: </label>
-                                            <select class="form-control" v-model="idServicio">
-                                                <option value="0" disabled>Seleccione...</option>
-                                                <option v-for="servicio in infoServicio" :key="servicio.id" :value="servicio.id" v-text="servicio.Nombre"></option>
-                                            </select>
-                                        </div>
-                                        <div class="col-6">
-                                            <label for="FechaE">Fecha Emisión: </label>
-                                            <input type="date" class="form-control" v-model="fechaEmision">
-                                        </div>
-                                         <div class="col-6">
-                                            <label for="FechaC">Fecha Cobro: </label>
-                                            <input type="date" class="form-control" v-model="fechaCobro">
-                                        </div>
-                                        <div class="col-6">
-                                            <label for="total">Costo del servicio: </label>
-                                            <input type="number" class="form-control"  v-model="total">
-                                        </div>
-                                        <div class="col-6">
-                                            <label for="cuota">Cuota: </label>
-                                            <input type="number" class="form-control" min="0" v-model="cuota">
-                                        </div>
-                                        <div class="col-6">
-                                            <label for="descuento">Descuento (%): </label>
-                                            <input type="number" class="form-control" v-model="descuento">
-                                        </div>
-                                        <div class="col-6">
-                                            <label for="nota">Nota: </label>
-                                            <textarea class="form-control" v-model="nota"></textarea>
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="beneficiario">Beneficiarios: </label>
-                                            <textarea class="form-control" v-model="beneficiario"></textarea>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-success" v-if="btnFuncion == 1" @click="registrarContrato()"><i class="fa fa-check"></i> Guardar</button>
-                                <button class="btn btn-success" v-if="btnFuncion == 2" @click="actualizarContrato()"><i class="fa fa-check"></i> Actualizar</button>
-                                <button class="btn btn-danger" @click="cerrarModal()"><i class="fa fa-remove"></i> Cerrar</button>
-                            </div>    
-                        </div>
-                    </div>
-                </div>
-                <!-- Fin del modal -->
+                <button class="btn-new"  @click="mostrarFrm('registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- buscador -->
                 <div class="buscador d-flex ml-auto hidden-md-down">
                     <label for="" class="etiqueta">Buscar por: </label>
                     <select name="filtro" id="" class="option-search" v-model="criterio">
                         <option value="Nombre">Contrato</option>
-                        <!-- <option value="descripcion">Descripción</option> -->
                     </select>
                     <input type="text" v-model="buscar" @keyup="mostrarContrato(1,buscar,criterio)" class="buscar" placeholder="Buscar...">
                     <div class="icon-buscar">
@@ -126,7 +46,7 @@
                             <tbody>
                                 <tr v-for="contrato in Contratos" :key="contrato.id">
                                     <td>
-                                        <button class="boton boton-edit" @click="abrirModal('contrato','actualizar', contrato)"><i class="fa fa-pencil"></i></button>
+                                        <button class="boton boton-edit" @click="mostrarFrm(actualizar, contrato)"><i class="fa fa-pencil"></i></button>
                                         <template v-if="contrato.Estado == 'Activo'">
                                             <button class="boton boton-eliminar" @click="desactivarContrato(contrato.id)"><i class="fa fa-trash"></i></button>
                                         </template>
@@ -159,9 +79,23 @@
                 <!-- mostrar Formulario -->
                 <template v-else>
                     <div class="row">
-                        <div class="col-12 bordered">
-
-                            <h1>hola</h1>
+                        <div class="form-group col-md-3">
+                            <label for="Contrato">Contrato: </label>
+                            <input type="text" class="form-control" placeholder="No. Contrato" v-model="contrato">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="Cliente">Cliente: </label>
+                            <select class="form-control" v-model="idCliente">
+                                <option value="0" disabled>Seleccione...</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="Fecha de Emisión">Fecha de Emisión: </label>
+                            <input type="date" class="form-control" v-model="fechaEmision">
+                        </div>
+                        <div class="mx-2 my-1 col-12">
+                            <button class="btn btn-success" v-if="btnFuncion == 1" @click="registrarContrato()"><i class="fa fa-check"></i> Guardar</button>
+                            <button class="btn btn-success" v-if="btnFuncion == 2" @click="actualizarContrato()"><i class="fa fa-check"></i> Actualizar</button>
                             <button @click="mostrarTabla()" class="btn btn-danger"> Cerrar</button>
                         </div>
                     </div>
@@ -316,7 +250,7 @@
                     }
                     case 'actualizar':
                     {
-                        this.modal = 1;
+                        // this.modal = 1;
                         this.tituloModal = 'Actualizar Contrato';
                         this.btnFuncion = 2;
                         this.idContrato = data['id'];
@@ -491,57 +425,6 @@
                         }else if(result.dismiss === swal.DismissReason.cancel){
                         }
                     })
-            },
-            abrirModal(modelo, accion, data=[]){
-                switch (modelo) {
-                    case "contrato":
-                    {
-                        switch (accion) {
-                            case 'registrar':
-                            {
-                                this.modal = 1;
-                                this.tituloModal = 'Registrar Contrato';
-                                this.btnFuncion = 1;
-                                this.contrato = '',
-                                this.idCliente = '';
-                                this.idVendedor = '';
-                                this.idServicio = '';
-                                this.total = 0;
-                                this.frecuenciaPago = '';
-                                this.fechaEmision = '';
-                                this.fechaCobro = '';
-                                this.descuento = 0;
-                                this.beneficiario = '';
-                                this.nota = '';
-                                this.cuota = 0;
-                                break;
-                            }
-                            case 'actualizar':
-                            {
-                                this.modal = 1;
-                                this.tituloModal = 'Actualizar Contrato';
-                                this.btnFuncion = 2;
-                                this.idContrato = data['id'];
-                                this.contrato = data['Contrato'],
-                                this.idCliente = data['idCliente'];
-                                this.idVendedor = data['idVendedor'];
-                                this.idServicio = data['idServicio'];
-                                this.total = data['Total'];
-                                this.frecuenciaPago = data['Frecuencia_Pago'];
-                                this.fechaEmision = data['Fecha_Emision'];
-                                this.fechaCobro = '';
-                                this.descuento = data['Descuento'];
-                                this.beneficiario = data['Beneficiario'];
-                                this.nota = data['Notas'];
-                                this.cuota = data['Couta'];
-                                break;
-                            }
-                        }
-                    }
-                }
-                this.mostrarVendedor();
-                this.mostrarCliente();
-                this.mostrarServicio();
             },
             cerrarModal(){
                 this.modal = 0;
