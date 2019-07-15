@@ -9,8 +9,8 @@
                 <!-- buscador -->
                 <div class="buscador d-flex ml-auto hidden-md-down">
                     <label for="" class="etiqueta">Buscar por: </label>
-                    <select name="filtro" id="" class="option-search" v-model="criterio">
-                        <option value="Nombre">Contrato</option>
+                    <select name="filtro" class="option-search" v-model="criterio">
+                        <option value="Contrato"># Contrato</option>
                     </select>
                     <input type="text" v-model="buscar" @keyup="mostrarContrato(1,buscar,criterio)" class="buscar" placeholder="Buscar...">
                     <div class="icon-buscar">
@@ -120,11 +120,19 @@
                         </div>
                         <div class="col-md-3 form-group">
                             <label for="FechaC" class="form-control-label">Primer Cobro:</label>
-                            <input type="date" name="" id="" class="form-control" v-model="fechaCobro">
+                            <input type="date" class="form-control" v-model="fechaCobro">
                         </div>
                         <div class="col-md-3 form-group">
-                            <label for="Frecuencuia" class="form-control-label">Frecuencia de Cobro:</label>
-                            <input type="text" name="" id="" class="form-control" v-model="frecuenciaPago">
+                            <label for="Frecuencia" class="form-control-label">Frecuencia de Cobro:</label>
+                            <div class="d-flex">
+                                <input type="number"  min="1" value="1" class="form-control frecuencia frecuencia-numero" v-model="numeroFrecuencia">
+                                <select class="form-control frecuencia frecuencia-tipo" v-model="frecuenciaPago">
+                                    <option value="" disabled>Seleccione...</option>
+                                    <option value="Semana">Semana</option>
+                                    <option value="Mes">Mes</option>
+                                    <option value="Dia">Día</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="col-md-3 form-group">
                             <label for="Cuota" class="form-control-label">Cuota:</label>
@@ -168,6 +176,7 @@
                 idServicio: '',
                 total: 0,
                 frecuenciaPago : '',
+                numeroFrecuencia: 1,
                 fechaEmision: '',
                 fechaCobro: '',
                 descuento: 0,
@@ -286,6 +295,7 @@
                 this.frecuenciaPago = '';
                 this.fechaEmision = '';
                 this.fechaCobro = '';
+                this.numeroFrecuencia = 0;
                 this.descuento = 0;
                 this.beneficiario = '';
                 this.nota = '';
@@ -309,6 +319,7 @@
                         this.frecuenciaPago = '';
                         this.fechaEmision = '';
                         this.fechaCobro = '';
+                        this.numeroFrecuencia = 0;
                         this.descuento = 0;
                         this.beneficiario = '';
                         this.nota = '';
@@ -328,6 +339,7 @@
                         this.total = data['Total'];
                         this.frecuenciaPago = data['Frecuencia_Pago'];
                         this.fechaEmision = data['Fecha_Emision'];
+                        this.numeroFrecuencia = data['Numero_Frecuencia'];
                         this.fechaCobro = '';
                         this.descuento = data['Descuento'];
                         this.beneficiario = data['Beneficiario'];
@@ -355,7 +367,8 @@
                         'idServicio' : this.idServicio,
                         'Total' : this.total,
                         'Fecha_Emision' : this.fechaEmision,
-                        // 'Frecuencia_Pago': this.frecuenciaPago,
+                        'Frecuencia_Pago': this.frecuenciaPago,
+                        'Numero_Frecuencia': this.numeroFrecuencia,
                         'Descuento' : this.descuento,
                         'Beneficiarios' : this.beneficiario,
                         'Nota' : this.nota,
@@ -384,6 +397,7 @@
                         'Total' : this.total,
                         'Fecha_Emision' : this.fechaEmision,
                         'Frecuencia_Pago': this.frecuenciaPago,
+                        'Numero_Frecuencia': this.numeroFrecuencia,
                         'Descuento' : this.descuento,
                         'Beneficiario' : this.beneficiario,
                         'Nota' : this.nota,
@@ -400,6 +414,9 @@
             validarFrmContrato(){
                 this.errorContrato=0;
                 this.msjErrores= [];
+                var f = new Date();
+
+                var fechaSist = f.getFullYear()+"-"+f.getMonth()+"-"+f.getDate();
 
                 if(this.contrato == ''){
                     this.msjErrores.push("* El campo contrato no puede estar vacío");
@@ -415,12 +432,18 @@
                     this.msjErrores.push("* El campo descuento no puede ser negativo");
                 }else if(this.cuota < 0){
                     this.msjErrores.push("* El campo cuota no puede ser negativo");
-                }else if(this.fechaEmision == '' ){
+                }else if(this.fechaEmision == ''){
                     this.msjErrores.push("* El campo fecha de emisión no puede estar vacío");
-                }else if(this.fechaCobro == '' && this.fechaCobro >= this.fechaEmision){
+                }else if(this.fechaEmision > "2019-07-15"){
+                    this.msjErrores.push("* El campo fecha de emisión no puede ser mayor a la fecha del sistema");
+                }else if(this.fechaCobro == ''){
                     this.msjErrores.push("* El campo fecha de cobro no puede estar vacío");
+                }else if(this.fechaCobro <= this.fechaEmision){
+                    this.msjErrores.push("La fecha de cobro no puede ser menor a la fecha del registro del contrato")
                 }else if(this.beneficiario == ''){
                     this.msjErrores.push("* El campo beneficiario no puede estrar vacío");
+                } else if(this.numeroFrecuencia <= 1){
+                    this.msjErrores.push("* El campo frecuacia de pago tiene que se mayor a 0");
                 }
 
                 if(this.msjErrores.length) 

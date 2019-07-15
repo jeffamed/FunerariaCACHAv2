@@ -3148,6 +3148,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3158,6 +3166,7 @@ __webpack_require__.r(__webpack_exports__);
       idServicio: '',
       total: 0,
       frecuenciaPago: '',
+      numeroFrecuencia: 1,
       fechaEmision: '',
       fechaCobro: '',
       descuento: 0,
@@ -3275,6 +3284,7 @@ __webpack_require__.r(__webpack_exports__);
       this.frecuenciaPago = '';
       this.fechaEmision = '';
       this.fechaCobro = '';
+      this.numeroFrecuencia = 0;
       this.descuento = 0;
       this.beneficiario = '';
       this.nota = '';
@@ -3299,6 +3309,7 @@ __webpack_require__.r(__webpack_exports__);
             this.frecuenciaPago = '';
             this.fechaEmision = '';
             this.fechaCobro = '';
+            this.numeroFrecuencia = 0;
             this.descuento = 0;
             this.beneficiario = '';
             this.nota = '';
@@ -3318,6 +3329,7 @@ __webpack_require__.r(__webpack_exports__);
             this.total = data['Total'];
             this.frecuenciaPago = data['Frecuencia_Pago'];
             this.fechaEmision = data['Fecha_Emision'];
+            this.numeroFrecuencia = data['Numero_Frecuencia'];
             this.fechaCobro = '';
             this.descuento = data['Descuento'];
             this.beneficiario = data['Beneficiario'];
@@ -3344,7 +3356,8 @@ __webpack_require__.r(__webpack_exports__);
           'idServicio': this.idServicio,
           'Total': this.total,
           'Fecha_Emision': this.fechaEmision,
-          // 'Frecuencia_Pago': this.frecuenciaPago,
+          'Frecuencia_Pago': this.frecuenciaPago,
+          'Numero_Frecuencia': this.numeroFrecuencia,
           'Descuento': this.descuento,
           'Beneficiarios': this.beneficiario,
           'Nota': this.nota,
@@ -3371,6 +3384,7 @@ __webpack_require__.r(__webpack_exports__);
           'Total': this.total,
           'Fecha_Emision': this.fechaEmision,
           'Frecuencia_Pago': this.frecuenciaPago,
+          'Numero_Frecuencia': this.numeroFrecuencia,
           'Descuento': this.descuento,
           'Beneficiario': this.beneficiario,
           'Nota': this.nota,
@@ -3386,6 +3400,8 @@ __webpack_require__.r(__webpack_exports__);
     validarFrmContrato: function validarFrmContrato() {
       this.errorContrato = 0;
       this.msjErrores = [];
+      var f = new Date();
+      var fechaSist = f.getFullYear() + "-" + f.getMonth() + "-" + f.getDate();
 
       if (this.contrato == '') {
         this.msjErrores.push("* El campo contrato no puede estar vacío");
@@ -3403,10 +3419,16 @@ __webpack_require__.r(__webpack_exports__);
         this.msjErrores.push("* El campo cuota no puede ser negativo");
       } else if (this.fechaEmision == '') {
         this.msjErrores.push("* El campo fecha de emisión no puede estar vacío");
-      } else if (this.fechaCobro == '' && this.fechaCobro >= this.fechaEmision) {
+      } else if (this.fechaEmision > "2019-07-15") {
+        this.msjErrores.push("* El campo fecha de emisión no puede ser mayor a la fecha del sistema");
+      } else if (this.fechaCobro == '') {
         this.msjErrores.push("* El campo fecha de cobro no puede estar vacío");
+      } else if (this.fechaCobro <= this.fechaEmision) {
+        this.msjErrores.push("La fecha de cobro no puede ser menor a la fecha del registro del contrato");
       } else if (this.beneficiario == '') {
         this.msjErrores.push("* El campo beneficiario no puede estrar vacío");
+      } else if (this.numeroFrecuencia <= 1) {
+        this.msjErrores.push("* El campo frecuacia de pago tiene que se mayor a 0");
       }
 
       if (this.msjErrores.length) {
@@ -26975,7 +26997,7 @@ var render = function() {
                         }
                       ],
                       staticClass: "option-search",
-                      attrs: { name: "filtro", id: "" },
+                      attrs: { name: "filtro" },
                       on: {
                         change: function($event) {
                           var $$selectedVal = Array.prototype.filter
@@ -26993,8 +27015,8 @@ var render = function() {
                       }
                     },
                     [
-                      _c("option", { attrs: { value: "Nombre" } }, [
-                        _vm._v("Contrato")
+                      _c("option", { attrs: { value: "Contrato" } }, [
+                        _vm._v("# Contrato")
                       ])
                     ]
                   ),
@@ -27638,7 +27660,7 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "date", name: "", id: "" },
+                          attrs: { type: "date" },
                           domProps: { value: _vm.fechaCobro },
                           on: {
                             input: function($event) {
@@ -27656,32 +27678,86 @@ var render = function() {
                           "label",
                           {
                             staticClass: "form-control-label",
-                            attrs: { for: "Frecuencuia" }
+                            attrs: { for: "Frecuencia" }
                           },
                           [_vm._v("Frecuencia de Cobro:")]
                         ),
                         _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.frecuenciaPago,
-                              expression: "frecuenciaPago"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text", name: "", id: "" },
-                          domProps: { value: _vm.frecuenciaPago },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
+                        _c("div", { staticClass: "d-flex" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.numeroFrecuencia,
+                                expression: "numeroFrecuencia"
                               }
-                              _vm.frecuenciaPago = $event.target.value
+                            ],
+                            staticClass:
+                              "form-control frecuencia frecuencia-numero",
+                            attrs: { type: "number", min: "1", value: "1" },
+                            domProps: { value: _vm.numeroFrecuencia },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.numeroFrecuencia = $event.target.value
+                              }
                             }
-                          }
-                        })
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.frecuenciaPago,
+                                  expression: "frecuenciaPago"
+                                }
+                              ],
+                              staticClass:
+                                "form-control frecuencia frecuencia-tipo",
+                              on: {
+                                change: function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.frecuenciaPago = $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                }
+                              }
+                            },
+                            [
+                              _c(
+                                "option",
+                                { attrs: { value: "", disabled: "" } },
+                                [_vm._v("Seleccione...")]
+                              ),
+                              _vm._v(" "),
+                              _c("option", { attrs: { value: "Semana" } }, [
+                                _vm._v("Semana")
+                              ]),
+                              _vm._v(" "),
+                              _c("option", { attrs: { value: "Mes" } }, [
+                                _vm._v("Mes")
+                              ]),
+                              _vm._v(" "),
+                              _c("option", { attrs: { value: "Dia" } }, [
+                                _vm._v("Día")
+                              ])
+                            ]
+                          )
+                        ])
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-3 form-group" }, [

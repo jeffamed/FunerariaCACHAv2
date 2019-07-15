@@ -9,32 +9,32 @@ class ContratoController extends Controller
 {
     public function index(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
-            $buscar = $request->buscar;
-            $criterio = $request->criterio;
-    
-            if($buscar == ''){
-                $contratos = Contrato::join('servicios as s','contratos.idServicio','=','s.id')
-                                    -> join('clientes as c','contratos.idCliente','=','c.id')
-                                    -> join('empleados as e','contratos.idVendedor','=','e.id')
-                                    -> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
-                                             ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota'
-                                             ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado','c.id as idCliente','c.Nombre as NombreCliente')
-                                    -> orderBy('contratos.id','desc')
-                                    -> paginate(7);
-            }else{
-                $contratos = Contrato::join('servicios as s','contratos.idServicio','s.id')
-                                    -> join('clientes as c','contratos.idCliente','c.id')
-                                    -> join('empleados as e','contratos.idVendedor','e.id')
-                                    -> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
-                                             ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota'
-                                             ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado'
-                                             , 'c.id as idCliente','c.Nombre as NombreCliente')
-                                    -> where('contratos.'.$criterio,'like','%'.$buscar.'%')
-                                    -> orderBy('contratos.id','desc')
-                                    -> paginate(7);
-                
-            }
+        if (!$request->ajax()) return redirect('/');
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
+
+        if($buscar == ''){
+            $contratos = Contrato::join('servicios as s','contratos.idServicio','=','s.id')
+                                -> join('clientes as c','contratos.idCliente','=','c.id')
+                                -> join('empleados as e','contratos.idVendedor','=','e.id')
+                                -> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
+                                         ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia'
+                                         ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado','c.id as idCliente','c.Nombre as NombreCliente')
+                                -> orderBy('contratos.id','desc')
+                                -> paginate(7);
+        }else{
+            $contratos = Contrato::join('servicios as s','contratos.idServicio','s.id')
+                                -> join('clientes as c','contratos.idCliente','c.id')
+                                -> join('empleados as e','contratos.idVendedor','e.id')
+                                -> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
+                                         ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia'
+                                         ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado'
+                                         ,'c.id as idCliente','c.Nombre as NombreCliente')
+                                -> where('contratos.'.$criterio,'like','%'.$buscar.'%')
+                                -> orderBy('contratos.id','desc')
+                                -> paginate(7);
+            
+        }
     
             return[
                 'pagination' => [
@@ -65,7 +65,9 @@ class ContratoController extends Controller
         $contrato->Contrato = $request->Contrato;
         $contrato->Total = $request->Total;
         $contrato->Fecha_Emision = $request->Fecha_Emision;
-        $contrato->Frecuencia_Pago = '1 month';
+        // $contrato->Fecha_Pago = $request->Fecha_Pago;
+        $contrato->Frecuencia_Pago = $request->Frecuencia_Pago;
+        $contrato->Numero_Frecuencia = $request->Numero_Frecuencia;
         $contrato->Descuento = $request->Descuento;
         $contrato->Beneficiarios = $request->Beneficiarios;
         $contrato->Nota = $request->Nota;
@@ -91,7 +93,9 @@ class ContratoController extends Controller
         $contrato->Contrato = $request->Contrato;
         $contrato->Total = $request->Total;
         $contrato->Fecha_Emision = $request->Fecha_Emision;
-        $contrato->Fecha_Pago = $request->Fecha_Pago;
+        // $contrato->Fecha_Pago = $request->Fecha_Pago;
+        $contrato->Frecuencia_Pago = $request->Frecuencia_Pago;
+        $contrato->Numero_Frecuencia = $request->Numero_Frecuencia;
         $contrato->Descuento = $request->Descuento;
         $contrato->Beneficiarios = $request->Beneficiarios;
         $contrato->Nota = $request->Nota;

@@ -15,6 +15,7 @@ class Contrato extends Model
         'Total',
         'Fecha_Emision',
         'Frecuencia_Pago',
+        'Numero_Frecuencia',
         'Estado',
         'Descuento',
         'Beneficiarios',

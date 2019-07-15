@@ -21,6 +21,7 @@ class CreateContratosTable extends Migration
             $table->integer('idServicio'); 
             $table->float('Total');
             $table->date('Fecha_Emision');
+            $table->integer('numero_Frec');
             $table->string('Frecuencia_Pago',10);
             $table->string('Estado', 10);
             $table->float('Descuento');
