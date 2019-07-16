@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Contrato;
+use App\Documento_Factura;
+use Illuminate\Support\Facades\DB;
 
 class ContratoController extends Controller
 {
@@ -58,22 +60,36 @@ class ContratoController extends Controller
     public function store(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
-        $contrato = new Contrato();
-        $contrato->idCliente = $request->idCliente;
-        $contrato->idVendedor = $request->idVendedor;
-        $contrato->idServicio = $request->idServicio;
-        $contrato->Contrato = $request->Contrato;
-        $contrato->Total = $request->Total;
-        $contrato->Fecha_Emision = $request->Fecha_Emision;
-        // $contrato->Fecha_Pago = $request->Fecha_Pago;
-        $contrato->Frecuencia_Pago = $request->Frecuencia_Pago;
-        $contrato->Numero_Frecuencia = $request->Numero_Frecuencia;
-        $contrato->Descuento = $request->Descuento;
-        $contrato->Beneficiarios = $request->Beneficiarios;
-        $contrato->Nota = $request->Nota;
-        $contrato->Cuota = $request->Cuota;
-        $contrato->Estado = 'Activo';
-        $contrato->save();
+        try {
+            DB::beginTransaction();
+            
+            $contrato = new Contrato();
+            $contrato->idCliente = $request->idCliente;
+            $contrato->idVendedor = $request->idVendedor;
+            $contrato->idServicio = $request->idServicio;
+            $contrato->Contrato = $request->Contrato;
+            $contrato->Total = $request->Total;
+            $contrato->Fecha_Emision = $request->Fecha_Emision;
+            $contrato->Frecuencia_Pago = $request->Frecuencia_Pago;
+            $contrato->Numero_Frecuencia = $request->Numero_Frecuencia;
+            $contrato->Descuento = $request->Descuento;
+            $contrato->Beneficiarios = $request->Beneficiarios;
+            $contrato->Nota = $request->Nota;
+            $contrato->Cuota = $request->Cuota;
+            $contrato->Estado = 'Activo';
+            $contrato->save();
+
+            $documento = new Documento_Factura();
+            $documento->Fecha_PropuestaP = $request->Fecha_Cobro;
+            $documento->Fecha_Cobro = $documento->Fecha_PropuestaP;
+            $documento->idDocumento = $contrato->id;
+            $documento->Estado = "Por Cobrar";
+            $documento->save();
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
     }
 
     /**

@@ -35,4 +35,8 @@ class Contrato extends Model
     {
         return $this->belongsTo('App\Servicio');
     }
+    public function documentofactura()
+    {
+        return $this->hasMany('App\Documento_Factura');
+    }
 }
