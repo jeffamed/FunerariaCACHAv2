@@ -39,9 +39,13 @@ class EmpleadosController extends Controller
 
     public function seleccionar(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
-        $empleados = Empleado::where('Estado','=','Activo')->select('id','Nombre','Apellido')
-                        ->orderBy('nombre','desc')->get();
+        // if (!$request->ajax()) return redirect('/');
+        $filtro = $request->filtro;
+        $empleados = Empleado::where('Nombre','like','%'.$filtro.'%')
+                            -> OrWhere('Estado','=','Activo')
+                            -> select('id','Nombre','Apellido')
+                            -> orderBy('nombre','desc')
+                            -> get();
         return ['empleados'=>$empleados];
     }
 

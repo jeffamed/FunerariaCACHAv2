@@ -3246,6 +3246,33 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -3335,13 +3362,17 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    mostrarVendedor: function mostrarVendedor() {
+    mostrarVendedor: function mostrarVendedor(search, loading) {
       var me = this;
-      var url = '/empleado/seleccionarEmpleado';
+      loading(true);
+      var url = '/empleado/seleccionarEmpleado?filtro=' + search;
       axios.get(url).then(function (response) {
-        // console.log(response);
         var respuesta = response.data;
+
+        q: search;
+
         me.infoVendedor = respuesta.empleados;
+        loading(false);
       })["catch"](function (error) {
         console.log(error);
       });
@@ -3429,14 +3460,13 @@ __webpack_require__.r(__webpack_exports__);
             this.frecuenciaPago = data['Frecuencia_Pago'];
             this.fechaEmision = data['Fecha_Emision'];
             this.numeroFrecuencia = data['Numero_Frecuencia'];
-            this.fechaCobro = '';
+            this.fechaCobro = data['Fecha_cobro'];
             this.descuento = data['Descuento'];
             this.beneficiario = data['Beneficiario'];
             this.nota = data['Notas'];
-            this.cuota = data['Couta'];
+            this.cuota = data['Cuota'];
             break;
           }
-          this.mostrarVendedor();
       }
     },
     cambiarPagina: function cambiarPagina(pagina, buscar, criterio) {
@@ -27478,13 +27508,12 @@ var render = function() {
                           ),
                           _vm._v(" "),
                           _c("v-select", {
-                            attrs: { options: _vm.infoCliente },
-                            model: {
-                              value: _vm.idCliente,
-                              callback: function($$v) {
-                                _vm.idCliente = $$v
-                              },
-                              expression: "idCliente"
+                            attrs: {
+                              "on-search": _vm.mostrarCliente,
+                              label: "Nombre",
+                              option: _vm.infoCliente,
+                              placeholder: "Buscar Cliente..",
+                              onChange: _vm.getDatosCiente
                             }
                           })
                         ],
@@ -27538,12 +27567,12 @@ var render = function() {
                           ),
                           _vm._v(" "),
                           _c("v-select", {
-                            model: {
-                              value: _vm.idServicio,
-                              callback: function($$v) {
-                                _vm.idServicio = $$v
-                              },
-                              expression: "idServicio"
+                            attrs: {
+                              "on-search": _vm.mostrarServicio,
+                              label: "Nombre",
+                              option: _vm.infoServicio,
+                              placeholder: "Buscar Servicio..",
+                              onChange: _vm.getDatosServicio
                             }
                           })
                         ],
@@ -27564,12 +27593,12 @@ var render = function() {
                           ),
                           _vm._v(" "),
                           _c("v-select", {
-                            model: {
-                              value: _vm.idVendedor,
-                              callback: function($$v) {
-                                _vm.idVendedor = $$v
-                              },
-                              expression: "idVendedor"
+                            attrs: {
+                              "on-search": _vm.mostrarVendedor,
+                              label: "Nombre",
+                              option: _vm.infoVendedor,
+                              placeholder: "Buscar Vendedor..",
+                              onChange: _vm.getDatosVendedor
                             }
                           })
                         ],

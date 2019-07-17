@@ -79,40 +79,63 @@
                 <!-- mostrar Formulario -->
                 <template v-else>
                     <div class="row m-1">
+                        <!-- #contrato -->
                         <div class="col-md-3 form-group">
                             <label for="Contrato" class="form-control-label">Contrato: </label>
                             <input type="text" class="form-control" placeholder="# Contrato" v-model="contrato">
                         </div>
+                        <!-- Cliente -->
                         <div class="col-md-6 form-group">
                             <label for="Cliente" class="form-control-label">Cliente:</label>
-                            <v-select v-model="idCliente" :options="infoCliente">
+                            <v-select 
+                                :on-search="mostrarCliente"
+                                label="Nombre"
+                                :option="infoCliente"
+                                placeholder="Buscar Cliente.."
+                                :onChange="getDatosCiente">
 
                             </v-select>
                         </div>
+                        <!-- Fecha de Emision -->
                         <div class="col-md-3 form-group">
                             <label for="FechaE" class="form-control-label">Fecha de Emisión:</label>
                             <input type="date" name="" id="" class="form-control" v-model="fechaEmision">
                         </div>
+                        <!-- Servicio -->
                         <div class="col-md-3 form-group">
                             <label for="Servicio" class="form-control-label">Servicio:</label>
-                            <v-select v-model="idServicio">
+                            <v-select 
+                                :on-search="mostrarServicio"
+                                label="Nombre"
+                                :option="infoServicio"
+                                placeholder="Buscar Servicio.."
+                                :onChange="getDatosServicio">
   
                             </v-select>
                         </div>
+                        <!-- Vendedor -->
                         <div class="col-md-6 form-group">
                             <label for="Vendedor" class="form-control-label">Vendedor:</label>
-                            <v-select v-model="idVendedor">
-                               
+                            <v-select 
+                                :on-search="mostrarVendedor"
+                                label="Nombre"
+                                :option="infoVendedor"
+                                placeholder="Buscar Vendedor.."
+                                :onChange="getDatosVendedor"
+                            >
                             </v-select>
                         </div>
+                        <!-- Costo del servicio -->
                         <div class="col-md-3 form-group">
                             <label for="Total" class="form-control-label">Costo del Servicio: </label>
                             <input type="text" class="form-control" value="12500" readonly v-model="total">
                         </div>
+                        <!-- Fecha del primer cobro -->
                         <div class="col-md-3 form-group">
                             <label for="FechaC" class="form-control-label">Primer Cobro:</label>
                             <input type="date" class="form-control" v-model="fechaCobro">
                         </div>
+                        <!-- Frecuencia de pago -->
                         <div class="col-md-3 form-group">
                             <label for="Frecuencia" class="form-control-label">Frecuencia de Cobro:</label>
                             <div class="d-flex">
@@ -125,18 +148,22 @@
                                 </select>
                             </div>
                         </div>
+                        <!-- Cuotas -->
                         <div class="col-md-3 form-group">
                             <label for="Cuota" class="form-control-label">Cuota:</label>
                             <input type="number" name="Cuota" min="0" value="0" class="form-control" v-model="cuota">
                         </div>
+                        <!-- Descuento -->
                         <div class="col-md-3 form-group">
                             <label for="Descuento" class="form-control-label">Descuento (%):</label>
                             <input type="number" name="Descuento" min="0" value="0" class="form-control" v-model="descuento">
                         </div>
+                        <!-- Beneficiario -->
                         <div class="col-md-6 form-group">
                             <label for="Beneficiario" class="form-control-label">Beneficiario:</label>
                             <textarea name="" id="" class="form-control" v-model="beneficiario"></textarea>
                         </div>
+                        <!-- Notas -->
                         <div class="col-md-6 form-group">
                             <label for="Nota" class="form-control-label">Nota:</label>
                             <textarea name="" id="" class="form-control" v-model="nota"></textarea>
@@ -243,13 +270,15 @@
                     console.log(error);
                 });
             },
-            mostrarVendedor(){
+            mostrarVendedor(search,loading){
                 let me = this;
-                var url= '/empleado/seleccionarEmpleado';
+                loading(true)
+                var url= '/empleado/seleccionarEmpleado?filtro='+search;
                 axios.get(url).then(function(response) {
-                    // console.log(response);
-                    var respuesta = response.data;
+                    let respuesta = response.data;
+                    q: search
                     me.infoVendedor = respuesta.empleados;
+                    loading(false);
                 })
                 .catch(function (error) {
                     console.log(error);
