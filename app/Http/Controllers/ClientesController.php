@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Cliente;
+use Illuminate\Support\Facades\DB;
 
 class ClientesController extends Controller
 {
@@ -47,7 +48,9 @@ class ClientesController extends Controller
     public function seleccionar(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
-        $clientes = Cliente::select('id','Nombre')->orderBy('nombre','desc')->get();
+        $clientes = Cliente::select('id',DB::raw('concat(Nombre," ",Apellido) as Nombre'))
+						   ->orderBy('Nombre','desc')
+						   ->get();
         return ['clientes'=>$clientes];
     }
 

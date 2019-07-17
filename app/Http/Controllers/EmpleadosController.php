@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Empleado;
+use Illuminate\Support\Facades\DB;
 
 class EmpleadosController extends Controller
 {
@@ -41,9 +42,10 @@ class EmpleadosController extends Controller
     {
         // if (!$request->ajax()) return redirect('/');
         $filtro = $request->filtro;
-        $empleados = Empleado::where('Nombre','like','%'.$filtro.'%')
-                            -> OrWhere('Estado','=','Activo')
-                            -> select('id','Nombre','Apellido')
+        $empleados = Empleado::
+        // where('Nombre','like','%'.$filtro.'%')
+                            where('Estado','=','Activo')
+                            -> select('id',DB::raw('concat(Nombre," ",Apellido) as Nombre'))
                             -> orderBy('nombre','desc')
                             -> get();
         return ['empleados'=>$empleados];

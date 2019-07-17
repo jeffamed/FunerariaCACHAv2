@@ -79,7 +79,7 @@
                 <!-- mostrar Formulario -->
                 <template v-else>
                     <div class="row m-1">
-                        <!-- #contrato -->
+                        <!-- # contrato -->
                         <div class="col-md-3 form-group">
                             <label for="Contrato" class="form-control-label">Contrato: </label>
                             <input type="text" class="form-control" placeholder="# Contrato" v-model="contrato">
@@ -88,12 +88,12 @@
                         <div class="col-md-6 form-group">
                             <label for="Cliente" class="form-control-label">Cliente:</label>
                             <v-select 
-                                :on-search="mostrarCliente"
                                 label="Nombre"
-                                :option="infoCliente"
                                 placeholder="Buscar Cliente.."
-                                :onChange="getDatosCiente">
-
+                                :options="infoCliente"
+                                v-model="idCliente"
+                                :reduce="infoCliente => infoCliente.id"
+                            >
                             </v-select>
                         </div>
                         <!-- Fecha de Emision -->
@@ -105,23 +105,23 @@
                         <div class="col-md-3 form-group">
                             <label for="Servicio" class="form-control-label">Servicio:</label>
                             <v-select 
-                                :on-search="mostrarServicio"
                                 label="Nombre"
-                                :option="infoServicio"
                                 placeholder="Buscar Servicio.."
-                                :onChange="getDatosServicio">
-  
+                                :options="infoServicio"
+                                v-model="idServicio"
+                                :reduce="infoServicio => infoServicio.id"
+                            >
                             </v-select>
                         </div>
                         <!-- Vendedor -->
                         <div class="col-md-6 form-group">
                             <label for="Vendedor" class="form-control-label">Vendedor:</label>
                             <v-select 
-                                :on-search="mostrarVendedor"
                                 label="Nombre"
-                                :option="infoVendedor"
                                 placeholder="Buscar Vendedor.."
-                                :onChange="getDatosVendedor"
+                                :options="infoVendedor"
+                                v-model="idVendedor"
+                                :reduce="infoVendedor => infoVendedor.id"
                             >
                             </v-select>
                         </div>
@@ -185,6 +185,7 @@
 
 <script>
     import vSelect from 'vue-select';
+    import 'vue-select/dist/vue-select.css';
     export default {
         data(){
             return {
@@ -270,24 +271,19 @@
                     console.log(error);
                 });
             },
-            mostrarVendedor(search,loading){
+            mostrarVendedor(){
                 let me = this;
-                loading(true)
-                var url= '/empleado/seleccionarEmpleado?filtro='+search;
+                // loading(true)
+                var url= '/empleado/seleccionarEmpleado';
                 axios.get(url).then(function(response) {
                     let respuesta = response.data;
-                    q: search
+                    // q: search
                     me.infoVendedor = respuesta.empleados;
-                    loading(false);
+                    // loading(false);
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-            },
-			getDatosVendedor(val1){
-                let me = this;
-                me.loading = true;
-                me.idVendedor = val1.id;
             },
             mostrarCliente(){
                 let me = this;
@@ -376,6 +372,7 @@
                         this.cuota = data['Cuota'];
                         break;
                     }
+                    
                 }
             },
             cambiarPagina(pagina,buscar,criterio){
@@ -459,7 +456,7 @@
                     this.msjErrores.push("* El campo total no puede ser negativo");
                 }else if(this.descuento < 0){
                     this.msjErrores.push("* El campo descuento no puede ser negativo");
-                }else if(this.cuota < 0){
+                }else if(this.cuota <= 0){
                     this.msjErrores.push("* El campo cuota no puede ser negativo");
                 }else if(this.fechaEmision == ''){
                     this.msjErrores.push("* El campo fecha de emisión no puede estar vacío");
@@ -516,7 +513,7 @@
             desactivarContrato(id){
                 swal({
                     title: '¿Estas seguro?',
-                    text: 'Deseas desactivar este Contrato',
+                    text: 'Deseas suspender este contrato',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -533,8 +530,8 @@
                             axios.put('/contrato/desactivar', {'id' : id}).then(function(response) {
                                 me.mostrarContrato(1,'','Contrato');
                                 swal(
-                                    'Desactivado',
-                                    'El registro fue desactivado correctamente',
+                                    'Suspendido',
+                                    'El registro fue suspendido correctamente',
                                     'success'
                                 )
                             })
@@ -548,6 +545,9 @@
         },
         mounted() {
             this.mostrarContrato(1,this.buscar,this.criterio);
+            this.mostrarVendedor();
+            this.mostrarCliente();
+            this.mostrarServicio();
         }
     }
 </script>
