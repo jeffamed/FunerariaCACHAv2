@@ -15,7 +15,7 @@ mix.styles([
 //    'resources/plantilla/css/jquery-ui.min.css',
    'resources/plantilla/css/estilo.min.css',
    'resources/plantilla/css/font-awesome.min.css',
-   //'resources/plantilla/css/Chart.min.css',
+   'resources/plantilla/css/vue-select.css',
 ], 'public/css/all.css');
 
 mix.scripts([

@@ -85,12 +85,9 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="Cliente" class="form-control-label">Cliente:</label>
-                            <select name="" id="" class="form-control" v-model="idCliente">
-                                <option value="" disabled>Seleccione...</option>
-                                <option value="">option 1</option>
-                                <option value="">option 2</option>
-                                <option value="">option 3</option>
-                            </select>
+                            <v-select v-model="idCliente" :options="infoCliente">
+
+                            </v-select>
                         </div>
                         <div class="col-md-3 form-group">
                             <label for="FechaE" class="form-control-label">Fecha de Emisión:</label>
@@ -98,21 +95,15 @@
                         </div>
                         <div class="col-md-3 form-group">
                             <label for="Servicio" class="form-control-label">Servicio:</label>
-                            <select name="" id="" class="form-control" v-model="idServicio">
-                                <option value="" disabled>Seleccione...</option>
-                                <option value="">option 1</option>
-                                <option value="">option 2</option>
-                                <option value="">option 3</option>
-                            </select>
+                            <v-select v-model="idServicio">
+  
+                            </v-select>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="Vendedor" class="form-control-label">Vendedor:</label>
-                            <select name="" id="" class="form-control" v-model="idVendedor">
-                                <option value="" disabled>Seleccione...</option>
-                                <option value="">option 1</option>
-                                <option value="">option 2</option>
-                                <option value="">option 3</option>
-                            </select>
+                            <v-select v-model="idVendedor">
+                               
+                            </v-select>
                         </div>
                         <div class="col-md-3 form-group">
                             <label for="Total" class="form-control-label">Costo del Servicio: </label>
@@ -166,6 +157,7 @@
 </template>
 
 <script>
+    import vSelect from 'vue-select';
     export default {
         data(){
             return {
@@ -176,7 +168,7 @@
                 idServicio: '',
                 total: 0,
                 frecuenciaPago : '',
-                numeroFrecuencia: 1,
+                numeroFrecuencia: 0,
                 fechaEmision: '',
                 fechaCobro: '',
                 descuento: 0,
@@ -234,6 +226,9 @@
                 return pagesArray;
             }
         },
+        components:{
+            vSelect
+        },
         methods:{
             mostrarContrato(pagina,buscar,criterio){
                 let me = this;
@@ -259,6 +254,11 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+			getDatosVendedor(val1){
+                let me = this;
+                me.loading = true;
+                me.idVendedor = val1.id;
             },
             mostrarCliente(){
                 let me = this;
@@ -340,11 +340,11 @@
                         this.frecuenciaPago = data['Frecuencia_Pago'];
                         this.fechaEmision = data['Fecha_Emision'];
                         this.numeroFrecuencia = data['Numero_Frecuencia'];
-                        this.fechaCobro = '';
+                        this.fechaCobro = data['Fecha_cobro'];
                         this.descuento = data['Descuento'];
                         this.beneficiario = data['Beneficiario'];
                         this.nota = data['Notas'];
-                        this.cuota = data['Couta'];
+                        this.cuota = data['Cuota'];
                         break;
                     }
                 }
