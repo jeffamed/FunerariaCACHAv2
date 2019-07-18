@@ -104,12 +104,14 @@
                         <!-- Servicio -->
                         <div class="col-md-3 form-group">
                             <label for="Servicio" class="form-control-label">Servicio:</label>
+                            <!-- :reduce="infoServicio => infoServicio.id" -->
                             <v-select 
                                 label="Nombre"
                                 placeholder="Buscar Servicio.."
                                 :options="infoServicio"
-                                v-model="idServicio"
-                                :reduce="infoServicio => infoServicio.id"
+                                v-model="servicio"
+                                :value="infoServicio"
+                                @input="getDatosServicio"
                             >
                             </v-select>
                         </div>
@@ -128,7 +130,7 @@
                         <!-- Costo del servicio -->
                         <div class="col-md-3 form-group">
                             <label for="Total" class="form-control-label">Costo del Servicio: </label>
-                            <input type="text" class="form-control" value="12500" readonly v-model="total">
+                            <input type="text" class="form-control" v-model="total">
                         </div>
                         <!-- Fecha del primer cobro -->
                         <div class="col-md-3 form-group">
@@ -184,6 +186,15 @@
 </template>
 
 <script>
+
+    var f = new Date();
+    var day = f.getDate();
+    var month = f.getMonth();
+    var mes= parseInt(month) + parseInt(1);
+    if (day < 10)  day= '0' + day;
+    if (month < 10)  month= '0' + mes;
+    const fechaSist = f.getFullYear()+"-"+month+"-"+ day;
+
     import vSelect from 'vue-select';
     import 'vue-select/dist/vue-select.css';
     export default {
@@ -195,6 +206,7 @@
                 idVendedor: '',
                 idServicio: '',
                 total: 0,
+                servicio: '',
                 frecuenciaPago : '',
                 numeroFrecuencia: 0,
                 fechaEmision: '',
@@ -308,6 +320,13 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            getDatosServicio(value){
+                let me = this;
+                me.loading = true;
+                // me.servicio= value.Nombre;
+                me.total = value.Monto;
+                me.idServicio = value.id;
             },
             mostrarTabla(){
                 this.mostrar = 1;
@@ -437,39 +456,43 @@
                     });
                 }
             },
+            fechaSistema(){
+                
+                // return fechaSist;
+                // console.log(fechaSist);
+            },
             validarFrmContrato(){
                 this.errorContrato=0;
                 this.msjErrores= [];
-                var f = new Date();
-
-                var fechaSist = f.getFullYear()+"-"+f.getMonth()+"-"+f.getDate();
-
+                
                 if(this.contrato == ''){
                     this.msjErrores.push("* El campo contrato no puede estar vacío");
-                }else if(this.idServicio == ''){
-                    this.msjErrores.push("* Debe de seleccionar una opción en servicio");
                 }else if(this.idCliente == ''){
                     this.msjErrores.push("* Debe de seleccionar una opción en cliente");
+                }else if(this.fechaEmision == ''){
+                    this.msjErrores.push("* El campo fecha de emisión no puede estar vacío");
+                }else if(this.fechaEmision > fechaSist){
+                    this.msjErrores.push("* El campo fecha de emisión no puede ser mayor a la fecha del sistema");
+                }else if(this.idServicio == ''){
+                    this.msjErrores.push("* Debe de seleccionar una opción en servicio");
                 }else if(this.idVendedor == ''){
                     this.msjErrores.push("* Debe de seleccionar una opción en vendedor");
+                }else if(this.fechaCobro == ''){
+                    this.msjErrores.push("* El campo fecha de cobro no puede estar vacío");
+                }else if(this.fechaCobro <= this.fechaEmision){
+                    this.msjErrores.push("La fecha de cobro no puede ser menor a la fecha del registro del contrato")
+                }else if(this.numeroFrecuencia <= 0){
+                    this.msjErrores.push("* El campo frecuencia de pago tiene que se mayor a 0");
+                }else if(this.frecuenciaPago == ''){
+                    this.msjErrores.push("* Debe de seleccionar una opción en el campo frecuencia de pago ");
                 }else if(this.total < 0){
                     this.msjErrores.push("* El campo total no puede ser negativo");
                 }else if(this.descuento < 0){
                     this.msjErrores.push("* El campo descuento no puede ser negativo");
                 }else if(this.cuota <= 0){
-                    this.msjErrores.push("* El campo cuota no puede ser negativo");
-                }else if(this.fechaEmision == ''){
-                    this.msjErrores.push("* El campo fecha de emisión no puede estar vacío");
-                }else if(this.fechaEmision > "2019-07-15"){
-                    this.msjErrores.push("* El campo fecha de emisión no puede ser mayor a la fecha del sistema");
-                }else if(this.fechaCobro == ''){
-                    this.msjErrores.push("* El campo fecha de cobro no puede estar vacío");
-                }else if(this.fechaCobro <= this.fechaEmision){
-                    this.msjErrores.push("La fecha de cobro no puede ser menor a la fecha del registro del contrato")
+                    this.msjErrores.push("* El campo cuota no puede ser negativo o igual a 0");
                 }else if(this.beneficiario == ''){
                     this.msjErrores.push("* El campo beneficiario no puede estrar vacío");
-                } else if(this.numeroFrecuencia <= 1){
-                    this.msjErrores.push("* El campo frecuacia de pago tiene que se mayor a 0");
                 }
 
                 if(this.msjErrores.length) 

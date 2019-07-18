@@ -3275,6 +3275,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+var f = new Date();
+var day = f.getDate();
+var month = f.getMonth();
+var mes = parseInt(month) + parseInt(1);
+if (day < 10) day = '0' + day;
+if (month < 10) month = '0' + mes;
+var fechaSist = f.getFullYear() + "-" + month + "-" + day;
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3286,6 +3295,7 @@ __webpack_require__.r(__webpack_exports__);
       idVendedor: '',
       idServicio: '',
       total: 0,
+      servicio: '',
       frecuenciaPago: '',
       numeroFrecuencia: 0,
       fechaEmision: '',
@@ -3398,6 +3408,13 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error);
       });
+    },
+    getDatosServicio: function getDatosServicio(value) {
+      var me = this;
+      me.loading = true; // me.servicio= value.Nombre;
+
+      me.total = value.Monto;
+      me.idServicio = value.id;
     },
     mostrarTabla: function mostrarTabla() {
       this.mostrar = 1;
@@ -3522,38 +3539,41 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
+    fechaSistema: function fechaSistema() {// return fechaSist;
+      // console.log(fechaSist);
+    },
     validarFrmContrato: function validarFrmContrato() {
       this.errorContrato = 0;
       this.msjErrores = [];
-      var f = new Date();
-      var fechaSist = f.getFullYear() + "-" + f.getMonth() + "-" + f.getDate();
 
       if (this.contrato == '') {
         this.msjErrores.push("* El campo contrato no puede estar vacío");
-      } else if (this.idServicio == '') {
-        this.msjErrores.push("* Debe de seleccionar una opción en servicio");
       } else if (this.idCliente == '') {
         this.msjErrores.push("* Debe de seleccionar una opción en cliente");
-      } else if (this.idVendedor == '') {
-        this.msjErrores.push("* Debe de seleccionar una opción en vendedor");
-      } else if (this.total < 0) {
-        this.msjErrores.push("* El campo total no puede ser negativo");
-      } else if (this.descuento < 0) {
-        this.msjErrores.push("* El campo descuento no puede ser negativo");
-      } else if (this.cuota < 0) {
-        this.msjErrores.push("* El campo cuota no puede ser negativo");
       } else if (this.fechaEmision == '') {
         this.msjErrores.push("* El campo fecha de emisión no puede estar vacío");
-      } else if (this.fechaEmision > "2019-07-15") {
+      } else if (this.fechaEmision > fechaSist) {
         this.msjErrores.push("* El campo fecha de emisión no puede ser mayor a la fecha del sistema");
+      } else if (this.idServicio == '') {
+        this.msjErrores.push("* Debe de seleccionar una opción en servicio");
+      } else if (this.idVendedor == '') {
+        this.msjErrores.push("* Debe de seleccionar una opción en vendedor");
       } else if (this.fechaCobro == '') {
         this.msjErrores.push("* El campo fecha de cobro no puede estar vacío");
       } else if (this.fechaCobro <= this.fechaEmision) {
         this.msjErrores.push("La fecha de cobro no puede ser menor a la fecha del registro del contrato");
+      } else if (this.numeroFrecuencia <= 0) {
+        this.msjErrores.push("* El campo frecuencia de pago tiene que se mayor a 0");
+      } else if (this.frecuenciaPago == '') {
+        this.msjErrores.push("* Debe de seleccionar una opción en el campo frecuencia de pago ");
+      } else if (this.total < 0) {
+        this.msjErrores.push("* El campo total no puede ser negativo");
+      } else if (this.descuento < 0) {
+        this.msjErrores.push("* El campo descuento no puede ser negativo");
+      } else if (this.cuota <= 0) {
+        this.msjErrores.push("* El campo cuota no puede ser negativo o igual a 0");
       } else if (this.beneficiario == '') {
         this.msjErrores.push("* El campo beneficiario no puede estrar vacío");
-      } else if (this.numeroFrecuencia <= 1) {
-        this.msjErrores.push("* El campo frecuacia de pago tiene que se mayor a 0");
       }
 
       if (this.msjErrores.length) {
@@ -27596,16 +27616,15 @@ var render = function() {
                               label: "Nombre",
                               placeholder: "Buscar Servicio..",
                               options: _vm.infoServicio,
-                              reduce: function(infoServicio) {
-                                return infoServicio.id
-                              }
+                              value: _vm.infoServicio
                             },
+                            on: { input: _vm.getDatosServicio },
                             model: {
-                              value: _vm.idServicio,
+                              value: _vm.servicio,
                               callback: function($$v) {
-                                _vm.idServicio = $$v
+                                _vm.servicio = $$v
                               },
-                              expression: "idServicio"
+                              expression: "servicio"
                             }
                           })
                         ],
@@ -27666,7 +27685,7 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", value: "12500", readonly: "" },
+                          attrs: { type: "text" },
                           domProps: { value: _vm.total },
                           on: {
                             input: function($event) {
