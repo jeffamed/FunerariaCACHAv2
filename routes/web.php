@@ -80,3 +80,8 @@ Route::post('/contrato/registrar','ContratoController@store');
 Route::put('/contrato/actualizar','ContratoController@update');
 Route::put('/contrato/suspender','ContratoController@suspender');
 Route::put('/contrato/activar','ContratoController@activar');
+
+Route::get('/factura','FacturasController@index');
+Route::post('/factura/registrar','FacturasController@store');
+Route::put('/factura/actualizar','FacturasController@update');
+Route::put('f/actura/anular','FacturasController@anular');

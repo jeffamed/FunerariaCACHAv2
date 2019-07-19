@@ -7,7 +7,7 @@
     </template>
 {{-- Cartera --}}
     <template v-if="menu==1">
-        <h3 class="pt-5">Menu 1</h3>
+        <factura></factura>
     </template>
     <template v-if="menu==2">
         <contrato></contrato>
