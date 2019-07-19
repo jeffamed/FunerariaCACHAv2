@@ -47,9 +47,11 @@ class ServiciosController extends Controller
     public function seleccionar(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
-        $servicios = Servicio::where('Estado','=','Activo')
-                            -> select('id','Nombre','Monto')
-                            -> orderBy('Nombre','desc')
+        $servicios = Servicio::join('proyectos as p','servicios.idProyecto','=','p.id')
+                            -> where('servicios.Estado','=','Activo')
+                            -> where('p.Nombre','<>','Servicios Individuales')
+                            -> select('servicios.id','servicios.Nombre','servicios.Monto')
+                            -> orderBy('servicios.Nombre','desc')
 							-> get();
         return ['servicios'=>$servicios];
     }

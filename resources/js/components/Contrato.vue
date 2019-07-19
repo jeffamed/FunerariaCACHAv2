@@ -187,14 +187,6 @@
 
 <script>
 
-    var f = new Date();
-    var day = f.getDate();
-    var month = f.getMonth();
-    var mes= parseInt(month) + parseInt(1);
-    if (day < 10)  day= '0' + day;
-    if (month < 10)  month= '0' + mes;
-    const fechaSist = f.getFullYear()+"-"+month+"-"+ day;
-
     import vSelect from 'vue-select';
     import 'vue-select/dist/vue-select.css';
     export default {
@@ -215,11 +207,13 @@
                 beneficiario: '',
                 nota: '',
                 cuota: 0,
-                mostrar: 1,
+				mostrar: 1,
                 Contratos: [],
                 infoVendedor: [],
                 infoCliente: [],
                 infoServicio: [],
+                fechaS: '',
+				
                 modal: 0,
                 tituloModal: '',
                 btnFuncion: 0,
@@ -384,11 +378,12 @@
                         this.frecuenciaPago = data['Frecuencia_Pago'];
                         this.fechaEmision = data['Fecha_Emision'];
                         this.numeroFrecuencia = data['Numero_Frecuencia'];
-                        this.fechaCobro = data['Fecha_cobro'];
                         this.descuento = data['Descuento'];
-                        this.beneficiario = data['Beneficiario'];
-                        this.nota = data['Notas'];
+                        this.beneficiario = data['Beneficiarios'];
+                        this.nota = data['Nota'];
                         this.cuota = data['Cuota'];
+						
+                        this.fechaCobro = data['FechaCobro'];
                         break;
                     }
                     
@@ -417,9 +412,10 @@
                         'Descuento' : this.descuento,
                         'Beneficiarios' : this.beneficiario,
                         'Nota' : this.nota,
-                        'Cuota' : this.cuota
+                        'Cuota' : this.cuota,
+						'Fecha_Cobro': this.fechaCobro
                         }).then(function(response) {
-                        me.cerrarModal();
+                        me.mostrarTabla();
                         me.mostrarContrato(1,'','Contrato');
                         })
                     .catch(function (error) {
@@ -435,6 +431,7 @@
                     let me = this;
                     axios.put('/contrato/actualizar', {
                         'id' : this.idContrato,
+						
                         'Contrato' : this.contrato,
                         'idCliente' : this.idCliente,
                         'idVendedor' : this.idVendedor,
@@ -444,11 +441,12 @@
                         'Frecuencia_Pago': this.frecuenciaPago,
                         'Numero_Frecuencia': this.numeroFrecuencia,
                         'Descuento' : this.descuento,
-                        'Beneficiario' : this.beneficiario,
+                        'Beneficiarios' : this.beneficiario,
                         'Nota' : this.nota,
-                        'Cuota' : this.cuota
+                        'Cuota' : this.cuota,
+                        'Fecha_Cobro': this.fechaCobro
                         }).then(function(response) {
-                        me.cerrarModal();
+                         me.mostrarTabla();
                         me.mostrarContrato(1,'','Contrato');
                     })
                     .catch(function (error) {
@@ -457,9 +455,14 @@
                 }
             },
             fechaSistema(){
-                
-                // return fechaSist;
-                // console.log(fechaSist);
+                var f = new Date();
+                var day = f.getDate();
+                var month = f.getMonth();
+                var mes= parseInt(month) + parseInt(1);
+                if (mes==13) mes=1;
+                if (day < 10)  day= '0' + day;
+                if (month < 10)  month= '0' + mes;
+                this.fechaS = f.getFullYear()+"-"+month+"-"+ day;
             },
             validarFrmContrato(){
                 this.errorContrato=0;
@@ -471,7 +474,7 @@
                     this.msjErrores.push("* Debe de seleccionar una opción en cliente");
                 }else if(this.fechaEmision == ''){
                     this.msjErrores.push("* El campo fecha de emisión no puede estar vacío");
-                }else if(this.fechaEmision > fechaSist){
+                }else if(this.fechaEmision > this.fechaS){
                     this.msjErrores.push("* El campo fecha de emisión no puede ser mayor a la fecha del sistema");
                 }else if(this.idServicio == ''){
                     this.msjErrores.push("* Debe de seleccionar una opción en servicio");
@@ -571,6 +574,7 @@
             this.mostrarVendedor();
             this.mostrarCliente();
             this.mostrarServicio();
+            this.fechaSistema();
         }
     }
 </script>

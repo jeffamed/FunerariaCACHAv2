@@ -42,12 +42,11 @@ class EmpleadosController extends Controller
     {
         // if (!$request->ajax()) return redirect('/');
         $filtro = $request->filtro;
-        $empleados = Empleado::
-        // where('Nombre','like','%'.$filtro.'%')
-                            where('Estado','=','Activo')
+        $empleados = Empleado::where('Estado','=','Activo')
                             -> select('id',DB::raw('concat(Nombre," ",Apellido) as Nombre'))
                             -> orderBy('nombre','desc')
                             -> get();
+        // where('Nombre','like','%'.$filtro.'%')
         return ['empleados'=>$empleados];
     }
 
