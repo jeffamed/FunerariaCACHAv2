@@ -144,7 +144,7 @@
                                 <th>Teléfono</th>
                                 <th>Barrio</th>
                                 <th>Dirección</th>
-                                <th>Estado</th>
+                                <!-- <th>Estado</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -158,7 +158,7 @@
                                 <td v-text="cliente.Telefono"></td>
                                 <td v-text="cliente.Barrio"></td>
                                 <td v-text="cliente.Direccion"></td>
-                                <td v-text="cliente.Estado"></td>
+                                <!-- <td v-text="cliente.Estado"></td> -->
                             </tr>
                            
                         </tbody>

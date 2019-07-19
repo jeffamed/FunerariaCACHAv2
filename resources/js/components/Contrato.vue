@@ -11,6 +11,7 @@
                     <label for="" class="etiqueta">Buscar por: </label>
                     <select name="filtro" class="option-search" v-model="criterio">
                         <option value="Contrato"># Contrato</option>
+                        <option value="Nombre">Cliente</option>
                     </select>
                     <input type="text" v-model="buscar" @keyup="mostrarContrato(1,buscar,criterio)" class="buscar" placeholder="Buscar...">
                     <div class="icon-buscar">
@@ -28,8 +29,8 @@
                         <div class="form-inline mt-2 mb-2">
                             <label for="buscar" class="hidden-lg-up ml-1">Buscar por: </label>
                             <select id="select-opciones" class="custom-select hidden-lg-up mb-1 mr-1 w-25" v-model="criterio">
-                                <option value="Nombre">Contrato</option>
-                                <!-- <option value="descripcion">Descripción</option> -->
+                                <option value="Contrato"># Contrato</option>
+                                <option value="Nombre">Cliente</option>
                             </select>
                             <input type="text" id="txtbuscar" v-model="buscar" @keypress.enter="mostrarContrato(1,buscar,criterio)" class="form-control hidden-lg-up mb-1 w-50" placeholder="Buscar...">
                         </div>
@@ -40,11 +41,14 @@
                                 <tr>
                                     <th>Opciones</th>
                                     <th>Contratos</th>
+                                    <th>Cliente</th>
+                                    <th>Servicio</th>
+                                    <th>Fecha Emisión</th>
                                     <th>Estados</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="contrato in Contratos" :key="contrato.id">
+                                <tr v-for="contrato in Contratos" :key="contrato.id" :style="contrato.Estado == 'Suspendido' ? 'color:orange':''">
                                     <td>
                                         <button class="boton boton-edit" @click="mostrarFrm('actualizar', contrato)"><i class="fa fa-pencil"></i></button>
                                         <template v-if="contrato.Estado == 'Activo'">
@@ -55,6 +59,9 @@
                                         </template>
                                     </td>
                                     <td v-text="contrato.Contrato"></td>
+                                    <td v-text="contrato.NombreCliente"></td>
+                                    <td v-text="contrato.Servicio"></td>
+                                    <td v-text="contrato.Fecha_Emision"></td>
                                     <td v-text="contrato.Estado"></td>
                                 </tr>
                             
@@ -213,7 +220,6 @@
                 infoCliente: [],
                 infoServicio: [],
                 fechaS: '',
-				
                 modal: 0,
                 tituloModal: '',
                 btnFuncion: 0,
@@ -374,6 +380,7 @@
                         this.idCliente = data['idCliente'];
                         this.idVendedor = data['idVendedor'];
                         this.idServicio = data['idServicio'];
+                        this.servicio = data['Servicio']
                         this.total = data['Total'];
                         this.frecuenciaPago = data['Frecuencia_Pago'];
                         this.fechaEmision = data['Fecha_Emision'];
@@ -553,7 +560,7 @@
                     }).then((result) => {
                         if (result.value) {
                             let me = this;
-                            axios.put('/contrato/desactivar', {'id' : id}).then(function(response) {
+                            axios.put('/contrato/suspender', {'id' : id}).then(function(response) {
                                 me.mostrarContrato(1,'','Contrato');
                                 swal(
                                     'Suspendido',

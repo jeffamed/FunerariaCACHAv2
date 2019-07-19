@@ -23,25 +23,39 @@ class ContratoController extends Controller
                                 -> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
                                          ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia'
 										 ,'df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro'
-                                         ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado','c.id as idCliente','c.Nombre as NombreCliente')
+                                         ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado','c.id as idCliente',DB::raw('concat(c.Nombre, " ",c.Apellido) as NombreCliente'))
                                 -> orderBy('contratos.id','desc')
                                 -> paginate(7);
         }else{
-            $contratos = Contrato::join('servicios as s','contratos.idServicio','s.id')
-                                -> join('clientes as c','contratos.idCliente','c.id')
-                                -> join('empleados as e','contratos.idVendedor','e.id')
-								-> join('documentos_facturas as df','df.idDocumento','=','contratos.id')
-                                -> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
-                                         ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia'
-                                         ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado'
-										 ,'df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro','c.id as idCliente','c.Nombre as NombreCliente')
-                                -> where('contratos.'.$criterio,'like','%'.$buscar.'%')
-                                -> orderBy('contratos.id','desc')
-                                -> paginate(7);
+			 if($criterio == 'Contrato'){
+				$contratos = Contrato::join('servicios as s','contratos.idServicio','s.id')
+									-> join('clientes as c','contratos.idCliente','c.id')
+									-> join('empleados as e','contratos.idVendedor','e.id')
+									-> join('documentos_facturas as df','df.idDocumento','=','contratos.id')
+									-> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
+											 ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia'
+											 ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado'
+											 ,'df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro','c.id as idCliente','c.Nombre as NombreCliente')
+									-> where('contratos.'.$criterio,'like','%'.$buscar.'%')
+									-> orderBy('contratos.id','desc')
+									-> paginate(7);
+			 }else{
+				 $contratos = Contrato::join('servicios as s','contratos.idServicio','s.id')
+									-> join('clientes as c','contratos.idCliente','c.id')
+									-> join('empleados as e','contratos.idVendedor','e.id')
+									-> join('documentos_facturas as df','df.idDocumento','=','contratos.id')
+									-> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
+											 ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia'
+											 ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado'
+											 ,'df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro','c.id as idCliente','c.Nombre as NombreCliente')
+									-> where('c.'.$criterio,'like','%'.$buscar.'%')
+									-> orderBy('contratos.id','desc')
+									-> paginate(7);
+			 }
             
         }
-    
-            return[
+         
+        return[
                 'pagination' => [
                     'total'         => $contratos->total(),
                     'current_page'  => $contratos->currentPage(),
@@ -110,20 +124,20 @@ class ContratoController extends Controller
             $contrato = Contrato::findOrFail($request->id);
 			$documento = Documento_Factura::where('idDocumento','=',$contrato->id)->firstOrFail();
 				
-            //$contrato->idCliente = $request->idCliente;
-            //$contrato->idVendedor = $request->idVendedor;
-            //$contrato->idServicio = $request->idServicio;
-            //$contrato->Contrato = $request->Contrato;
-            //$contrato->Total = $request->Total;
-            //$contrato->Fecha_Emision = $request->Fecha_Emision;
-            //$contrato->Frecuencia_Pago = $request->Frecuencia_Pago;
-            //$contrato->Numero_Frecuencia = $request->Numero_Frecuencia;
-            //$contrato->Descuento = $request->Descuento;
-            //$contrato->Beneficiarios = $request->Beneficiarios;
-            //$contrato->Nota = $request->Nota;
-            //$contrato->Cuota = $request->Cuota;
-            //$contrato->Estado = 'Activo';
-            //$contrato->save();
+            $contrato->idCliente = $request->idCliente;
+            $contrato->idVendedor = $request->idVendedor;
+            $contrato->idServicio = $request->idServicio;
+            $contrato->Contrato = $request->Contrato;
+            $contrato->Total = $request->Total;
+            $contrato->Fecha_Emision = $request->Fecha_Emision;
+            $contrato->Frecuencia_Pago = $request->Frecuencia_Pago;
+            $contrato->Numero_Frecuencia = $request->Numero_Frecuencia;
+            $contrato->Descuento = $request->Descuento;
+            $contrato->Beneficiarios = $request->Beneficiarios;
+            $contrato->Nota = $request->Nota;
+            $contrato->Cuota = $request->Cuota;
+            $contrato->Estado = 'Activo';
+            $contrato->save();
 
             $documento->Fecha_PropuestaP = $request->Fecha_Cobro;
             $documento->Fecha_Cobro = $documento->Fecha_PropuestaP;
@@ -135,5 +149,20 @@ class ContratoController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
         }
+    }
+    public function suspender(Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+        $contrato = Contrato::findOrFail($request->id);
+        $contrato->Estado = 'Suspendido';
+        $contrato->save();
+    }
+
+    public function activar(Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+        $contrato = Contrato::findOrFail($request->id);
+        $contrato->Estado = 'Activo';
+        $contrato->save();
     }
 }

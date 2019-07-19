@@ -3277,6 +3277,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3462,6 +3469,7 @@ __webpack_require__.r(__webpack_exports__);
             this.contrato = data['Contrato'], this.idCliente = data['idCliente'];
             this.idVendedor = data['idVendedor'];
             this.idServicio = data['idServicio'];
+            this.servicio = data['Servicio'];
             this.total = data['Total'];
             this.frecuenciaPago = data['Frecuencia_Pago'];
             this.fechaEmision = data['Fecha_Emision'];
@@ -3634,7 +3642,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (result) {
         if (result.value) {
           var me = _this2;
-          axios.put('/contrato/desactivar', {
+          axios.put('/contrato/suspender', {
             'id': id
           }).then(function (response) {
             me.mostrarContrato(1, '', 'Contrato');
@@ -26870,10 +26878,6 @@ var render = function() {
                           _vm._v(" "),
                           _c("td", {
                             domProps: { textContent: _vm._s(cliente.Direccion) }
-                          }),
-                          _vm._v(" "),
-                          _c("td", {
-                            domProps: { textContent: _vm._s(cliente.Estado) }
                           })
                         ])
                       }),
@@ -27054,9 +27058,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Barrio")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Dirección")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Estado")])
+        _c("th", [_vm._v("Dirección")])
       ])
     ])
   }
@@ -27161,6 +27163,10 @@ var render = function() {
                     [
                       _c("option", { attrs: { value: "Contrato" } }, [
                         _vm._v("# Contrato")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "Nombre" } }, [
+                        _vm._v("Cliente")
                       ])
                     ]
                   ),
@@ -27251,8 +27257,12 @@ var render = function() {
                               }
                             },
                             [
+                              _c("option", { attrs: { value: "Contrato" } }, [
+                                _vm._v("# Contrato")
+                              ]),
+                              _vm._v(" "),
                               _c("option", { attrs: { value: "Nombre" } }, [
-                                _vm._v("Contrato")
+                                _vm._v("Cliente")
                               ])
                             ]
                           ),
@@ -27316,90 +27326,122 @@ var render = function() {
                             _c(
                               "tbody",
                               _vm._l(_vm.Contratos, function(contrato) {
-                                return _c("tr", { key: contrato.id }, [
-                                  _c(
-                                    "td",
-                                    [
-                                      _c(
-                                        "button",
-                                        {
-                                          staticClass: "boton boton-edit",
-                                          on: {
-                                            click: function($event) {
-                                              return _vm.mostrarFrm(
-                                                "actualizar",
-                                                contrato
-                                              )
+                                return _c(
+                                  "tr",
+                                  {
+                                    key: contrato.id,
+                                    style:
+                                      contrato.Estado == "Suspendido"
+                                        ? "color:orange"
+                                        : ""
+                                  },
+                                  [
+                                    _c(
+                                      "td",
+                                      [
+                                        _c(
+                                          "button",
+                                          {
+                                            staticClass: "boton boton-edit",
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.mostrarFrm(
+                                                  "actualizar",
+                                                  contrato
+                                                )
+                                              }
                                             }
-                                          }
-                                        },
-                                        [
-                                          _c("i", {
-                                            staticClass: "fa fa-pencil"
-                                          })
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      contrato.Estado == "Activo"
-                                        ? [
-                                            _c(
-                                              "button",
-                                              {
-                                                staticClass:
-                                                  "boton boton-eliminar",
-                                                on: {
-                                                  click: function($event) {
-                                                    return _vm.desactivarContrato(
-                                                      contrato.id
-                                                    )
-                                                  }
-                                                }
-                                              },
-                                              [
-                                                _c("i", {
-                                                  staticClass: "fa fa-trash"
-                                                })
-                                              ]
-                                            )
+                                          },
+                                          [
+                                            _c("i", {
+                                              staticClass: "fa fa-pencil"
+                                            })
                                           ]
-                                        : [
-                                            _c(
-                                              "button",
-                                              {
-                                                staticClass:
-                                                  "boton boton-activar",
-                                                on: {
-                                                  click: function($event) {
-                                                    return _vm.activarContrato(
-                                                      contrato.id
-                                                    )
-                                                  }
-                                                }
-                                              },
-                                              [
-                                                _c("i", {
+                                        ),
+                                        _vm._v(" "),
+                                        contrato.Estado == "Activo"
+                                          ? [
+                                              _c(
+                                                "button",
+                                                {
                                                   staticClass:
-                                                    "fa fa-check-circle"
-                                                })
-                                              ]
-                                            )
-                                          ]
-                                    ],
-                                    2
-                                  ),
-                                  _vm._v(" "),
-                                  _c("td", {
-                                    domProps: {
-                                      textContent: _vm._s(contrato.Contrato)
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c("td", {
-                                    domProps: {
-                                      textContent: _vm._s(contrato.Estado)
-                                    }
-                                  })
-                                ])
+                                                    "boton boton-eliminar",
+                                                  on: {
+                                                    click: function($event) {
+                                                      return _vm.desactivarContrato(
+                                                        contrato.id
+                                                      )
+                                                    }
+                                                  }
+                                                },
+                                                [
+                                                  _c("i", {
+                                                    staticClass: "fa fa-trash"
+                                                  })
+                                                ]
+                                              )
+                                            ]
+                                          : [
+                                              _c(
+                                                "button",
+                                                {
+                                                  staticClass:
+                                                    "boton boton-activar",
+                                                  on: {
+                                                    click: function($event) {
+                                                      return _vm.activarContrato(
+                                                        contrato.id
+                                                      )
+                                                    }
+                                                  }
+                                                },
+                                                [
+                                                  _c("i", {
+                                                    staticClass:
+                                                      "fa fa-check-circle"
+                                                  })
+                                                ]
+                                              )
+                                            ]
+                                      ],
+                                      2
+                                    ),
+                                    _vm._v(" "),
+                                    _c("td", {
+                                      domProps: {
+                                        textContent: _vm._s(contrato.Contrato)
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("td", {
+                                      domProps: {
+                                        textContent: _vm._s(
+                                          contrato.NombreCliente
+                                        )
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("td", {
+                                      domProps: {
+                                        textContent: _vm._s(contrato.Servicio)
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("td", {
+                                      domProps: {
+                                        textContent: _vm._s(
+                                          contrato.Fecha_Emision
+                                        )
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("td", {
+                                      domProps: {
+                                        textContent: _vm._s(contrato.Estado)
+                                      }
+                                    })
+                                  ]
+                                )
                               }),
                               0
                             )
@@ -28068,6 +28110,12 @@ var staticRenderFns = [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
         _c("th", [_vm._v("Contratos")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Cliente")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Servicio")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Fecha Emisión")]),
         _vm._v(" "),
         _c("th", [_vm._v("Estados")])
       ])

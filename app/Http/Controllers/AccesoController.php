@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Acceso;
+use Illuminate\Support\Facades\DB;
 
 class AccesoController extends Controller
 {
@@ -20,12 +21,12 @@ class AccesoController extends Controller
 
         if($buscar == ''){
             $accesos = Acceso::join('empleados','accesos.idEmpleado','=','empleados.id')
-                                    ->select('accesos.id','accesos.Usuario','empleados.Nombre as Empleado','empleados.id as idEmpleado','accesos.idEmpleado','accesos.password','accesos.Rol','accesos.Estado')
+                                    ->select('accesos.id','accesos.Usuario',DB::raw('concat(empleados.Nombre," ",empleados.Apellido) as Empleado'),'empleados.id as idEmpleado','accesos.idEmpleado','accesos.password','accesos.Rol','accesos.Estado')
                                     ->orderBy('accesos.id','desc')
                                     ->paginate(7);
         }else{
             $accesos = Acceso::join('empleados','accesos.idEmpleado','=','empleados.id')
-                                    ->select('accesos.id','accesos.Usuario','empleados.Nombre as Empleado','empleados.id as idEmpleado','accesos.idEmpleado','accesos.password','accesos.Rol','accesos.Estado')
+                                    ->select('accesos.id','accesos.Usuario',DB::raw('concat(empleados.Nombre," ",empleados.Apellido) as Empleado'),'empleados.id as idEmpleado','accesos.idEmpleado','accesos.password','accesos.Rol','accesos.Estado')
                                     ->where('accesos.'.$criterio,'like','%'.$buscar.'%')
                                     ->orderBy('accesos.id','desc')
                                     ->paginate(7);
