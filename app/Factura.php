@@ -10,6 +10,7 @@ class Factura extends Model
         'id',
         'idDolar',
         'idDocumento',
+        'TipoDocumento',
         'Fecha_Pago',
         'Monto',
         'Estado'

@@ -49,6 +49,7 @@ class FacturasController extends Controller
         $factura = new Factura();
         $factura->idDolar =  $request->idDolar;
         $factura->idDocumento = $request->idDocumento;
+        $factura->TipoDocumento = $request->TipoDocumento;
         $factura->Monto = $request->Monto;
         $factura->Estado = 'Activo';
         $factura->save();
@@ -67,6 +68,7 @@ class FacturasController extends Controller
         $factura = Factura::findOrFail($request->id);
         $factura->idDolar =  $request->idDolar;
         $factura->idDocumento = $request->idDocumento;
+        $factura->TipoDocumento = $request->TipoDocumento;
         $factura->Monto = $request->Monto;
         $factura->Estado = 'Activo';
         $factura->save();

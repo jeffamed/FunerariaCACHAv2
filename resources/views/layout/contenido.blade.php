@@ -13,7 +13,7 @@
         <contrato></contrato>
     </template>
     <template v-if="menu==3">
-        <h3 class="pt-5">Menu 3</h3>
+        <financiar></financiar>
     </template>
 {{-- Catalogo --}}
     <template v-if="menu==4">

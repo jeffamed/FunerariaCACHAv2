@@ -32,6 +32,7 @@ Vue.component('servicio', require('./components/Servicio.vue').default);
 Vue.component('acceso', require('./components/Acceso.vue').default);
 Vue.component('contrato', require('./components/Contrato.vue').default);
 Vue.component('factura', require('./components/Factura.vue').default);
+Vue.component('financiar', require('./components/Financiamiento.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

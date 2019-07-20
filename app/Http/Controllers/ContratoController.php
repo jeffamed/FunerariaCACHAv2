@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Contrato;
-use App\Documento_Factura;
+use App\FechasContrato;
 use Illuminate\Support\Facades\DB;
 
 class ContratoController extends Controller
@@ -19,7 +19,7 @@ class ContratoController extends Controller
             $contratos = Contrato::join('servicios as s','contratos.idServicio','=','s.id')
                                 -> join('clientes as c','contratos.idCliente','=','c.id')
                                 -> join('empleados as e','contratos.idVendedor','=','e.id')
-								-> join('documentos_facturas as df','df.idDocumento','=','contratos.id')
+								-> join('fechascontratos as df','df.idContrato','=','contratos.id')
                                 -> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
                                          ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia'
 										 ,'df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro'
@@ -31,7 +31,7 @@ class ContratoController extends Controller
 				$contratos = Contrato::join('servicios as s','contratos.idServicio','s.id')
 									-> join('clientes as c','contratos.idCliente','c.id')
 									-> join('empleados as e','contratos.idVendedor','e.id')
-									-> join('documentos_facturas as df','df.idDocumento','=','contratos.id')
+									-> join('fechascontratos as df','df.idContrato','=','contratos.id')
 									-> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
 											 ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia'
 											 ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado'
@@ -43,7 +43,7 @@ class ContratoController extends Controller
 				 $contratos = Contrato::join('servicios as s','contratos.idServicio','s.id')
 									-> join('clientes as c','contratos.idCliente','c.id')
 									-> join('empleados as e','contratos.idVendedor','e.id')
-									-> join('documentos_facturas as df','df.idDocumento','=','contratos.id')
+									-> join('fechascontratos as df','df.idContrato','=','contratos.id')
 									-> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
 											 ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia'
 											 ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado'
@@ -96,12 +96,12 @@ class ContratoController extends Controller
             $contrato->Estado = 'Activo';
             $contrato->save();
 
-            $documento = new Documento_Factura();
-            $documento->Fecha_PropuestaP = $request->Fecha_Cobro;
-            $documento->Fecha_Cobro = $documento->Fecha_PropuestaP;
-            $documento->idDocumento = $contrato->id;
-            $documento->Estado = "Por Cobrar";
-            $documento->save();
+            $fecha = new FechasContrato();
+            $fecha->Fecha_PropuestaP = $request->Fecha_Cobro;
+            $fecha->Fecha_Cobro = $fecha->Fecha_PropuestaP;
+            $fecha->idContrato = $contrato->id;
+            $fecha->Estado = "Por Cobrar";
+            $fecha->save();
 
             DB::commit();
         } catch (Exception $e) {
@@ -122,7 +122,7 @@ class ContratoController extends Controller
         try {
             DB::beginTransaction();
             $contrato = Contrato::findOrFail($request->id);
-			$documento = Documento_Factura::where('idDocumento','=',$contrato->id)->firstOrFail();
+			$fecha = FechasContrato::where('idContrato','=',$contrato->id)->firstOrFail();
 				
             $contrato->idCliente = $request->idCliente;
             $contrato->idVendedor = $request->idVendedor;
@@ -139,10 +139,10 @@ class ContratoController extends Controller
             $contrato->Estado = 'Activo';
             $contrato->save();
 
-            $documento->Fecha_PropuestaP = $request->Fecha_Cobro;
-            $documento->Fecha_Cobro = $documento->Fecha_PropuestaP;
-            $documento->Estado = "Por Cobrar";
-            $documento->save();
+            $fecha->Fecha_PropuestaP = $request->Fecha_Cobro;
+            $fecha->Fecha_Cobro = $fecha->Fecha_PropuestaP;
+            $fecha->Estado = "Por Cobrar";
+            $fecha->save();
 
             DB::commit();
 			

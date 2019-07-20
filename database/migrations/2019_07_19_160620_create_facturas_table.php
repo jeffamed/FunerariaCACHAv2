@@ -17,6 +17,7 @@ class CreateFacturasTable extends Migration
             $table->bigIncrements('id');
             $table->integer('idDolar');
             $table->integer('idDocumento');
+            $table->string('TipoDocumento',15);
             $table->date('Fecha_Pago');
             $table->float('Monto');
             $table->string('Estado',15)->default('Activo');
