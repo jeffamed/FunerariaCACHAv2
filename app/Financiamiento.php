@@ -17,4 +17,13 @@ class Financiamiento extends Model
         'numero_Frec',
         'Cuota'
     ];
+
+    public function contrato()
+    {
+        return $this->hasOne('App\Contrato');
+    }
+    public function fechaf()
+    {
+        return $this->hasMany('App\FechasFinanciamiento');
+    }
 }

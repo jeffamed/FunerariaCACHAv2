@@ -27,8 +27,7 @@ class ContratoController extends Controller
                                 -> orderBy('contratos.id','desc')
                                 -> paginate(7);
         }else{
-			 if($criterio == 'Contrato'){
-				$contratos = Contrato::join('servicios as s','contratos.idServicio','s.id')
+            $contratos = Contrato::join('servicios as s','contratos.idServicio','s.id')
 									-> join('clientes as c','contratos.idCliente','c.id')
 									-> join('empleados as e','contratos.idVendedor','e.id')
 									-> join('fechascontratos as df','df.idContrato','=','contratos.id')
@@ -36,23 +35,9 @@ class ContratoController extends Controller
 											 ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia'
 											 ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado'
 											 ,'df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro','c.id as idCliente','c.Nombre as NombreCliente')
-									-> where('contratos.'.$criterio,'like','%'.$buscar.'%')
+									-> where($criterio,'like','%'.$buscar.'%')
 									-> orderBy('contratos.id','desc')
 									-> paginate(7);
-			 }else{
-				 $contratos = Contrato::join('servicios as s','contratos.idServicio','s.id')
-									-> join('clientes as c','contratos.idCliente','c.id')
-									-> join('empleados as e','contratos.idVendedor','e.id')
-									-> join('fechascontratos as df','df.idContrato','=','contratos.id')
-									-> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
-											 ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia'
-											 ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado'
-											 ,'df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro','c.id as idCliente','c.Nombre as NombreCliente')
-									-> where('c.'.$criterio,'like','%'.$buscar.'%')
-									-> orderBy('contratos.id','desc')
-									-> paginate(7);
-			 }
-            
         }
          
         return[

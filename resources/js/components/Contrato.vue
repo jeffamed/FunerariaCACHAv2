@@ -10,8 +10,8 @@
                 <div class="buscador d-flex ml-auto hidden-md-down">
                     <label for="" class="etiqueta">Buscar por: </label>
                     <select name="filtro" class="option-search" v-model="criterio">
-                        <option value="Contrato"># Contrato</option>
-                        <option value="Nombre">Cliente</option>
+                        <option value="contratos.Contrato"># Contrato</option>
+                        <option value="c.Nombre">Cliente</option>
                     </select>
                     <input type="text" v-model="buscar" @keyup="mostrarContrato(1,buscar,criterio)" class="buscar" placeholder="Buscar...">
                     <div class="icon-buscar">
@@ -29,8 +29,8 @@
                         <div class="form-inline mt-2 mb-2">
                             <label for="buscar" class="hidden-lg-up ml-1">Buscar por: </label>
                             <select id="select-opciones" class="custom-select hidden-lg-up mb-1 mr-1 w-25" v-model="criterio">
-                                <option value="Contrato"># Contrato</option>
-                                <option value="Nombre">Cliente</option>
+                                <option value="contratos.Contrato"># Contrato</option>
+                                <option value="c.Nombre">Cliente</option>
                             </select>
                             <input type="text" id="txtbuscar" v-model="buscar" @keypress.enter="mostrarContrato(1,buscar,criterio)" class="form-control hidden-lg-up mb-1 w-50" placeholder="Buscar...">
                         </div>
@@ -234,7 +234,7 @@
                     'to': 0,
                 },
                 offset: 3,
-                criterio: 'Contrato',
+                criterio: 'contratos.Contrato',
                 buscar: '',
             }
         },

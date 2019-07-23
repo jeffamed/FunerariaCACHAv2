@@ -13,4 +13,8 @@ class FechasFinanciamiento extends Model
         'Fecha_Cobro',
         'Estado'
     ];
+    public function financiamiento()
+    {
+        return $this->belongsTo('App\Financiamiento');
+    }
 }

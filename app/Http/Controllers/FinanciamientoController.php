@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\FechasFinanciamiento;
 use App\Financiamiento;
+use Illuminate\Support\Facades\DB;
 
 class FinanciamientoController extends Controller
 {
@@ -15,43 +16,26 @@ class FinanciamientoController extends Controller
         $criterio = $request->criterio;
 
         if($buscar == ''){
-            $financiamientos = Financiamiento::join('servicios as s','financiamientos.idServicio','=','s.id')
-                                -> join('clientes as c','financiamientos.idCliente','=','c.id')
-                                -> join('empleados as e','financiamientos.idVendedor','=','e.id')
-								-> join('fechasfinanciamientos as df','df.idfinanciamiento','=','financiamientos.id')
-                                -> select('financiamientos.id','financiamientos.financiamiento','financiamientos.idCliente','financiamientos.idVendedor','financiamientos.idServicio','financiamientos.Total','financiamientos.Fecha_Emision'
-                                         ,'financiamientos.Frecuencia_Pago','financiamientos.Estado','financiamientos.Descuento','financiamientos.Beneficiarios','financiamientos.Nota','financiamientos.Cuota','financiamientos.Numero_Frecuencia'
-										 ,'df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro'
-                                         ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado','c.id as idCliente',DB::raw('concat(c.Nombre, " ",c.Apellido) as NombreCliente'))
+            $financiamientos = Financiamiento::join('contratos as c','financiamientos.idContrato','=','c.id')
+                                -> join('clientes as cl','c.idCliente','=','cl.id')
+								-> join('fechasfinanciamientos as ff','ff.idfinanciamiento','=','financiamientos.id')
+                                -> select('financiamientos.id','financiamientos.idContrato','financiamientos.Financiamiento','financiamientos.PorcentajeFin','financiamientos.SubTotal'
+                                         ,'financiamientos.Total','financiamientos.Frecuencia_Pago','financiamientos.numero_Frec','financiamientos.Cuota'
+                                         ,'ff.id as idFecha','ff.Fecha_PropuestaP as FechaPago','ff.Fecha_Cobro as FechaCobro'
+                                         ,'c.id as idContrato','c.Contrato',DB::raw('contat(cl.Nombre," ",cl.Apellido) as Cliente'))
                                 -> orderBy('financiamientos.id','desc')
                                 -> paginate(7);
         }else{
-			 if($criterio == 'financiamiento'){
-				$financiamientos = Financiamiento::join('servicios as s','financiamientos.idServicio','s.id')
-									-> join('clientes as c','financiamientos.idCliente','c.id')
-									-> join('empleados as e','financiamientos.idVendedor','e.id')
-									-> join('fechasfinanciamientos as df','df.idfinanciamiento','=','financiamientos.id')
-									-> select('financiamientos.id','financiamientos.financiamiento','financiamientos.idCliente','financiamientos.idVendedor','financiamientos.idServicio','financiamientos.Total','financiamientos.Fecha_Emision'
-											 ,'financiamientos.Frecuencia_Pago','financiamientos.Estado','financiamientos.Descuento','financiamientos.Beneficiarios','financiamientos.Nota','financiamientos.Cuota','financiamientos.Numero_Frecuencia'
-											 ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado'
-											 ,'df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro','c.id as idCliente','c.Nombre as NombreCliente')
-									-> where('financiamientos.'.$criterio,'like','%'.$buscar.'%')
+				$financiamientos = Financiamiento::join('contratos as c','financiamientos.idContrato','=','c.id')
+                                    -> join('clientes as cl','c.idCliente','=','cl.id')
+                                    -> join('fechasfinanciamientos as ff','ff.idfinanciamiento','=','financiamientos.id')
+                                    -> select('financiamientos.id','financiamientos.idContrato','financiamientos.Financiamiento','financiamientos.PorcentajeFin','financiamientos.SubTotal'
+                                            ,'financiamientos.Total','financiamientos.Frecuencia_Pago','financiamientos.numero_Frec','financiamientos.Cuota'
+                                            ,'ff.id as idFecha','ff.Fecha_PropuestaP as FechaPago','ff.Fecha_Cobro as FechaCobro'
+                                            ,'c.id as idContrato','c.Contrato',DB::raw('contat(cl.Nombre," ",cl.Apellido) as Cliente'))
+									-> where($criterio,'like','%'.$buscar.'%')
 									-> orderBy('financiamientos.id','desc')
 									-> paginate(7);
-			 }else{
-				 $financiamientos = Financiamiento::join('servicios as s','financiamientos.idServicio','s.id')
-									-> join('clientes as c','financiamientos.idCliente','c.id')
-									-> join('empleados as e','financiamientos.idVendedor','e.id')
-									-> join('fechasfinanciamientos as df','df.idfinanciamiento','=','financiamientos.id')
-									-> select('financiamientos.id','financiamientos.financiamiento','financiamientos.idCliente','financiamientos.idVendedor','financiamientos.idServicio','financiamientos.Total','financiamientos.Fecha_Emision'
-											 ,'financiamientos.Frecuencia_Pago','financiamientos.Estado','financiamientos.Descuento','financiamientos.Beneficiarios','financiamientos.Nota','financiamientos.Cuota','financiamientos.Numero_Frecuencia'
-											 ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado'
-											 ,'df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro','c.id as idCliente','c.Nombre as NombreCliente')
-									-> where('c.'.$criterio,'like','%'.$buscar.'%')
-									-> orderBy('financiamientos.id','desc')
-									-> paginate(7);
-			 }
-            
         }
          
         return[

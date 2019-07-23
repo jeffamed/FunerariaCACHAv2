@@ -39,9 +39,12 @@ class Contrato extends Model
     {
         return $this->hasMany('App\FechasContrato');
     }
-
     public function facturas()
     {
         return $this->hasMany('App\Facturas');
+    }
+    public function financiamiento()
+    {
+        return $this->belongsTo('App\Financiamiento');
     }
 }
