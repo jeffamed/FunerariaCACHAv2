@@ -4959,42 +4959,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -5003,7 +4967,7 @@ __webpack_require__.r(__webpack_exports__);
       idFinanciamiento: 0,
       financiamiento: '',
       idContrato: 0,
-      subTotal: 0,
+      subTotal: 1000,
       porcentaje: 0,
       total: 0,
       frecuenciaPago: '',
@@ -5124,16 +5088,10 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.financiamiento == '') {
         this.msjErrores.push("* El campo financiamiento no puede estar vacío");
-      } else if (this.idCliente == '') {
-        this.msjErrores.push("* Debe de seleccionar una opción en cliente");
-      } else if (this.fechaEmision == '') {
-        this.msjErrores.push("* El campo fecha de emisión no puede estar vacío");
+      } else if (this.idContro == 0) {
+        this.msjErrores.push("* Elija un contrato");
       } else if (this.fechaPago > this.fechaS) {
         this.msjErrores.push("* El campo fecha de emisión no puede ser mayor a la fecha del sistema");
-      } else if (this.idServicio == '') {
-        this.msjErrores.push("* Debe de seleccionar una opción en servicio");
-      } else if (this.idVendedor == '') {
-        this.msjErrores.push("* Debe de seleccionar una opción en vendedor");
       } else if (this.numeroFrecuencia <= 0) {
         this.msjErrores.push("* El campo frecuencia de pago tiene que se mayor a 0");
       } else if (this.frecuenciaPago == '') {
@@ -5144,8 +5102,12 @@ __webpack_require__.r(__webpack_exports__);
         this.msjErrores.push("* El campo descuento no puede ser negativo");
       } else if (this.cuota <= 0) {
         this.msjErrores.push("* El campo cuota no puede ser negativo o igual a 0");
-      } else if (this.beneficiario == '') {
-        this.msjErrores.push("* El campo beneficiario no puede estrar vacío");
+      } else if (this.subTotal == 0) {
+        this.msjErrores.push("* El campo subTotal de descuento no puede ser 0");
+      } else if (this.total == 0) {
+        this.msjErrores.push("* El campo total de descuento no puede ser 0");
+      } else if (this.porcentaje == 0) {
+        this.msjErrores.push("* El campo porcentaje de descuento no puede ser 0");
       }
 
       if (this.msjErrores.length) {
@@ -5153,6 +5115,10 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return this.errorFinanciamiento;
+    },
+    FncTotal: function FncTotal() {
+      var me = this;
+      me.total = parseFloat(me.subTotal) + parseFloat(me.subTotal) * parseFloat(me.porcentaje / 100);
     },
     fechaSistema: function fechaSistema() {
       var f = new Date();
@@ -31573,14 +31539,14 @@ var render = function() {
                   ]
                 : [
                     _c("div", { staticClass: "row m-1" }, [
-                      _c("div", { staticClass: "col-md-3 form-group" }, [
+                      _c("div", { staticClass: "col-md-6 form-group" }, [
                         _c(
                           "label",
                           {
                             staticClass: "form-control-label",
-                            attrs: { for: "Contrato" }
+                            attrs: { for: "" }
                           },
-                          [_vm._v("Contrato: ")]
+                          [_vm._v("No. Financiamiento: ")]
                         ),
                         _vm._v(" "),
                         _c("input", {
@@ -31588,19 +31554,22 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.contrato,
-                              expression: "contrato"
+                              value: _vm.financiamiento,
+                              expression: "financiamiento"
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "# Contrato" },
-                          domProps: { value: _vm.contrato },
+                          attrs: {
+                            type: "text",
+                            placeholder: "# Financiamiento"
+                          },
+                          domProps: { value: _vm.financiamiento },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.contrato = $event.target.value
+                              _vm.financiamiento = $event.target.value
                             }
                           }
                         })
@@ -31614,140 +31583,109 @@ var render = function() {
                             "label",
                             {
                               staticClass: "form-control-label",
-                              attrs: { for: "Cliente" }
+                              attrs: { for: "" }
                             },
-                            [_vm._v("Cliente:")]
+                            [_vm._v("# Contrato:")]
                           ),
                           _vm._v(" "),
                           _c("v-select", {
                             attrs: {
                               label: "Nombre",
-                              placeholder: "Buscar Cliente..",
-                              options: _vm.infoCliente,
-                              reduce: function(infoCliente) {
-                                return infoCliente.id
+                              placeholder: "Buscar Contrato..",
+                              options: _vm.infoContrato,
+                              reduce: function(infoContrato) {
+                                return infoContrato.id
                               }
                             },
                             model: {
-                              value: _vm.idCliente,
+                              value: _vm.idContrato,
                               callback: function($$v) {
-                                _vm.idCliente = $$v
+                                _vm.idContrato = $$v
                               },
-                              expression: "idCliente"
+                              expression: "idContrato"
                             }
                           })
                         ],
                         1
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3 form-group" }, [
-                        _c(
-                          "label",
-                          {
-                            staticClass: "form-control-label",
-                            attrs: { for: "FechaE" }
-                          },
-                          [_vm._v("Fecha de Emisión:")]
-                        ),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.fechaEmision,
-                              expression: "fechaEmision"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "date", name: "", id: "" },
-                          domProps: { value: _vm.fechaEmision },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.fechaEmision = $event.target.value
-                            }
-                          }
-                        })
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-md-3 form-group" },
-                        [
-                          _c(
-                            "label",
-                            {
-                              staticClass: "form-control-label",
-                              attrs: { for: "Servicio" }
-                            },
-                            [_vm._v("Servicio:")]
-                          ),
-                          _vm._v(" "),
-                          _c("v-select", {
-                            attrs: {
-                              label: "Nombre",
-                              placeholder: "Buscar Servicio..",
-                              options: _vm.infoServicio,
-                              value: _vm.infoServicio
-                            },
-                            on: { input: _vm.getDatosServicio },
-                            model: {
-                              value: _vm.servicio,
-                              callback: function($$v) {
-                                _vm.servicio = $$v
-                              },
-                              expression: "servicio"
-                            }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-md-6 form-group" },
-                        [
-                          _c(
-                            "label",
-                            {
-                              staticClass: "form-control-label",
-                              attrs: { for: "Vendedor" }
-                            },
-                            [_vm._v("Vendedor:")]
-                          ),
-                          _vm._v(" "),
-                          _c("v-select", {
-                            attrs: {
-                              label: "Nombre",
-                              placeholder: "Buscar Vendedor..",
-                              options: _vm.infoVendedor,
-                              reduce: function(infoVendedor) {
-                                return infoVendedor.id
-                              }
-                            },
-                            model: {
-                              value: _vm.idVendedor,
-                              callback: function($$v) {
-                                _vm.idVendedor = $$v
-                              },
-                              expression: "idVendedor"
-                            }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3 form-group" }, [
+                      _c("div", { staticClass: "col-md-4 form-group" }, [
                         _c(
                           "label",
                           {
                             staticClass: "form-control-label",
                             attrs: { for: "Total" }
                           },
-                          [_vm._v("Costo del Servicio: ")]
+                          [_vm._v("Subtotal: ")]
+                        ),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.subTotal,
+                              expression: "subTotal"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "number",
+                            placeholder: "Subtotal Financiamiento"
+                          },
+                          domProps: { value: _vm.subTotal },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.subTotal = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4 form-group" }, [
+                        _c(
+                          "label",
+                          {
+                            staticClass: "form-control-label",
+                            attrs: { for: "FechaC" }
+                          },
+                          [_vm._v("% Financiamiento:")]
+                        ),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.porcentaje,
+                              expression: "porcentaje"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "number" },
+                          domProps: { value: _vm.porcentaje },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.porcentaje = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4 form-group" }, [
+                        _c(
+                          "label",
+                          {
+                            staticClass: "form-control-label",
+                            attrs: { for: "" }
+                          },
+                          [_vm._v("Total:")]
                         ),
                         _vm._v(" "),
                         _c("input", {
@@ -31760,8 +31698,11 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text" },
-                          domProps: { value: _vm.total },
+                          attrs: { type: "number", readonly: "" },
+                          domProps: {
+                            value: _vm.total,
+                            textContent: _vm._s(_vm.subTotal)
+                          },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
@@ -31773,40 +31714,7 @@ var render = function() {
                         })
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3 form-group" }, [
-                        _c(
-                          "label",
-                          {
-                            staticClass: "form-control-label",
-                            attrs: { for: "FechaC" }
-                          },
-                          [_vm._v("Primer Cobro:")]
-                        ),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.fechaCobro,
-                              expression: "fechaCobro"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "date" },
-                          domProps: { value: _vm.fechaCobro },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.fechaCobro = $event.target.value
-                            }
-                          }
-                        })
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3 form-group" }, [
+                      _c("div", { staticClass: "col-md-4 form-group" }, [
                         _c(
                           "label",
                           {
@@ -31893,7 +31801,7 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3 form-group" }, [
+                      _c("div", { staticClass: "col-md-4 form-group" }, [
                         _c(
                           "label",
                           {
@@ -31931,14 +31839,14 @@ var render = function() {
                         })
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3 form-group" }, [
+                      _c("div", { staticClass: "col-md-4 form-group" }, [
                         _c(
                           "label",
                           {
                             staticClass: "form-control-label",
-                            attrs: { for: "Descuento" }
+                            attrs: { for: "FechaC" }
                           },
-                          [_vm._v("Descuento (%):")]
+                          [_vm._v("Primer Cobro:")]
                         ),
                         _vm._v(" "),
                         _c("input", {
@@ -31946,90 +31854,19 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.descuento,
-                              expression: "descuento"
+                              value: _vm.fechaCobro,
+                              expression: "fechaCobro"
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: {
-                            type: "number",
-                            name: "Descuento",
-                            min: "0",
-                            value: "0"
-                          },
-                          domProps: { value: _vm.descuento },
+                          attrs: { type: "date" },
+                          domProps: { value: _vm.fechaCobro },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.descuento = $event.target.value
-                            }
-                          }
-                        })
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6 form-group" }, [
-                        _c(
-                          "label",
-                          {
-                            staticClass: "form-control-label",
-                            attrs: { for: "Beneficiario" }
-                          },
-                          [_vm._v("Beneficiario:")]
-                        ),
-                        _vm._v(" "),
-                        _c("textarea", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.beneficiario,
-                              expression: "beneficiario"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { name: "", id: "" },
-                          domProps: { value: _vm.beneficiario },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.beneficiario = $event.target.value
-                            }
-                          }
-                        })
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6 form-group" }, [
-                        _c(
-                          "label",
-                          {
-                            staticClass: "form-control-label",
-                            attrs: { for: "Nota" }
-                          },
-                          [_vm._v("Nota:")]
-                        ),
-                        _vm._v(" "),
-                        _c("textarea", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.nota,
-                              expression: "nota"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { name: "", id: "" },
-                          domProps: { value: _vm.nota },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.nota = $event.target.value
+                              _vm.fechaCobro = $event.target.value
                             }
                           }
                         })

@@ -83,65 +83,39 @@
                 <template v-else>
                     <div class="row m-1">
                         <!-- # Financiamiento -->
-                        <div class="col-md-3 form-group">
-                            <label for="Contrato" class="form-control-label">Contrato: </label>
-                            <input type="text" class="form-control" placeholder="# Contrato" v-model="contrato">
-                        </div>
-                        <!-- Cliente -->
                         <div class="col-md-6 form-group">
-                            <label for="Cliente" class="form-control-label">Cliente:</label>
-                            <v-select 
-                                label="Nombre"
-                                placeholder="Buscar Cliente.."
-                                :options="infoCliente"
-                                v-model="idCliente"
-                                :reduce="infoCliente => infoCliente.id"
-                            >
-                            </v-select>
+                            <label for="" class="form-control-label">No. Financiamiento: </label>
+                            <input type="text" class="form-control" placeholder="# Financiamiento" v-model="financiamiento">
                         </div>
-                        <!-- Fecha de Emision -->
-                        <div class="col-md-3 form-group">
-                            <label for="FechaE" class="form-control-label">Fecha de Emisión:</label>
-                            <input type="date" name="" id="" class="form-control" v-model="fechaEmision">
-                        </div>
-                        <!-- Servicio -->
-                        <div class="col-md-3 form-group">
-                            <label for="Servicio" class="form-control-label">Servicio:</label>
-                            <!-- :reduce="infoServicio => infoServicio.id" -->
-                            <v-select 
-                                label="Nombre"
-                                placeholder="Buscar Servicio.."
-                                :options="infoServicio"
-                                v-model="servicio"
-                                :value="infoServicio"
-                                @input="getDatosServicio"
-                            >
-                            </v-select>
-                        </div>
-                        <!-- Vendedor -->
+                        <!-- Contrato-->
                         <div class="col-md-6 form-group">
-                            <label for="Vendedor" class="form-control-label">Vendedor:</label>
+                            <label for="" class="form-control-label"># Contrato:</label>
                             <v-select 
                                 label="Nombre"
-                                placeholder="Buscar Vendedor.."
-                                :options="infoVendedor"
-                                v-model="idVendedor"
-                                :reduce="infoVendedor => infoVendedor.id"
+                                placeholder="Buscar Contrato.."
+                                :options="infoContrato"
+                                v-model="idContrato"
+                                :reduce="infoContrato => infoContrato.id"
                             >
                             </v-select>
                         </div>
-                        <!-- Costo del servicio -->
-                        <div class="col-md-3 form-group">
-                            <label for="Total" class="form-control-label">Costo del Servicio: </label>
-                            <input type="text" class="form-control" v-model="total">
+                        <!-- subTotal -->
+                        <div class="col-md-4 form-group">
+                            <label for="Total" class="form-control-label">Subtotal: </label>
+                            <input type="number" class="form-control" v-model="subTotal" placeholder="Subtotal Financiamiento">
                         </div>
-                        <!-- Fecha del primer cobro -->
-                        <div class="col-md-3 form-group">
-                            <label for="FechaC" class="form-control-label">Primer Cobro:</label>
-                            <input type="date" class="form-control" v-model="fechaCobro">
+                        <!-- % del Financiamiento -->
+                        <div class="col-md-4 form-group">
+                            <label for="FechaC" class="form-control-label">% Financiamiento:</label>
+                            <input type="number" class="form-control" v-model="porcentaje">
+                        </div>
+                        <!-- total -->
+                        <div class="col-md-4 form-group">
+                            <label for="" class="form-control-label">Total:</label>
+                            <input type="number" class="form-control" readonly v-model="total" v-text="subTotal">
                         </div>
                         <!-- Frecuencia de pago -->
-                        <div class="col-md-3 form-group">
+                        <div class="col-md-4 form-group">
                             <label for="Frecuencia" class="form-control-label">Frecuencia de Cobro:</label>
                             <div class="d-flex">
                                 <input type="number"  min="1" value="1" class="form-control frecuencia frecuencia-numero" v-model="numeroFrecuencia">
@@ -154,24 +128,14 @@
                             </div>
                         </div>
                         <!-- Cuotas -->
-                        <div class="col-md-3 form-group">
+                        <div class="col-md-4 form-group">
                             <label for="Cuota" class="form-control-label">Cuota:</label>
                             <input type="number" name="Cuota" min="0" value="0" class="form-control" v-model="cuota">
                         </div>
-                        <!-- Descuento -->
-                        <div class="col-md-3 form-group">
-                            <label for="Descuento" class="form-control-label">Descuento (%):</label>
-                            <input type="number" name="Descuento" min="0" value="0" class="form-control" v-model="descuento">
-                        </div>
-                        <!-- Beneficiario -->
-                        <div class="col-md-6 form-group">
-                            <label for="Beneficiario" class="form-control-label">Beneficiario:</label>
-                            <textarea name="" id="" class="form-control" v-model="beneficiario"></textarea>
-                        </div>
-                        <!-- Notas -->
-                        <div class="col-md-6 form-group">
-                            <label for="Nota" class="form-control-label">Nota:</label>
-                            <textarea name="" id="" class="form-control" v-model="nota"></textarea>
+                         <!-- Fecha del primer cobro -->
+                        <div class="col-md-4 form-group">
+                            <label for="FechaC" class="form-control-label">Primer Cobro:</label>
+                            <input type="date" class="form-control" v-model="fechaCobro">
                         </div>
                         <div v-show="errorContrato" class="form-group msjerror">
                             <div class="col-12 text-center texterror" v-for="error in msjErrores" :key="error" v-text="error"></div>
@@ -197,7 +161,7 @@
                 idFinanciamiento: 0,
                 financiamiento: '',
                 idContrato: 0,
-                subTotal: 0,
+                subTotal: 1000,
                 porcentaje: 0,
                 total: 0,
                 frecuenciaPago: '',
@@ -322,16 +286,10 @@
                 
                 if(this.financiamiento == ''){
                     this.msjErrores.push("* El campo financiamiento no puede estar vacío");
-                }else if(this.idCliente == ''){
-                    this.msjErrores.push("* Debe de seleccionar una opción en cliente");
-                }else if(this.fechaEmision == ''){
-                    this.msjErrores.push("* El campo fecha de emisión no puede estar vacío");
+                }else if(this.idContro == 0){
+                    this.msjErrores.push("* Elija un contrato");
                 }else if(this.fechaPago > this.fechaS){
                     this.msjErrores.push("* El campo fecha de emisión no puede ser mayor a la fecha del sistema");
-                }else if(this.idServicio == ''){
-                    this.msjErrores.push("* Debe de seleccionar una opción en servicio");
-                }else if(this.idVendedor == ''){
-                    this.msjErrores.push("* Debe de seleccionar una opción en vendedor");
                 }else if(this.numeroFrecuencia <= 0){
                     this.msjErrores.push("* El campo frecuencia de pago tiene que se mayor a 0");
                 }else if(this.frecuenciaPago == ''){
@@ -342,8 +300,12 @@
                     this.msjErrores.push("* El campo descuento no puede ser negativo");
                 }else if(this.cuota <= 0){
                     this.msjErrores.push("* El campo cuota no puede ser negativo o igual a 0");
-                }else if(this.beneficiario == ''){
-                    this.msjErrores.push("* El campo beneficiario no puede estrar vacío");
+                }else if(this.subTotal == 0){
+                    this.msjErrores.push("* El campo subTotal de descuento no puede ser 0");
+                }else if(this.total == 0){
+                    this.msjErrores.push("* El campo total de descuento no puede ser 0");
+                }else if(this.porcentaje == 0){
+                    this.msjErrores.push("* El campo porcentaje de descuento no puede ser 0");
                 }
 
                 if(this.msjErrores.length) 
@@ -352,7 +314,11 @@
                 }
                 return this.errorFinanciamiento;
             },
-             fechaSistema(){
+            FncTotal(){
+                let me = this;
+                me.total= parseFloat(me.subTotal) + (parseFloat(me.subTotal) * parseFloat(me.porcentaje/100));
+            },
+            fechaSistema(){
                 var f = new Date();
                 var day = f.getDate();
                 var month = f.getMonth();
