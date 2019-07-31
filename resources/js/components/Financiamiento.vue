@@ -90,7 +90,7 @@
                         <div class="col-md-4 form-group">
                             <label for="" class="form-control-label"># Contrato:</label>
                             <v-select 
-                                label="Nombre"
+                                label="Contrato"
                                 placeholder="Buscar Contrato.."
                                 :options="infoContrato"
                                 v-model="idContrato"

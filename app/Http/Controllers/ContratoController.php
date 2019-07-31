@@ -57,13 +57,12 @@ class ContratoController extends Controller
     {
         // if (!$request->ajax()) return redirect('/');
         $filtro = $request->filtro;
-        $contratos = Contrato::
-        // join('clientes as c','contratos.idCliente','=','c.id')
-                            where('Estado','=','Activo')
-                            -> select('id','Contrato')
-                            -> orderBy('Contrato','desc')
+        $contratos = Contrato::join('clientes as c','contratos.idCliente','=','c.id')
+                            ->where('contratos.Estado','=','Activo')
+                            -> select('contratos.id','contratos.Contrato',DB::raw('concat(c.Nombre, " ",c.Apellido) as NombreCliente'))
+                            -> orderBy('contratos.Contrato','desc')
                             -> get();
-                            // ,DB::raw('concat(c.Nombre, " ",c.Apellido) as NombreCliente'))
+                            
         // where('Nombre','like','%'.$filtro.'%')
         return ['contratos'=>$contratos];
     }

@@ -31593,7 +31593,7 @@ var render = function() {
                           _vm._v(" "),
                           _c("v-select", {
                             attrs: {
-                              label: "Nombre",
+                              label: "Contrato",
                               placeholder: "Buscar Contrato..",
                               options: _vm.infoContrato,
                               reduce: function(infoContrato) {
