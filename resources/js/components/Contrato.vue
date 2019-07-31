@@ -285,13 +285,10 @@
             },
             mostrarVendedor(){
                 let me = this;
-                // loading(true)
                 var url= '/empleado/seleccionarEmpleado';
                 axios.get(url).then(function(response) {
                     let respuesta = response.data;
-                    // q: search
                     me.infoVendedor = respuesta.empleados;
-                    // loading(false);
                 })
                 .catch(function (error) {
                     console.log(error);

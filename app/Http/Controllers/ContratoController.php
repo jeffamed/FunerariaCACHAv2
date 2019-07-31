@@ -27,13 +27,13 @@ class ContratoController extends Controller
                                 -> orderBy('contratos.id','desc')
                                 -> paginate(7);
         }else{
-            $contratos = Contrato::join('servicios as s','contratos.idServicio','s.id')
-									-> join('clientes as c','contratos.idCliente','c.id')
-									-> join('empleados as e','contratos.idVendedor','e.id')
+            $contratos = Contrato::join('servicios as s','contratos.idServicio','=','s.id')
+									-> join('clientes as c','contratos.idCliente','=','c.id')
+									-> join('empleados as e','contratos.idVendedor','=','e.id')
 									-> join('fechascontratos as df','df.idContrato','=','contratos.id')
 									-> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
 											 ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia'
-											 ,'df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro','c.id as idCliente','c.Nombre as NombreCliente'
+											 ,'df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro','c.id as idCliente'
 											 ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado','c.id as idCliente',DB::raw('concat(c.Nombre, " ",c.Apellido) as NombreCliente'))
 									-> where($criterio,'like','%'.$buscar.'%')
 									-> orderBy('contratos.id','desc')
@@ -51,6 +51,21 @@ class ContratoController extends Controller
                 ],
                 'contratos'  =>  $contratos
             ];
+    }
+
+    public function seleccionar(Request $request)
+    {
+        // if (!$request->ajax()) return redirect('/');
+        $filtro = $request->filtro;
+        $contratos = Contrato::
+        // join('clientes as c','contratos.idCliente','=','c.id')
+                            where('Estado','=','Activo')
+                            -> select('id','Contrato')
+                            -> orderBy('Contrato','desc')
+                            -> get();
+                            // ,DB::raw('concat(c.Nombre, " ",c.Apellido) as NombreCliente'))
+        // where('Nombre','like','%'.$filtro.'%')
+        return ['contratos'=>$contratos];
     }
 
      /**

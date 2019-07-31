@@ -4,7 +4,7 @@
         <!-- ENCABEZADO -->
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
                 <h5 class="titulo">Financiamientos</h5>
-            <!-- Boton nuevo -->
+                <!-- Boton nuevo -->
                 <button class="btn-new"  @click="mostrarFrm('registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- buscador -->
                 <div class="buscador d-flex ml-auto hidden-md-down">
@@ -60,7 +60,6 @@
                                     <td v-text="financiamiento.Cliente"></td>
                                     <td v-text="financiamiento.Estado"></td>
                                 </tr>
-                            
                             </tbody>
                         </table>
                     </div>
@@ -83,12 +82,12 @@
                 <template v-else>
                     <div class="row m-1">
                         <!-- # Financiamiento -->
-                        <div class="col-md-6 form-group">
+                        <div class="col-md-3 form-group">
                             <label for="" class="form-control-label">No. Financiamiento: </label>
                             <input type="text" class="form-control" placeholder="# Financiamiento" v-model="financiamiento">
                         </div>
                         <!-- Contrato-->
-                        <div class="col-md-6 form-group">
+                        <div class="col-md-4 form-group">
                             <label for="" class="form-control-label"># Contrato:</label>
                             <v-select 
                                 label="Nombre"
@@ -98,6 +97,11 @@
                                 :reduce="infoContrato => infoContrato.id"
                             >
                             </v-select>
+                        </div>
+                        <!-- cliente -->
+                        <div class="col-md-5 form-group">
+                            <label for="cliente" class="form-control-label">Cliente: </label>
+                            <input type="text" class="form-control" v-model="cliente" readonly>
                         </div>
                         <!-- subTotal -->
                         <div class="col-md-4 form-group">
@@ -132,12 +136,12 @@
                             <label for="Cuota" class="form-control-label">Cuota:</label>
                             <input type="number" name="Cuota" min="0" value="0" class="form-control" v-model="cuota">
                         </div>
-                         <!-- Fecha del primer cobro -->
+                        <!-- Fecha del primer cobro -->
                         <div class="col-md-4 form-group">
                             <label for="FechaC" class="form-control-label">Primer Cobro:</label>
                             <input type="date" class="form-control" v-model="fechaCobro">
                         </div>
-                        <div v-show="errorContrato" class="form-group msjerror">
+                        <div v-show="errorFinanciamiento" class="form-group msjerror">
                             <div class="col-12 text-center texterror" v-for="error in msjErrores" :key="error" v-text="error"></div>
                         </div>
                         <div class="mx-2 my-1 col-12">
@@ -161,6 +165,7 @@
                 idFinanciamiento: 0,
                 financiamiento: '',
                 idContrato: 0,
+                cliente: '',
                 subTotal: 1000,
                 porcentaje: 0,
                 total: 0,
@@ -238,14 +243,13 @@
                 let me = this;
                 var url= '/contrato/seleccionarContrato';
                 axios.get(url).then(function(response) {
-                    // console.log(response);
                     var respuesta = response.data;
                     me.infoContrato = respuesta.contratos;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-            },
+            }, 
             registrarFinanciamiento(){
                 if(this.validarFrmFinanciamiento()){
                     return;
@@ -404,6 +408,7 @@
         },
         mounted() {
             this.mostrarFinanciamiento(1,this.buscar,this.criterio);
+            this.mostrarContrato();
         }
     }
 </script>

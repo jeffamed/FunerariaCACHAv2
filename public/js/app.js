@@ -3377,13 +3377,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     mostrarVendedor: function mostrarVendedor() {
-      var me = this; // loading(true)
-
+      var me = this;
       var url = '/empleado/seleccionarEmpleado';
       axios.get(url).then(function (response) {
-        var respuesta = response.data; // q: search
-
-        me.infoVendedor = respuesta.empleados; // loading(false);
+        var respuesta = response.data;
+        me.infoVendedor = respuesta.empleados;
       })["catch"](function (error) {
         console.log(error);
       });
@@ -4959,6 +4957,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4967,6 +4969,7 @@ __webpack_require__.r(__webpack_exports__);
       idFinanciamiento: 0,
       financiamiento: '',
       idContrato: 0,
+      cliente: '',
       subTotal: 1000,
       porcentaje: 0,
       total: 0,
@@ -5047,7 +5050,6 @@ __webpack_require__.r(__webpack_exports__);
       var me = this;
       var url = '/contrato/seleccionarContrato';
       axios.get(url).then(function (response) {
-        // console.log(response);
         var respuesta = response.data;
         me.infoContrato = respuesta.contratos;
       })["catch"](function (error) {
@@ -5204,6 +5206,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.mostrarFinanciamiento(1, this.buscar, this.criterio);
+    this.mostrarContrato();
   }
 });
 
@@ -31539,7 +31542,7 @@ var render = function() {
                   ]
                 : [
                     _c("div", { staticClass: "row m-1" }, [
-                      _c("div", { staticClass: "col-md-6 form-group" }, [
+                      _c("div", { staticClass: "col-md-3 form-group" }, [
                         _c(
                           "label",
                           {
@@ -31577,7 +31580,7 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "div",
-                        { staticClass: "col-md-6 form-group" },
+                        { staticClass: "col-md-4 form-group" },
                         [
                           _c(
                             "label",
@@ -31608,6 +31611,39 @@ var render = function() {
                         ],
                         1
                       ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-5 form-group" }, [
+                        _c(
+                          "label",
+                          {
+                            staticClass: "form-control-label",
+                            attrs: { for: "cliente" }
+                          },
+                          [_vm._v("Cliente: ")]
+                        ),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.cliente,
+                              expression: "cliente"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", readonly: "" },
+                          domProps: { value: _vm.cliente },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.cliente = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-4 form-group" }, [
                         _c(
@@ -31879,8 +31915,8 @@ var render = function() {
                             {
                               name: "show",
                               rawName: "v-show",
-                              value: _vm.errorContrato,
-                              expression: "errorContrato"
+                              value: _vm.errorFinanciamiento,
+                              expression: "errorFinanciamiento"
                             }
                           ],
                           staticClass: "form-group msjerror"

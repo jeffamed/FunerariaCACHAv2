@@ -80,8 +80,14 @@ Route::post('/contrato/registrar','ContratoController@store');
 Route::put('/contrato/actualizar','ContratoController@update');
 Route::put('/contrato/suspender','ContratoController@suspender');
 Route::put('/contrato/activar','ContratoController@activar');
+Route::get('/contrato/seleccionarContrato','ContratoController@seleccionar');
 
 Route::get('/factura','FacturasController@index');
 Route::post('/factura/registrar','FacturasController@store');
 Route::put('/factura/actualizar','FacturasController@update');
-Route::put('f/actura/anular','FacturasController@anular');
+Route::put('/factura/anular','FacturasController@anular');
+
+Route::get('/financiamiento','FinanciamientoController@index');
+Route::post('/financiamiento/registrar','FinanciamientoController@store');
+Route::put('/financiamiento/actualizar','FinanciamientoController@update');
+// Route::put('/financiamiento/anular','FinanciamientoController@anular');
