@@ -3433,53 +3433,62 @@ __webpack_require__.r(__webpack_exports__);
       this.msjErrores = [];
       this.errorContrato = 0;
     },
-    mostrarFrm: function mostrarFrm(accion) {
-      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+    mostrarFrm: function mostrarFrm(modelo, accion) {
+      var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
       this.mostrar = 2;
 
-      switch (accion) {
-        case 'registrar':
-          {
-            // this.modal = 1;
-            this.tituloModal = 'Registrar Contrato';
-            this.btnFuncion = 1;
-            this.contrato = '', this.idCliente = '';
-            this.idVendedor = '';
-            this.idServicio = '';
-            this.total = 0;
-            this.frecuenciaPago = '';
-            this.fechaEmision = '';
-            this.fechaCobro = '';
-            this.numeroFrecuencia = 0;
-            this.descuento = 0;
-            this.beneficiario = '';
-            this.nota = '';
-            this.cuota = 0;
-            break;
+      switch (modelo) {
+        case 'contrato':
+          switch (accion) {
+            case 'registrar':
+              {
+                // this.modal = 1;
+                this.tituloModal = 'Registrar Contrato';
+                this.btnFuncion = 1;
+                this.contrato = '', this.idCliente = '';
+                this.idVendedor = '';
+                this.idServicio = '';
+                this.total = 0;
+                this.frecuenciaPago = '';
+                this.fechaEmision = '';
+                this.fechaCobro = '';
+                this.numeroFrecuencia = 0;
+                this.descuento = 0;
+                this.beneficiario = '';
+                this.nota = '';
+                this.cuota = 0;
+                break;
+              }
+
+            case 'actualizar':
+              {
+                // this.modal = 1;
+                this.tituloModal = 'Actualizar Contrato';
+                this.btnFuncion = 2;
+                this.idContrato = data['id'];
+                this.contrato = data['Contrato'], this.idCliente = data['idCliente'];
+                this.idVendedor = data['idVendedor'];
+                this.idServicio = data['idServicio'];
+                this.servicio = data['Servicio'];
+                this.total = data['Total'];
+                this.frecuenciaPago = data['Frecuencia_Pago'];
+                this.fechaEmision = data['Fecha_Emision'];
+                this.numeroFrecuencia = data['Numero_Frecuencia'];
+                this.descuento = data['Descuento'];
+                this.beneficiario = data['Beneficiarios'];
+                this.nota = data['Nota'];
+                this.cuota = data['Cuota'];
+                this.fechaCobro = data['FechaCobro'];
+                break;
+              }
           }
 
-        case 'actualizar':
-          {
-            // this.modal = 1;
-            this.tituloModal = 'Actualizar Contrato';
-            this.btnFuncion = 2;
-            this.idContrato = data['id'];
-            this.contrato = data['Contrato'], this.idCliente = data['idCliente'];
-            this.idVendedor = data['idVendedor'];
-            this.idServicio = data['idServicio'];
-            this.servicio = data['Servicio'];
-            this.total = data['Total'];
-            this.frecuenciaPago = data['Frecuencia_Pago'];
-            this.fechaEmision = data['Fecha_Emision'];
-            this.numeroFrecuencia = data['Numero_Frecuencia'];
-            this.descuento = data['Descuento'];
-            this.beneficiario = data['Beneficiarios'];
-            this.nota = data['Nota'];
-            this.cuota = data['Cuota'];
-            this.fechaCobro = data['FechaCobro'];
-            break;
-          }
       }
+
+      this.mostrarVendedor();
+      this.mostrarCliente();
+      this.mostrarServicio();
+      this.fechaSistema();
     },
     cambiarPagina: function cambiarPagina(pagina, buscar, criterio) {
       var me = this;
@@ -3654,10 +3663,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.mostrarContrato(1, this.buscar, this.criterio);
-    this.mostrarVendedor();
-    this.mostrarCliente();
-    this.mostrarServicio();
-    this.fechaSistema();
   }
 });
 
@@ -4961,6 +4966,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4969,10 +4976,11 @@ __webpack_require__.r(__webpack_exports__);
       idFinanciamiento: 0,
       financiamiento: '',
       idContrato: 0,
-      cliente: '',
-      subTotal: 1000,
-      porcentaje: 0,
+      nombreCliente: '',
+      subTotal: 0,
+      porcentaje: 2.5,
       total: 0,
+      totalC: 0,
       frecuenciaPago: '',
       numeroFrecuencia: 0,
       cuota: 0,
@@ -5056,6 +5064,14 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
+    getDatosContrato: function getDatosContrato(value) {
+      var me = this;
+      me.loading = true;
+      me.nombreCliente = value.NombreCliente;
+      me.subTotal = value.SaldoR;
+      me.totalC = value.Total;
+      me.idContrato = id;
+    },
     registrarFinanciamiento: function registrarFinanciamiento() {
       if (this.validarFrmFinanciamiento()) {
         return;
@@ -5087,29 +5103,34 @@ __webpack_require__.r(__webpack_exports__);
     validarFrmFinanciamiento: function validarFrmFinanciamiento() {
       this.errorFinanciamiento = 0;
       this.msjErrores = [];
+      var minimo = parseFloat(this.totalC) - parseFloat(this.totalC) * parseFloat(0.4);
 
       if (this.financiamiento == '') {
         this.msjErrores.push("* El campo financiamiento no puede estar vacío");
       } else if (this.idContro == 0) {
         this.msjErrores.push("* Elija un contrato");
-      } else if (this.fechaPago > this.fechaS) {
-        this.msjErrores.push("* El campo fecha de emisión no puede ser mayor a la fecha del sistema");
+      } else if (this.fechaPago = '') {
+        this.msjErrores.push("* La fecha no puede estar vacio");
+      } else if (this.fechaPago < this.fechaS) {
+        this.msjErrores.push("* El campo fecha de emisión no puede ser menor a la fecha del sistema");
       } else if (this.numeroFrecuencia <= 0) {
-        this.msjErrores.push("* El campo frecuencia de pago tiene que se mayor a 0");
+        this.msjErrores.push("* El campo frecuencia de cobro tiene que se menor a 0");
       } else if (this.frecuenciaPago == '') {
-        this.msjErrores.push("* Debe de seleccionar una opción en el campo frecuencia de pago ");
+        this.msjErrores.push("* Debe de seleccionar una opción en el campo frecuencia de cobro");
       } else if (this.total < 0) {
-        this.msjErrores.push("* El campo total no puede ser negativo");
+        this.msjErrores.push("* El campo total no puede ser negativo. Agregue un digito en financiar");
       } else if (this.descuento < 0) {
         this.msjErrores.push("* El campo descuento no puede ser negativo");
       } else if (this.cuota <= 0) {
         this.msjErrores.push("* El campo cuota no puede ser negativo o igual a 0");
       } else if (this.subTotal == 0) {
-        this.msjErrores.push("* El campo subTotal de descuento no puede ser 0");
+        this.msjErrores.push("* El campo subTotal puede ser 0. Seleccione un contrato");
       } else if (this.total == 0) {
         this.msjErrores.push("* El campo total de descuento no puede ser 0");
       } else if (this.porcentaje == 0) {
         this.msjErrores.push("* El campo porcentaje de descuento no puede ser 0");
+      } else if (this.subTotal > minimo) {
+        this.msjErrores.push("* Debe de pagar al menos el 40% del servicio para realizar el financiamiento");
       }
 
       if (this.msjErrores.length) {
@@ -5119,7 +5140,9 @@ __webpack_require__.r(__webpack_exports__);
       return this.errorFinanciamiento;
     },
     FncTotal: function FncTotal() {
-      var me = this;
+      var me = this; // let convertir = me.porcentaje.replace(".",",");
+      // me.porcentaje = parseFloat(convertir);
+
       me.total = parseFloat(me.subTotal) + parseFloat(me.subTotal) * parseFloat(me.porcentaje / 100);
     },
     fechaSistema: function fechaSistema() {
@@ -5135,68 +5158,73 @@ __webpack_require__.r(__webpack_exports__);
     mostrarTabla: function mostrarTabla() {
       this.mostrar = 1;
       this.tituloModal = '';
-      this.Financiamiento = '', this.idCliente = '';
-      this.idVendedor = '';
-      this.idServicio = '';
+      this.idFinanciamiento = 0;
+      this.financiamiento = '', this.idContrato = 0;
+      this.nombreCliente = '';
+      this.subTotal = 0;
       this.total = 0;
+      this.totalC = 0;
       this.frecuenciaPago = '';
-      this.fechaEmision = '';
-      this.fechaCobro = '';
       this.numeroFrecuencia = 0;
-      this.descuento = 0;
+      this.porcentaje = 2.5;
       this.beneficiario = '';
-      this.nota = '';
       this.cuota = 0;
       this.msjErrores = [];
       this.errorFinanciamiento = 0;
     },
-    mostrarFrm: function mostrarFrm(accion) {
-      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+    mostrarFrm: function mostrarFrm(modelo, accion) {
+      var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
       this.mostrar = 2;
 
-      switch (accion) {
-        case 'registrar':
-          {
-            // this.modal = 1;
-            this.tituloModal = 'Registrar Financiamiento';
-            this.btnFuncion = 1;
-            this.Financiamiento = '', this.idCliente = '';
-            this.idVendedor = '';
-            this.idServicio = '';
-            this.total = 0;
-            this.frecuenciaPago = '';
-            this.fechaEmision = '';
-            this.fechaCobro = '';
-            this.numeroFrecuencia = 0;
-            this.descuento = 0;
-            this.beneficiario = '';
-            this.nota = '';
-            this.cuota = 0;
-            break;
+      switch (modelo) {
+        case "financiar":
+          switch (accion) {
+            case 'registrar':
+              {
+                // this.modal = 1;
+                this.tituloModal = 'Registrar Financiamiento';
+                this.btnFuncion = 1;
+                this.Financiamiento = '', this.idnombreCliente = '';
+                this.idVendedor = '';
+                this.idServicio = '';
+                this.total = 0;
+                this.frecuenciaPago = '';
+                this.fechaEmision = '';
+                this.fechaCobro = '';
+                this.numeroFrecuencia = 0;
+                this.descuento = 0;
+                this.beneficiario = '';
+                this.nota = '';
+                this.cuota = 0;
+                break;
+              }
+
+            case 'actualizar':
+              {
+                // this.modal = 1;
+                this.tituloModal = 'Actualizar Financiamiento';
+                this.btnFuncion = 2;
+                this.idFinanciamiento = data['id'];
+                this.Financiamiento = data['Financiamiento'], this.idnombreCliente = data['idnombreCliente'];
+                this.idVendedor = data['idVendedor'];
+                this.idServicio = data['idServicio'];
+                this.servicio = data['Servicio'];
+                this.total = data['Total'];
+                this.frecuenciaPago = data['Frecuencia_Pago'];
+                this.fechaEmision = data['Fecha_Emision'];
+                this.numeroFrecuencia = data['Numero_Frecuencia'];
+                this.descuento = data['Descuento'];
+                this.beneficiario = data['Beneficiarios'];
+                this.nota = data['Nota'];
+                this.cuota = data['Cuota'];
+                this.fechaCobro = data['FechaCobro'];
+                break;
+              }
           }
 
-        case 'actualizar':
-          {
-            // this.modal = 1;
-            this.tituloModal = 'Actualizar Financiamiento';
-            this.btnFuncion = 2;
-            this.idFinanciamiento = data['id'];
-            this.Financiamiento = data['Financiamiento'], this.idCliente = data['idCliente'];
-            this.idVendedor = data['idVendedor'];
-            this.idServicio = data['idServicio'];
-            this.servicio = data['Servicio'];
-            this.total = data['Total'];
-            this.frecuenciaPago = data['Frecuencia_Pago'];
-            this.fechaEmision = data['Fecha_Emision'];
-            this.numeroFrecuencia = data['Numero_Frecuencia'];
-            this.descuento = data['Descuento'];
-            this.beneficiario = data['Beneficiarios'];
-            this.nota = data['Nota'];
-            this.cuota = data['Cuota'];
-            this.fechaCobro = data['FechaCobro'];
-            break;
-          }
       }
+
+      this.mostrarContrato();
     },
     cambiarPagina: function cambiarPagina(pagina, buscar, criterio) {
       var me = this;
@@ -5206,7 +5234,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.mostrarFinanciamiento(1, this.buscar, this.criterio);
-    this.mostrarContrato();
   }
 });
 
@@ -28011,7 +28038,7 @@ var render = function() {
                   staticClass: "btn-new",
                   on: {
                     click: function($event) {
-                      return _vm.mostrarFrm("registrar")
+                      return _vm.mostrarFrm("contrato", "registrar")
                     }
                   }
                 },
@@ -28246,6 +28273,7 @@ var render = function() {
                                             on: {
                                               click: function($event) {
                                                 return _vm.mostrarFrm(
+                                                  "contrato",
                                                   "actualizar",
                                                   contrato
                                                 )
@@ -31120,7 +31148,7 @@ var render = function() {
                   staticClass: "btn-new",
                   on: {
                     click: function($event) {
-                      return _vm.mostrarFrm("registrar")
+                      return _vm.mostrarFrm("financiar", "registrar")
                     }
                   }
                 },
@@ -31580,7 +31608,7 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "div",
-                        { staticClass: "col-md-4 form-group" },
+                        { staticClass: "col-md-3 form-group" },
                         [
                           _c(
                             "label",
@@ -31596,10 +31624,9 @@ var render = function() {
                               label: "Contrato",
                               placeholder: "Buscar Contrato..",
                               options: _vm.infoContrato,
-                              reduce: function(infoContrato) {
-                                return infoContrato.id
-                              }
+                              value: _vm.infoContrato
                             },
+                            on: { input: _vm.getDatosContrato },
                             model: {
                               value: _vm.idContrato,
                               callback: function($$v) {
@@ -31612,7 +31639,7 @@ var render = function() {
                         1
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-5 form-group" }, [
+                      _c("div", { staticClass: "col-md-6 form-group" }, [
                         _c(
                           "label",
                           {
@@ -31627,19 +31654,19 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.cliente,
-                              expression: "cliente"
+                              value: _vm.nombreCliente,
+                              expression: "nombreCliente"
                             }
                           ],
                           staticClass: "form-control",
                           attrs: { type: "text", readonly: "" },
-                          domProps: { value: _vm.cliente },
+                          domProps: { value: _vm.nombreCliente },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.cliente = $event.target.value
+                              _vm.nombreCliente = $event.target.value
                             }
                           }
                         })
@@ -31666,7 +31693,8 @@ var render = function() {
                           ],
                           staticClass: "form-control",
                           attrs: {
-                            type: "number",
+                            type: "text",
+                            readonly: "",
                             placeholder: "Subtotal Financiamiento"
                           },
                           domProps: { value: _vm.subTotal },
@@ -31688,7 +31716,7 @@ var render = function() {
                             staticClass: "form-control-label",
                             attrs: { for: "FechaC" }
                           },
-                          [_vm._v("% Financiamiento:")]
+                          [_vm._v("Financiar %:")]
                         ),
                         _vm._v(" "),
                         _c("input", {
@@ -31701,9 +31729,15 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "number" },
+                          attrs: { type: "number", min: "0", step: "0.1" },
                           domProps: { value: _vm.porcentaje },
                           on: {
+                            keydown: function($event) {
+                              return _vm.FncTotal()
+                            },
+                            click: function($event) {
+                              return _vm.FncTotal()
+                            },
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
@@ -31734,7 +31768,7 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "number", readonly: "" },
+                          attrs: { type: "text", readonly: "" },
                           domProps: {
                             value: _vm.total,
                             textContent: _vm._s(_vm.subTotal)
@@ -31772,9 +31806,12 @@ var render = function() {
                             ],
                             staticClass:
                               "form-control frecuencia frecuencia-numero",
-                            attrs: { type: "number", min: "1", value: "1" },
+                            attrs: { type: "number", min: "1" },
                             domProps: { value: _vm.numeroFrecuencia },
                             on: {
+                              click: function($event) {
+                                return _vm.FncTotal()
+                              },
                               input: function($event) {
                                 if ($event.target.composing) {
                                   return
@@ -31798,6 +31835,9 @@ var render = function() {
                               staticClass:
                                 "form-control frecuencia frecuencia-tipo",
                               on: {
+                                click: function($event) {
+                                  return _vm.FncTotal()
+                                },
                                 change: function($event) {
                                   var $$selectedVal = Array.prototype.filter
                                     .call($event.target.options, function(o) {
@@ -31857,14 +31897,12 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: {
-                            type: "number",
-                            name: "Cuota",
-                            min: "0",
-                            value: "0"
-                          },
+                          attrs: { type: "number", name: "Cuota", min: "0" },
                           domProps: { value: _vm.cuota },
                           on: {
+                            click: function($event) {
+                              return _vm.FncTotal()
+                            },
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
@@ -31898,6 +31936,9 @@ var render = function() {
                           attrs: { type: "date" },
                           domProps: { value: _vm.fechaCobro },
                           on: {
+                            click: function($event) {
+                              return _vm.FncTotal()
+                            },
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
@@ -31939,7 +31980,7 @@ var render = function() {
                                 staticClass: "btn btn-success",
                                 on: {
                                   click: function($event) {
-                                    return _vm.registrarContrato()
+                                    return _vm.registrarFinanciamiento()
                                   }
                                 }
                               },
@@ -31957,7 +31998,7 @@ var render = function() {
                                 staticClass: "btn btn-success",
                                 on: {
                                   click: function($event) {
-                                    return _vm.actualizarContrato()
+                                    return _vm.actualizarFinanciamiento()
                                   }
                                 }
                               },

@@ -13,6 +13,7 @@ class Contrato extends Model
         'idVendedor',
         'idServicio',
         'Total',
+        'SaldoR',
         'Fecha_Emision',
         'Frecuencia_Pago',
         'Numero_Frecuencia',

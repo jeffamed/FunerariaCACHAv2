@@ -5,7 +5,7 @@
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
                 <h5 class="titulo">Financiamientos</h5>
                 <!-- Boton nuevo -->
-                <button class="btn-new"  @click="mostrarFrm('registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
+                <button class="btn-new"  @click="mostrarFrm('financiar','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- buscador -->
                 <div class="buscador d-flex ml-auto hidden-md-down">
                     <label for="" class="etiqueta">Buscar por: </label>
@@ -87,43 +87,45 @@
                             <input type="text" class="form-control" placeholder="# Financiamiento" v-model="financiamiento">
                         </div>
                         <!-- Contrato-->
-                        <div class="col-md-4 form-group">
+                        <div class="col-md-3 form-group">
                             <label for="" class="form-control-label"># Contrato:</label>
+                                <!-- :reduce="infoContrato => infoContrato.id" -->
                             <v-select 
                                 label="Contrato"
                                 placeholder="Buscar Contrato.."
                                 :options="infoContrato"
                                 v-model="idContrato"
-                                :reduce="infoContrato => infoContrato.id"
+                                :value="infoContrato"
+                                @input="getDatosContrato"
                             >
                             </v-select>
                         </div>
                         <!-- cliente -->
-                        <div class="col-md-5 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="cliente" class="form-control-label">Cliente: </label>
-                            <input type="text" class="form-control" v-model="cliente" readonly>
+                            <input type="text" class="form-control" v-model="nombreCliente" readonly>
                         </div>
                         <!-- subTotal -->
                         <div class="col-md-4 form-group">
                             <label for="Total" class="form-control-label">Subtotal: </label>
-                            <input type="number" class="form-control" v-model="subTotal" placeholder="Subtotal Financiamiento">
+                            <input type="text" class="form-control" v-model="subTotal" readonly placeholder="Subtotal Financiamiento">
                         </div>
                         <!-- % del Financiamiento -->
                         <div class="col-md-4 form-group">
-                            <label for="FechaC" class="form-control-label">% Financiamiento:</label>
-                            <input type="number" class="form-control" v-model="porcentaje">
+                            <label for="FechaC" class="form-control-label">Financiar %:</label>
+                            <input type="number" class="form-control" min="0" v-model="porcentaje" step="0.1" @keydown="FncTotal()" @click="FncTotal()">
                         </div>
                         <!-- total -->
                         <div class="col-md-4 form-group">
                             <label for="" class="form-control-label">Total:</label>
-                            <input type="number" class="form-control" readonly v-model="total" v-text="subTotal">
+                            <input type="text" class="form-control" readonly v-model="total" v-text="subTotal">
                         </div>
                         <!-- Frecuencia de pago -->
                         <div class="col-md-4 form-group">
                             <label for="Frecuencia" class="form-control-label">Frecuencia de Cobro:</label>
                             <div class="d-flex">
-                                <input type="number"  min="1" value="1" class="form-control frecuencia frecuencia-numero" v-model="numeroFrecuencia">
-                                <select class="form-control frecuencia frecuencia-tipo" v-model="frecuenciaPago">
+                                <input type="number"  min="1" class="form-control frecuencia frecuencia-numero" v-model="numeroFrecuencia" @click="FncTotal()">
+                                <select class="form-control frecuencia frecuencia-tipo" v-model="frecuenciaPago" @click="FncTotal()">
                                     <option value="" disabled>Seleccione...</option>
                                     <option value="Semana">Semana</option>
                                     <option value="Mes">Mes</option>
@@ -134,19 +136,19 @@
                         <!-- Cuotas -->
                         <div class="col-md-4 form-group">
                             <label for="Cuota" class="form-control-label">Cuota:</label>
-                            <input type="number" name="Cuota" min="0" value="0" class="form-control" v-model="cuota">
+                            <input type="number" name="Cuota" min="0" class="form-control" v-model="cuota" @click="FncTotal()">
                         </div>
                         <!-- Fecha del primer cobro -->
                         <div class="col-md-4 form-group">
                             <label for="FechaC" class="form-control-label">Primer Cobro:</label>
-                            <input type="date" class="form-control" v-model="fechaCobro">
+                            <input type="date" class="form-control" v-model="fechaCobro" @click="FncTotal()">
                         </div>
                         <div v-show="errorFinanciamiento" class="form-group msjerror">
                             <div class="col-12 text-center texterror" v-for="error in msjErrores" :key="error" v-text="error"></div>
                         </div>
                         <div class="mx-2 my-1 col-12">
-                            <button class="btn btn-success" v-if="btnFuncion == 1" @click="registrarContrato()"><i class="fa fa-check"></i> Guardar</button>
-                            <button class="btn btn-success" v-if="btnFuncion == 2" @click="actualizarContrato()"><i class="fa fa-check"></i> Actualizar</button>
+                            <button class="btn btn-success" v-if="btnFuncion == 1" @click="registrarFinanciamiento()"><i class="fa fa-check"></i> Guardar</button>
+                            <button class="btn btn-success" v-if="btnFuncion == 2" @click="actualizarFinanciamiento()"><i class="fa fa-check"></i> Actualizar</button>
                             <button @click="mostrarTabla()" class="btn btn-danger"><i class="fa fa-close"></i> Cerrar</button>
                         </div>
                     </div>
@@ -165,10 +167,11 @@
                 idFinanciamiento: 0,
                 financiamiento: '',
                 idContrato: 0,
-                cliente: '',
-                subTotal: 1000,
-                porcentaje: 0,
+                nombreCliente: '',
+                subTotal: 0,
+                porcentaje: 2.5,
                 total: 0,
+                totalC: 0,
                 frecuenciaPago: '',
                 numeroFrecuencia: 0,
                 cuota: 0,
@@ -250,6 +253,14 @@
                     console.log(error);
                 });
             }, 
+            getDatosContrato(value){
+                let me = this;
+                me.loading = true;
+                me.nombreCliente = value.NombreCliente;
+                me.subTotal = value.SaldoR;
+                me.totalC = value.Total;
+                me.idContrato = id;
+            },
             registrarFinanciamiento(){
                 if(this.validarFrmFinanciamiento()){
                     return;
@@ -287,29 +298,34 @@
             validarFrmFinanciamiento(){
                 this.errorFinanciamiento=0;
                 this.msjErrores= [];
+                let minimo = parseFloat(this.totalC) - (parseFloat(this.totalC) * parseFloat(0.4));
                 
                 if(this.financiamiento == ''){
                     this.msjErrores.push("* El campo financiamiento no puede estar vacío");
                 }else if(this.idContro == 0){
                     this.msjErrores.push("* Elija un contrato");
-                }else if(this.fechaPago > this.fechaS){
-                    this.msjErrores.push("* El campo fecha de emisión no puede ser mayor a la fecha del sistema");
+                }else if(this.fechaPago = ''){
+                    this.msjErrores.push("* La fecha no puede estar vacio");
+                }else if(this.fechaPago < this.fechaS){
+                    this.msjErrores.push("* El campo fecha de emisión no puede ser menor a la fecha del sistema");
                 }else if(this.numeroFrecuencia <= 0){
-                    this.msjErrores.push("* El campo frecuencia de pago tiene que se mayor a 0");
+                    this.msjErrores.push("* El campo frecuencia de cobro tiene que se menor a 0");
                 }else if(this.frecuenciaPago == ''){
-                    this.msjErrores.push("* Debe de seleccionar una opción en el campo frecuencia de pago ");
+                    this.msjErrores.push("* Debe de seleccionar una opción en el campo frecuencia de cobro");
                 }else if(this.total < 0){
-                    this.msjErrores.push("* El campo total no puede ser negativo");
+                    this.msjErrores.push("* El campo total no puede ser negativo. Agregue un digito en financiar");
                 }else if(this.descuento < 0){
                     this.msjErrores.push("* El campo descuento no puede ser negativo");
                 }else if(this.cuota <= 0){
                     this.msjErrores.push("* El campo cuota no puede ser negativo o igual a 0");
                 }else if(this.subTotal == 0){
-                    this.msjErrores.push("* El campo subTotal de descuento no puede ser 0");
+                    this.msjErrores.push("* El campo subTotal puede ser 0. Seleccione un contrato");
                 }else if(this.total == 0){
                     this.msjErrores.push("* El campo total de descuento no puede ser 0");
                 }else if(this.porcentaje == 0){
                     this.msjErrores.push("* El campo porcentaje de descuento no puede ser 0");
+                }else if(this.subTotal > minimo){
+                    this.msjErrores.push("* Debe de pagar al menos el 40% del servicio para realizar el financiamiento");
                 }
 
                 if(this.msjErrores.length) 
@@ -320,6 +336,8 @@
             },
             FncTotal(){
                 let me = this;
+                // let convertir = me.porcentaje.replace(".",",");
+                // me.porcentaje = parseFloat(convertir);
                 me.total= parseFloat(me.subTotal) + (parseFloat(me.subTotal) * parseFloat(me.porcentaje/100));
             },
             fechaSistema(){
@@ -335,70 +353,74 @@
             mostrarTabla(){
                 this.mostrar = 1;
                 this.tituloModal = '';
-                this.Financiamiento = '',
-                this.idCliente = '';
-                this.idVendedor = '';
-                this.idServicio = '';
+                this.idFinanciamiento = 0;
+                this.financiamiento = '',
+                this.idContrato = 0;
+                this.nombreCliente = '';
+                this.subTotal = 0;
                 this.total = 0;
+                this.totalC = 0;
                 this.frecuenciaPago = '';
-                this.fechaEmision = '';
-                this.fechaCobro = '';
                 this.numeroFrecuencia = 0;
-                this.descuento = 0;
+                this.porcentaje = 2.5;
                 this.beneficiario = '';
-                this.nota = '';
                 this.cuota = 0;
                 this.msjErrores = [];
                 this.errorFinanciamiento = 0;
             },
-            mostrarFrm(accion,data=[]){
+            mostrarFrm(modelo,accion,data=[]){
                 this.mostrar = 2;
-                switch (accion) {
-                    case 'registrar':
-                    {
-                        // this.modal = 1;
-                        this.tituloModal = 'Registrar Financiamiento';
-                        this.btnFuncion = 1;
-                        this.Financiamiento = '',
-                        this.idCliente = '';
-                        this.idVendedor = '';
-                        this.idServicio = '';
-                        this.total = 0;
-                        this.frecuenciaPago = '';
-                        this.fechaEmision = '';
-                        this.fechaCobro = '';
-                        this.numeroFrecuencia = 0;
-                        this.descuento = 0;
-                        this.beneficiario = '';
-                        this.nota = '';
-                        this.cuota = 0;
-                        break;
-                    }
-                    case 'actualizar':
-                    {
-                        // this.modal = 1;
-                        this.tituloModal = 'Actualizar Financiamiento';
-                        this.btnFuncion = 2;
-                        this.idFinanciamiento = data['id'];
-                        this.Financiamiento = data['Financiamiento'],
-                        this.idCliente = data['idCliente'];
-                        this.idVendedor = data['idVendedor'];
-                        this.idServicio = data['idServicio'];
-                        this.servicio = data['Servicio']
-                        this.total = data['Total'];
-                        this.frecuenciaPago = data['Frecuencia_Pago'];
-                        this.fechaEmision = data['Fecha_Emision'];
-                        this.numeroFrecuencia = data['Numero_Frecuencia'];
-                        this.descuento = data['Descuento'];
-                        this.beneficiario = data['Beneficiarios'];
-                        this.nota = data['Nota'];
-                        this.cuota = data['Cuota'];
-						
-                        this.fechaCobro = data['FechaCobro'];
-                        break;
-                    }
-                    
+                switch (modelo) {
+                    case "financiar":
+                        switch (accion) {
+                            case 'registrar':
+                            {
+                                // this.modal = 1;
+                                this.tituloModal = 'Registrar Financiamiento';
+                                this.btnFuncion = 1;
+                                this.Financiamiento = '',
+                                this.idnombreCliente = '';
+                                this.idVendedor = '';
+                                this.idServicio = '';
+                                this.total = 0;
+                                this.frecuenciaPago = '';
+                                this.fechaEmision = '';
+                                this.fechaCobro = '';
+                                this.numeroFrecuencia = 0;
+                                this.descuento = 0;
+                                this.beneficiario = '';
+                                this.nota = '';
+                                this.cuota = 0;
+                                break;
+                            }
+                            case 'actualizar':
+                            {
+                                // this.modal = 1;
+                                this.tituloModal = 'Actualizar Financiamiento';
+                                this.btnFuncion = 2;
+                                this.idFinanciamiento = data['id'];
+                                this.Financiamiento = data['Financiamiento'],
+                                this.idnombreCliente = data['idnombreCliente'];
+                                this.idVendedor = data['idVendedor'];
+                                this.idServicio = data['idServicio'];
+                                this.servicio = data['Servicio']
+                                this.total = data['Total'];
+                                this.frecuenciaPago = data['Frecuencia_Pago'];
+                                this.fechaEmision = data['Fecha_Emision'];
+                                this.numeroFrecuencia = data['Numero_Frecuencia'];
+                                this.descuento = data['Descuento'];
+                                this.beneficiario = data['Beneficiarios'];
+                                this.nota = data['Nota'];
+                                this.cuota = data['Cuota'];
+                                
+                                this.fechaCobro = data['FechaCobro'];
+                                break;
+                            }
+                    }    
+
                 }
+                this.mostrarContrato();
+                
             },
             cambiarPagina(pagina,buscar,criterio){
                 let me = this;
@@ -408,7 +430,6 @@
         },
         mounted() {
             this.mostrarFinanciamiento(1,this.buscar,this.criterio);
-            this.mostrarContrato();
         }
     }
 </script>

@@ -4,8 +4,8 @@
         <!-- ENCABEZADO -->
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
                 <h5 class="titulo">Contratos</h5>
-            <!-- Boton nuevo -->
-                <button class="btn-new"  @click="mostrarFrm('registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
+                 <!-- Boton nuevo -->
+                <button class="btn-new"  @click="mostrarFrm('contrato','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- buscador -->
                 <div class="buscador d-flex ml-auto hidden-md-down">
                     <label for="" class="etiqueta">Buscar por: </label>
@@ -50,7 +50,7 @@
                             <tbody>
                                 <tr v-for="contrato in Contratos" :key="contrato.id" :style="contrato.Estado == 'Suspendido' ? 'color:orange':''">
                                     <td>
-                                        <button class="boton boton-edit" @click="mostrarFrm('actualizar', contrato)"><i class="fa fa-pencil"></i></button>
+                                        <button class="boton boton-edit" @click="mostrarFrm('contrato','actualizar', contrato)"><i class="fa fa-pencil"></i></button>
                                         <template v-if="contrato.Estado == 'Activo'">
                                             <button class="boton boton-eliminar" @click="desactivarContrato(contrato.id)"><i class="fa fa-trash"></i></button>
                                         </template>
@@ -344,54 +344,61 @@
                 this.msjErrores = [];
                 this.errorContrato = 0;
             },
-            mostrarFrm(accion,data=[]){
+            mostrarFrm(modelo,accion,data=[]){
                 this.mostrar = 2;
-                switch (accion) {
-                    case 'registrar':
-                    {
-                        // this.modal = 1;
-                        this.tituloModal = 'Registrar Contrato';
-                        this.btnFuncion = 1;
-                        this.contrato = '',
-                        this.idCliente = '';
-                        this.idVendedor = '';
-                        this.idServicio = '';
-                        this.total = 0;
-                        this.frecuenciaPago = '';
-                        this.fechaEmision = '';
-                        this.fechaCobro = '';
-                        this.numeroFrecuencia = 0;
-                        this.descuento = 0;
-                        this.beneficiario = '';
-                        this.nota = '';
-                        this.cuota = 0;
-                        break;
+                switch (modelo) {
+                    case 'contrato':
+                        switch (accion) {
+                            case 'registrar':
+                            {
+                                // this.modal = 1;
+                                this.tituloModal = 'Registrar Contrato';
+                                this.btnFuncion = 1;
+                                this.contrato = '',
+                                this.idCliente = '';
+                                this.idVendedor = '';
+                                this.idServicio = '';
+                                this.total = 0;
+                                this.frecuenciaPago = '';
+                                this.fechaEmision = '';
+                                this.fechaCobro = '';
+                                this.numeroFrecuencia = 0;
+                                this.descuento = 0;
+                                this.beneficiario = '';
+                                this.nota = '';
+                                this.cuota = 0;
+                                break;
+                            }
+                            case 'actualizar':
+                            {
+                                // this.modal = 1;
+                                this.tituloModal = 'Actualizar Contrato';
+                                this.btnFuncion = 2;
+                                this.idContrato = data['id'];
+                                this.contrato = data['Contrato'],
+                                this.idCliente = data['idCliente'];
+                                this.idVendedor = data['idVendedor'];
+                                this.idServicio = data['idServicio'];
+                                this.servicio = data['Servicio']
+                                this.total = data['Total'];
+                                this.frecuenciaPago = data['Frecuencia_Pago'];
+                                this.fechaEmision = data['Fecha_Emision'];
+                                this.numeroFrecuencia = data['Numero_Frecuencia'];
+                                this.descuento = data['Descuento'];
+                                this.beneficiario = data['Beneficiarios'];
+                                this.nota = data['Nota'];
+                                this.cuota = data['Cuota'];
+                                
+                                this.fechaCobro = data['FechaCobro'];
+                                break;
+                            }
+                            
+                        }
                     }
-                    case 'actualizar':
-                    {
-                        // this.modal = 1;
-                        this.tituloModal = 'Actualizar Contrato';
-                        this.btnFuncion = 2;
-                        this.idContrato = data['id'];
-                        this.contrato = data['Contrato'],
-                        this.idCliente = data['idCliente'];
-                        this.idVendedor = data['idVendedor'];
-                        this.idServicio = data['idServicio'];
-                        this.servicio = data['Servicio']
-                        this.total = data['Total'];
-                        this.frecuenciaPago = data['Frecuencia_Pago'];
-                        this.fechaEmision = data['Fecha_Emision'];
-                        this.numeroFrecuencia = data['Numero_Frecuencia'];
-                        this.descuento = data['Descuento'];
-                        this.beneficiario = data['Beneficiarios'];
-                        this.nota = data['Nota'];
-                        this.cuota = data['Cuota'];
-						
-                        this.fechaCobro = data['FechaCobro'];
-                        break;
-                    }
-                    
-                }
+                this.mostrarVendedor();
+                this.mostrarCliente();
+                this.mostrarServicio();
+                this.fechaSistema();
             },
             cambiarPagina(pagina,buscar,criterio){
                 let me = this;
@@ -575,10 +582,6 @@
         },
         mounted() {
             this.mostrarContrato(1,this.buscar,this.criterio);
-            this.mostrarVendedor();
-            this.mostrarCliente();
-            this.mostrarServicio();
-            this.fechaSistema();
         }
     }
 </script>
