@@ -54,7 +54,7 @@
                                         <template v-if="contrato.Estado == 'Activo'">
                                             <button class="boton boton-eliminar" @click="desactivarContrato(contrato.id)"><i class="fa fa-trash"></i></button>
                                         </template>
-                                        <template v-else>
+                                        <template v-if="contrato.Estado == 'Suspendido'">
                                             <button class="boton boton-activar" @click="activarContrato(contrato.id)"><i class="fa fa-check-circle"></i></button>
                                         </template>
                                     </td>

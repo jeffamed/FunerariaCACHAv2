@@ -15,7 +15,8 @@ class Financiamiento extends Model
         'SubTotal',
         'Frecuencia_Pago',
         'numero_Frec',
-        'Cuota'
+        'Cuota',
+        'Estado'
     ];
 
     public function contrato()

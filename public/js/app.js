@@ -4968,6 +4968,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -5070,16 +5072,26 @@ __webpack_require__.r(__webpack_exports__);
       me.nombreCliente = value.NombreCliente;
       me.subTotal = value.SaldoR;
       me.totalC = value.Total;
-      me.idContrato = id;
+      me.idContrato = value.id;
     },
     registrarFinanciamiento: function registrarFinanciamiento() {
       if (this.validarFrmFinanciamiento()) {
         return;
       } else {
         var me = this;
-        axios.post('/financiamiento/registrar', {}).then(function (response) {
-          me.cerrarModal();
-          me.mostrarFinanciamiento(1, '', 'Financiamiento');
+        axios.post('/financiamiento/registrar', {
+          'idContrato': this.idContrato,
+          'financiamiento': this.financiamiento,
+          'PorcentajeFin': this.porcentaje,
+          'subTotal': this.subTotal,
+          'Total': this.total,
+          'Frecuencia_Pago': this.frecuenciaPago,
+          'Numero_Frecuencia': this.numeroFrecuencia,
+          'Cuota': this.cuota,
+          'Fecha_Cobro': this.fechaCobro
+        }).then(function (response) {
+          me.mostrarTabla();
+          me.mostrarFinanciamiento(1, '', 'f.Financiamiento');
         })["catch"](function (error) {
           console.log(error);
         });
@@ -5091,10 +5103,19 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         var me = this;
         axios.put('/financiamiento/actualizar', {
-          'id': this.idFinanciamiento
+          'id': this.idFinanciamiento,
+          'idContrato': this.idContrato,
+          'financiamiento': this.financiamiento,
+          'PorcentajeFin': this.porcentaje,
+          'subTotal': this.subTotal,
+          'Total': this.total,
+          'Frecuencia_Pago': this.frecuenciaPago,
+          'Numero_Frecuencia': this.numeroFrecuencia,
+          'Cuota': this.cuota,
+          'Fecha_Cobro': this.fechaCobro
         }).then(function (response) {
           me.cerrarModal();
-          me.mostrarFinanciamiento(1, '', 'Financiamiento');
+          me.mostrarFinanciamiento(1, '', 'f.Financiamiento');
         })["catch"](function (error) {
           console.log(error);
         });
@@ -28309,7 +28330,10 @@ var render = function() {
                                                 ]
                                               )
                                             ]
-                                          : [
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        contrato.Estado == "Suspendido"
+                                          ? [
                                               _c(
                                                 "button",
                                                 {
@@ -28331,6 +28355,7 @@ var render = function() {
                                                 ]
                                               )
                                             ]
+                                          : _vm._e()
                                       ],
                                       2
                                     ),
@@ -31446,7 +31471,7 @@ var render = function() {
                                     _c("td", {
                                       domProps: {
                                         textContent: _vm._s(
-                                          financiamiento.Nombre
+                                          financiamiento.Financiamiento
                                         )
                                       }
                                     }),
@@ -31455,6 +31480,14 @@ var render = function() {
                                       domProps: {
                                         textContent: _vm._s(
                                           financiamiento.Cliente
+                                        )
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("td", {
+                                      domProps: {
+                                        textContent: _vm._s(
+                                          financiamiento.Total
                                         )
                                       }
                                     }),
@@ -31769,10 +31802,7 @@ var render = function() {
                           ],
                           staticClass: "form-control",
                           attrs: { type: "text", readonly: "" },
-                          domProps: {
-                            value: _vm.total,
-                            textContent: _vm._s(_vm.subTotal)
-                          },
+                          domProps: { value: _vm.total },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
@@ -32052,9 +32082,11 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Financiamientos")]),
+        _c("th", [_vm._v("Financiamiento")]),
         _vm._v(" "),
         _c("th", [_vm._v("Cliente")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Deuda")]),
         _vm._v(" "),
         _c("th", [_vm._v("Estados")])
       ])

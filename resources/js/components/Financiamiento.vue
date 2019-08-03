@@ -40,8 +40,9 @@
                             <thead class="enc-tabla">
                                 <tr>
                                     <th>Opciones</th>
-                                    <th>Financiamientos</th>
+                                    <th>Financiamiento</th>
                                     <th>Cliente</th>
+                                    <th>Deuda</th>
                                     <th>Estados</th>
                                 </tr>
                             </thead>
@@ -56,8 +57,9 @@
                                             <button class="boton boton-activar" @click="activarFinanciamiento(financiamiento.id)"><i class="fa fa-check-circle"></i></button>
                                         </template>
                                     </td>
-                                    <td v-text="financiamiento.Nombre"></td>
+                                    <td v-text="financiamiento.Financiamiento"></td>
                                     <td v-text="financiamiento.Cliente"></td>
+                                    <td v-text="financiamiento.Total"></td>
                                     <td v-text="financiamiento.Estado"></td>
                                 </tr>
                             </tbody>
@@ -118,7 +120,7 @@
                         <!-- total -->
                         <div class="col-md-4 form-group">
                             <label for="" class="form-control-label">Total:</label>
-                            <input type="text" class="form-control" readonly v-model="total" v-text="subTotal">
+                            <input type="text" class="form-control" readonly v-model="total">
                         </div>
                         <!-- Frecuencia de pago -->
                         <div class="col-md-4 form-group">
@@ -259,7 +261,7 @@
                 me.nombreCliente = value.NombreCliente;
                 me.subTotal = value.SaldoR;
                 me.totalC = value.Total;
-                me.idContrato = id;
+                me.idContrato = value.id;
             },
             registrarFinanciamiento(){
                 if(this.validarFrmFinanciamiento()){
@@ -268,10 +270,18 @@
                 else{
                     let me = this;
                     axios.post('/financiamiento/registrar', {
-                      
+                        'idContrato' : this.idContrato,
+                        'financiamiento' : this.financiamiento,
+                        'PorcentajeFin' : this.porcentaje,
+                        'subTotal' : this.subTotal,
+                        'Total' : this.total,
+                        'Frecuencia_Pago' : this.frecuenciaPago,
+                        'Numero_Frecuencia' : this.numeroFrecuencia,
+                        'Cuota' : this.cuota,
+                        'Fecha_Cobro' : this.fechaCobro
                         }).then(function(response) {
-                        me.cerrarModal();
-                        me.mostrarFinanciamiento(1,'','Financiamiento');
+                        me.mostrarTabla();
+                        me.mostrarFinanciamiento(1,'','f.Financiamiento');
                         })
                     .catch(function (error) {
                         console.log(error);
@@ -285,10 +295,19 @@
                 else{
                     let me = this;
                     axios.put('/financiamiento/actualizar', {
-                        'id' : this.idFinanciamiento, 
+                        'id' : this.idFinanciamiento,
+                        'idContrato' : this.idContrato,
+                        'financiamiento' : this.financiamiento,
+                        'PorcentajeFin' : this.porcentaje,
+                        'subTotal' : this.subTotal,
+                        'Total' : this.total,
+                        'Frecuencia_Pago' : this.frecuenciaPago,
+                        'Numero_Frecuencia' : this.numeroFrecuencia,
+                        'Cuota' : this.cuota,
+                        'Fecha_Cobro' : this.fechaCobro 
                         }).then(function(response) {
                         me.cerrarModal();
-                        me.mostrarFinanciamiento(1,'','Financiamiento');
+                        me.mostrarFinanciamiento(1,'','f.Financiamiento');
                     })
                     .catch(function (error) {
                         console.log(error);
