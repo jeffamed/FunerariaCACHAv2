@@ -84,7 +84,7 @@ Route::get('/contrato/seleccionarContrato','ContratoController@seleccionar');
 
 Route::get('/factura','FacturasController@index');
 Route::post('/factura/registrar','FacturasController@store');
-Route::put('/factura/actualizar','FacturasController@update');
+// Route::put('/factura/actualizar','FacturasController@update');
 Route::put('/factura/anular','FacturasController@anular');
 
 Route::get('/financiamiento','FinanciamientoController@index');

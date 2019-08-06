@@ -42,7 +42,7 @@
                                     <th>Opciones</th>
                                     <th>Financiamiento</th>
                                     <th>Cliente</th>
-                                    <th>Deuda</th>
+                                    <th>Deuda C$</th>
                                     <th>Estados</th>
                                 </tr>
                             </thead>

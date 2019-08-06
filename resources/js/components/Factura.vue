@@ -5,46 +5,7 @@
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
                 <h5 class="titulo">Facturas</h5>
             <!-- Boton nuevo -->
-                <button class="btn-new"  @click="abrirModal('factura','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
-                <!-- Abrir Modal-->
-                <div class="modal fade" id="btn-new" tabindex="-1" :class="{'mostrar' : modal}" role="dialog" aria-labelledby="btn-new" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header bg-primary">
-                                <h5 class="modal-title text-white" v-text="tituloModal"></h5>
-                                <button class="close" aria-label="Cerrar" @click="cerrarModal()">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="">
-                                    <div class="form-group">
-                                        <label for="nombre">Nombre: </label>
-                                        <input type="text" class="form-control" placeholder="Nombre..." v-model="nombre" required>
-                                    </div>
-                                    <div class="form-group">
-                                         <label for="nombre">Departamento: </label>
-                                         <select class="form-control" v-model="idDocumento" required>
-                                            <option value="0" disabled>Seleccione...</option>
-                                            <option v-for="departamento in infoDepartamento" :value="departamento.id" :key="departamento.id" v-text="departamento.Nombre"></option>
-                                        </select>
-                                    </div>
-                                    <div v-show="errorFactura" class="form-group msjerror">
-                                        <div class="text-center texterror" v-for="error in msjErrores" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-success" v-if="btnFuncion == 1" @click="registrarFactura()"><i class="fa fa-check"></i> Guardar</button>
-                                <button class="btn btn-success" v-if="btnFuncion == 2" @click="actualizarFactura()"><i class="fa fa-check"></i> Actualizar</button>
-                                <button class="btn btn-danger" @click="cerrarModal()"><i class="fa fa-remove"></i> Cerrar</button>
-                            </div>    
-                        </div>
-                    </div>
-                </div>
-                <!-- Fin del modal -->
+                <button class="btn-new"  @click="mostrarFrm('factura','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- buscador -->
                 <div class="buscador d-flex ml-auto hidden-md-down">
                     <label for="" class="etiqueta">Buscar por: </label>
@@ -61,61 +22,105 @@
             </div>
             <!-- CUERPO -->
             <div class="contenido__cuerpo" id="cuerpo-contenido">
-                <div class="table-responsive tabla-contenido">
-                    <!-- Buscador segundo-->
-                    <div class="form-inline mt-2 mb-2">
-                        <label for="buscar" class="hidden-lg-up ml-1">Buscar por: </label>
-                        <select id="select-opciones" class="custom-select hidden-lg-up mb-1 mr-1 w-25" v-model="criterio">
-                            <option value="Nombre">Factura</option>
-                            <!-- <option value="descripcion">Descripción</option> -->
-                        </select>
-                        <input type="text" id="txtbuscar" v-model="buscar" @keypress.enter="mostrarFactura(1,buscar,criterio)" class="form-control hidden-lg-up mb-1 w-50" placeholder="Buscar...">
+                <!-- tabla -->
+                <template v-if="mostrar == 1">
+                    <div class="table-responsive tabla-contenido">
+                        <!-- Buscador segundo-->
+                        <div class="form-inline mt-2 mb-2">
+                            <label for="buscar" class="hidden-lg-up ml-1">Buscar por: </label>
+                            <select id="select-opciones" class="custom-select hidden-lg-up mb-1 mr-1 w-25" v-model="criterio">
+                                <option value="Nombre">Factura</option>
+                                <!-- <option value="descripcion">Descripción</option> -->
+                            </select>
+                            <input type="text" id="txtbuscar" v-model="buscar" @keypress.enter="mostrarFactura(1,buscar,criterio)" class="form-control hidden-lg-up mb-1 w-50" placeholder="Buscar...">
+                        </div>
+                        <!-- fin del buscador segundo -->
+                        <!-- TABLA -->
+                        <table class="tablesorter table table-striped table-hover table-sm" id="tabla">
+                            <thead class="enc-tabla">
+                                <tr>
+                                    <th>Opciones</th>
+                                    <th>Facturas</th>
+                                    <th>Departamento</th>
+                                    <th>Estados</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="factura in Facturas" :key="factura.id" :style="factura.Estado=='Activo'?'':'color:red'">
+                                    <td>
+                                        <button class="boton boton-edit" @click="abrirModal('factura','actualizar', Factura)"><i class="fa fa-pencil"></i></button>
+                                        <template v-if="factura.Estado == 'Activo'">
+                                            <button class="boton boton-eliminar" @click="desactivarFactura(Factura.id)"><i class="fa fa-trash"></i></button>
+                                        </template>
+                                        <template v-else>
+                                            <button class="boton boton-activar" @click="activarFactura(Factura.id)"><i class="fa fa-check-circle"></i></button>
+                                        </template>
+                                    </td>
+                                    <td v-text="factura.Nombre"></td>
+                                    <td v-text="factura.Departamento"></td>
+                                    <td v-text="factura.Estado"></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <!-- fin del buscador segundo -->
-                    <!-- TABLA -->
-                    <table class="tablesorter table table-striped table-hover table-sm" id="tabla">
-                        <thead class="enc-tabla">
-                            <tr>
-                                <th>Opciones</th>
-                                <th>Facturas</th>
-                                <th>Departamento</th>
-                                <th>Estados</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="factura in Facturas" :key="factura.id" :style="factura.Estado=='Activo'?'':'color:red'">
-                                <td>
-                                    <button class="boton boton-edit" @click="abrirModal('factura','actualizar', Factura)"><i class="fa fa-pencil"></i></button>
-                                    <template v-if="factura.Estado == 'Activo'">
-                                        <button class="boton boton-eliminar" @click="desactivarFactura(Factura.id)"><i class="fa fa-trash"></i></button>
-                                    </template>
-                                    <template v-else>
-                                        <button class="boton boton-activar" @click="activarFactura(Factura.id)"><i class="fa fa-check-circle"></i></button>
-                                    </template>
-                                </td>
-                                <td v-text="factura.Nombre"></td>
-                                <td v-text="factura.Departamento"></td>
-                                <td v-text="factura.Estado"></td>
-                            </tr>
-                           
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- PAGINACION -->
-                <nav aria-label="page navigation example">
-                    <ul class="pagination justify-content-end" id="pagination">
-                        <li class="page-item" v-if="pagination.current_page > 1">
-                            <a href="#" class="page-link" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)"><span>&laquo;</span> Ant</a>
-                        </li>
-                        <li class="page-item" v-for="pagina in pagesNumber" :key="pagina" :class="page == isActived ? 'active' : ''">
-                            <a href="#" class="page-link"  @click.prevent="cambiarPagina(pagina,buscar,criterio)" v-text="pagina"></a>
-                        </li>
-                        <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                            <a href="#" class="page-link" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig <span>&raquo;</span></a>
-                        </li>
-                    </ul>
-                </nav>
+                    <!-- PAGINACION -->
+                    <nav aria-label="page navigation example">
+                        <ul class="pagination justify-content-end" id="pagination">
+                            <li class="page-item" v-if="pagination.current_page > 1">
+                                <a href="#" class="page-link" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)"><span>&laquo;</span> Ant</a>
+                            </li>
+                            <li class="page-item" v-for="pagina in pagesNumber" :key="pagina" :class="page == isActived ? 'active' : ''">
+                                <a href="#" class="page-link"  @click.prevent="cambiarPagina(pagina,buscar,criterio)" v-text="pagina"></a>
+                            </li>
+                            <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                <a href="#" class="page-link" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig <span>&raquo;</span></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </template>
+                <!-- mostrar formulario -->
+                <template v-else>
+                    <div class="row m-1">
+                         <!--Seleccionar documento-->
+                        <div class="col-md-6 form-group">
+                            <label for="" class="form-control-label">Tipo Factura: </label>
+                            <select name="" id="" v-model="tipoDocumento" class="form-control">
+                                <option value="Contrato">Contrato</option>
+                                <option value="Financiamiento">Financiamiento</option>
+                            </select>
+                        </div>
+                        <!-- # de documento -->
+                        <div class="col-md-6 form-group">
+                            <label for="Cliente" class="form-control-label" v-if="tipoDocumento == 'Contrato'">No. Contrato: </label>
+                            <label for="Cliente" class="form-control-label" v-else>No. Financiamiento: </label>
+                            <input type="text" name="" id="" class="form-control">
+                        </div>
+                        <!-- Cliente -->
+                        <div class="col-md-6 form-group">
+                            <label for="" class="form-control-label">Cliente: </label>
+                            <input type="text" class="form-control" readonly>
+                        </div>
+                        <!-- tasa de cambio -->
+                        <div class="col-md-6 form-group">
+                            <label for="" class="form-control-label">Cambio ($): </label>
+                            <input type="text" class="form-control" readonly>
+                        </div>
+                        <!-- Cuota -->
+                        <div class="col-md-6 form-group">
+                            <label for="" class="form-control-label">Cuota (C$): </label>
+                            <input type="text" class="form-control" readonly>
+                        </div>
+                        <!-- Monto  -->
+                        <div class="col-md-6 form-group">
+                            <label for="" class="form-control-label">Abono (C$): </label>
+                            <input type="number" class="form-control" min="0">
+                        </div>
+                        <div class="mx-2 my-1 col-12">
+                            <button class="btn btn-success" @click="registrarContrato()"><i class="fa fa-check"></i> Guardar</button>
+                            <button @click="mostrarTabla()" class="btn btn-danger"><i class="fa fa-close"></i> Cerrar</button>
+                        </div>
+                    </div>
+                </template>
             </div>
         </div>
     </section>
@@ -126,15 +131,13 @@
         data(){
             return {
                 idFactura: 0,
-                nombre: '',
                 idDocumento: 0,
-                TipoDocumento: '',
+                idTasa: 0,
+                tipoDocumento: 'Contrato',
+                monto: '',
                 Facturas: [],
-                infoDepartamento: [],
-                modal: 0,
-                tituloModal: '',
-                btnFuncion: 0,
                 errorFactura: 0,
+                mostrar: 1,
                 msjErrores: [],
                 pagination: {
                     'total': 0,    
@@ -147,6 +150,7 @@
                 offset: 3,
                 criterio: 'Nombre',
                 buscar: '',
+
             }
         },
         computed: {
@@ -220,25 +224,6 @@
                     });
                 }
             },
-            actualizarFactura(){
-                if(this.validarFrmFactura()){
-                    return;
-                }
-                else{
-                    let me = this;
-                    axios.put('/Factura/actualizar', {
-                        'Nombre' : this.nombre, 
-                        'id' : this.idFactura, 
-                        'idDocumento' : this.idDocumento
-                        }).then(function(response) {
-                        me.cerrarModal();
-                        me.mostrarFactura(1,'','Nombre');
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-                }
-            },
             validarFrmFactura(){
                 this.errorFactura=0;
                 this.msjErrores= [];
@@ -257,38 +242,6 @@
                     this.errorFactura= 1;
                 }
                 return this.errorFactura;
-            },
-            activarFactura(id){
-                swal({
-                    title: '¿Estas seguro?',
-                    text: 'Deseas activar este Factura',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Activar',
-                    cancelButtonText: 'Cancelar',
-                    confirmButtonClass: 'btn btn-success',
-                    cancelButtonClass: 'btn btn-danger',
-                    buttonsStyling: false,
-                    reverseButtons: true,
-                    }).then((result) => {
-                        if (result.value) {
-                            let me = this;
-                            axios.put('/Factura/activar', {'id' : id}).then(function(response) {
-                                me.mostrarFactura(1,'','Nombre');
-                                swal(
-                                    'Activado',
-                                    'El registro fue activado correctamente',
-                                    'success'
-                                )
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                            });
-                        }else if(result.dismiss === swal.DismissReason.cancel){
-                        }
-                    })
             },
             desactivarFactura(id){
                 swal({
@@ -328,44 +281,38 @@
                 me.pagination.current_page = pagina;
                 me.mostrarFactura(pagina,buscar,criterio);
             },
-            abrirModal(modelo, accion, data=[]){
+            mostrarFrm(modelo,accion,data=[]){
+                this.mostrar = 2;
                 switch (modelo) {
-                    case "Factura":
-                    {
+                    case "factura":
                         switch (accion) {
                             case 'registrar':
                             {
-                                this.modal = 1;
-                                this.tituloModal = 'Registrar Factura';
-                                this.nombre = '';
-                                this.idDocumento = 0;
-                                this.btnFuncion = 1;
                                 break;
                             }
-                            case 'actualizar':
-                            {
-                                this.modal = 1;
-                                this.tituloModal = 'Actualizar Factura';
-                                this.btnFuncion = 2;
-                                this.idFactura = data['id'];
-                                this.nombre = data['Nombre'];
-                                this.idDocumento = data['idDocumento'];
-                                break;
-                            }
-                        }
-                    }
-                }
+                    }    
 
-                this.mostrarDepartamento();
+                }
+                this.mostrarContrato();
             },
-            cerrarModal(){
-                this.modal = 0;
+            mostrarTabla(){
+                this.mostrar = 1;
                 this.tituloModal = '';
-                this.nombre = '';
+                this.idFinanciamiento = 0;
+                this.financiamiento = '',
+                this.idContrato = 0;
+                this.nombreCliente = '';
+                this.subTotal = 0;
+                this.total = 0;
+                this.totalC = 0;
+                this.frecuenciaPago = '';
+                this.numeroFrecuencia = 0;
+                this.porcentaje = 2.5;
+                this.beneficiario = '';
+                this.cuota = 0;
                 this.msjErrores = [];
-                this.errorFactura = 0;
-                this.idDocumento = 0;
-            },         
+                this.errorFinanciamiento = 0;
+            },        
         },
         mounted() {
             this.mostrarFactura(1,this.buscar,this.criterio);

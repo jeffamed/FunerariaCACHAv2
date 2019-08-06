@@ -3284,6 +3284,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4547,19 +4550,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       idFactura: 0,
-      nombre: '',
       idDocumento: 0,
-      TipoDocumento: '',
+      idTasa: 0,
+      tipoDocumento: 'Contrato',
+      monto: '',
       Facturas: [],
-      infoDepartamento: [],
-      modal: 0,
-      tituloModal: '',
-      btnFuncion: 0,
       errorFactura: 0,
+      mostrar: 1,
       msjErrores: [],
       pagination: {
         'total': 0,
@@ -4645,23 +4651,6 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
-    actualizarFactura: function actualizarFactura() {
-      if (this.validarFrmFactura()) {
-        return;
-      } else {
-        var me = this;
-        axios.put('/Factura/actualizar', {
-          'Nombre': this.nombre,
-          'id': this.idFactura,
-          'idDocumento': this.idDocumento
-        }).then(function (response) {
-          me.cerrarModal();
-          me.mostrarFactura(1, '', 'Nombre');
-        })["catch"](function (error) {
-          console.log(error);
-        });
-      }
-    },
     validarFrmFactura: function validarFrmFactura() {
       this.errorFactura = 0;
       this.msjErrores = [];
@@ -4681,38 +4670,8 @@ __webpack_require__.r(__webpack_exports__);
 
       return this.errorFactura;
     },
-    activarFactura: function activarFactura(id) {
-      var _this = this;
-
-      swal({
-        title: '¿Estas seguro?',
-        text: 'Deseas activar este Factura',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Activar',
-        cancelButtonText: 'Cancelar',
-        confirmButtonClass: 'btn btn-success',
-        cancelButtonClass: 'btn btn-danger',
-        buttonsStyling: false,
-        reverseButtons: true
-      }).then(function (result) {
-        if (result.value) {
-          var me = _this;
-          axios.put('/Factura/activar', {
-            'id': id
-          }).then(function (response) {
-            me.mostrarFactura(1, '', 'Nombre');
-            swal('Activado', 'El registro fue activado correctamente', 'success');
-          })["catch"](function (error) {
-            console.log(error);
-          });
-        } else if (result.dismiss === swal.DismissReason.cancel) {}
-      });
-    },
     desactivarFactura: function desactivarFactura(id) {
-      var _this2 = this;
+      var _this = this;
 
       swal({
         title: '¿Estas seguro?',
@@ -4729,7 +4688,7 @@ __webpack_require__.r(__webpack_exports__);
         reverseButtons: true
       }).then(function (result) {
         if (result.value) {
-          var me = _this2;
+          var me = _this;
           axios.put('/Factura/desactivar', {
             'id': id
           }).then(function (response) {
@@ -4746,46 +4705,39 @@ __webpack_require__.r(__webpack_exports__);
       me.pagination.current_page = pagina;
       me.mostrarFactura(pagina, buscar, criterio);
     },
-    abrirModal: function abrirModal(modelo, accion) {
+    mostrarFrm: function mostrarFrm(modelo, accion) {
       var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+      this.mostrar = 2;
 
       switch (modelo) {
-        case "Factura":
-          {
-            switch (accion) {
-              case 'registrar':
-                {
-                  this.modal = 1;
-                  this.tituloModal = 'Registrar Factura';
-                  this.nombre = '';
-                  this.idDocumento = 0;
-                  this.btnFuncion = 1;
-                  break;
-                }
-
-              case 'actualizar':
-                {
-                  this.modal = 1;
-                  this.tituloModal = 'Actualizar Factura';
-                  this.btnFuncion = 2;
-                  this.idFactura = data['id'];
-                  this.nombre = data['Nombre'];
-                  this.idDocumento = data['idDocumento'];
-                  break;
-                }
-            }
+        case "factura":
+          switch (accion) {
+            case 'registrar':
+              {
+                break;
+              }
           }
+
       }
 
-      this.mostrarDepartamento();
+      this.mostrarContrato();
     },
-    cerrarModal: function cerrarModal() {
-      this.modal = 0;
+    mostrarTabla: function mostrarTabla() {
+      this.mostrar = 1;
       this.tituloModal = '';
-      this.nombre = '';
+      this.idFinanciamiento = 0;
+      this.financiamiento = '', this.idContrato = 0;
+      this.nombreCliente = '';
+      this.subTotal = 0;
+      this.total = 0;
+      this.totalC = 0;
+      this.frecuenciaPago = '';
+      this.numeroFrecuencia = 0;
+      this.porcentaje = 2.5;
+      this.beneficiario = '';
+      this.cuota = 0;
       this.msjErrores = [];
-      this.errorFactura = 0;
-      this.idDocumento = 0;
+      this.errorFinanciamiento = 0;
     }
   },
   mounted: function mounted() {
@@ -28330,9 +28282,7 @@ var render = function() {
                                                 ]
                                               )
                                             ]
-                                          : _vm._e(),
-                                        _vm._v(" "),
-                                        contrato.Estado == "Suspendido"
+                                          : contrato.Estado == "Suspendido"
                                           ? [
                                               _c(
                                                 "button",
@@ -28355,7 +28305,7 @@ var render = function() {
                                                 ]
                                               )
                                             ]
-                                          : _vm._e()
+                                          : [_vm._m(2, true)]
                                       ],
                                       2
                                     ),
@@ -29072,6 +29022,14 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Estados")])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("button", { staticClass: "boton" }, [
+      _c("i", { staticClass: "fa fa-eye" })
     ])
   }
 ]
@@ -30497,229 +30455,13 @@ var render = function() {
                   staticClass: "btn-new",
                   on: {
                     click: function($event) {
-                      return _vm.abrirModal("factura", "registrar")
+                      return _vm.mostrarFrm("factura", "registrar")
                     }
                   }
                 },
                 [
                   _c("i", { staticClass: "hidden-xs-down fa fa-plus-circle" }),
                   _vm._v(" Nuevo")
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                {
-                  staticClass: "modal fade",
-                  class: { mostrar: _vm.modal },
-                  attrs: {
-                    id: "btn-new",
-                    tabindex: "-1",
-                    role: "dialog",
-                    "aria-labelledby": "btn-new",
-                    "aria-hidden": "true"
-                  }
-                },
-                [
-                  _c("div", { staticClass: "modal-dialog" }, [
-                    _c("div", { staticClass: "modal-content" }, [
-                      _c("div", { staticClass: "modal-header bg-primary" }, [
-                        _c("h5", {
-                          staticClass: "modal-title text-white",
-                          domProps: { textContent: _vm._s(_vm.tituloModal) }
-                        }),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "close",
-                            attrs: { "aria-label": "Cerrar" },
-                            on: {
-                              click: function($event) {
-                                return _vm.cerrarModal()
-                              }
-                            }
-                          },
-                          [
-                            _c("span", { attrs: { "aria-hidden": "true" } }, [
-                              _vm._v("×")
-                            ])
-                          ]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "modal-body" }, [
-                        _c("form", { attrs: { action: "" } }, [
-                          _c("div", { staticClass: "form-group" }, [
-                            _c("label", { attrs: { for: "nombre" } }, [
-                              _vm._v("Nombre: ")
-                            ]),
-                            _vm._v(" "),
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.nombre,
-                                  expression: "nombre"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              attrs: {
-                                type: "text",
-                                placeholder: "Nombre...",
-                                required: ""
-                              },
-                              domProps: { value: _vm.nombre },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.nombre = $event.target.value
-                                }
-                              }
-                            })
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "form-group" }, [
-                            _c("label", { attrs: { for: "nombre" } }, [
-                              _vm._v("Departamento: ")
-                            ]),
-                            _vm._v(" "),
-                            _c(
-                              "select",
-                              {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.idDocumento,
-                                    expression: "idDocumento"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                attrs: { required: "" },
-                                on: {
-                                  change: function($event) {
-                                    var $$selectedVal = Array.prototype.filter
-                                      .call($event.target.options, function(o) {
-                                        return o.selected
-                                      })
-                                      .map(function(o) {
-                                        var val =
-                                          "_value" in o ? o._value : o.value
-                                        return val
-                                      })
-                                    _vm.idDocumento = $event.target.multiple
-                                      ? $$selectedVal
-                                      : $$selectedVal[0]
-                                  }
-                                }
-                              },
-                              [
-                                _c(
-                                  "option",
-                                  { attrs: { value: "0", disabled: "" } },
-                                  [_vm._v("Seleccione...")]
-                                ),
-                                _vm._v(" "),
-                                _vm._l(_vm.infoDepartamento, function(
-                                  departamento
-                                ) {
-                                  return _c("option", {
-                                    key: departamento.id,
-                                    domProps: {
-                                      value: departamento.id,
-                                      textContent: _vm._s(departamento.Nombre)
-                                    }
-                                  })
-                                })
-                              ],
-                              2
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            {
-                              directives: [
-                                {
-                                  name: "show",
-                                  rawName: "v-show",
-                                  value: _vm.errorFactura,
-                                  expression: "errorFactura"
-                                }
-                              ],
-                              staticClass: "form-group msjerror"
-                            },
-                            _vm._l(_vm.msjErrores, function(error) {
-                              return _c("div", {
-                                key: error,
-                                staticClass: "text-center texterror",
-                                domProps: { textContent: _vm._s(error) }
-                              })
-                            }),
-                            0
-                          )
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "modal-footer" }, [
-                        _vm.btnFuncion == 1
-                          ? _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-success",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.registrarFactura()
-                                  }
-                                }
-                              },
-                              [
-                                _c("i", { staticClass: "fa fa-check" }),
-                                _vm._v(" Guardar")
-                              ]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _vm.btnFuncion == 2
-                          ? _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-success",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.actualizarFactura()
-                                  }
-                                }
-                              },
-                              [
-                                _c("i", { staticClass: "fa fa-check" }),
-                                _vm._v(" Actualizar")
-                              ]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-danger",
-                            on: {
-                              click: function($event) {
-                                return _vm.cerrarModal()
-                              }
-                            }
-                          },
-                          [
-                            _c("i", { staticClass: "fa fa-remove" }),
-                            _vm._v(" Cerrar")
-                          ]
-                        )
-                      ])
-                    ])
-                  ])
                 ]
               ),
               _vm._v(" "),
@@ -30805,292 +30547,447 @@ var render = function() {
               attrs: { id: "cuerpo-contenido" }
             },
             [
-              _c("div", { staticClass: "table-responsive tabla-contenido" }, [
-                _c("div", { staticClass: "form-inline mt-2 mb-2" }, [
-                  _c(
-                    "label",
-                    {
-                      staticClass: "hidden-lg-up ml-1",
-                      attrs: { for: "buscar" }
-                    },
-                    [_vm._v("Buscar por: ")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "select",
-                    {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.criterio,
-                          expression: "criterio"
-                        }
-                      ],
-                      staticClass: "custom-select hidden-lg-up mb-1 mr-1 w-25",
-                      attrs: { id: "select-opciones" },
-                      on: {
-                        change: function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.criterio = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        }
-                      }
-                    },
-                    [
-                      _c("option", { attrs: { value: "Nombre" } }, [
-                        _vm._v("Factura")
-                      ])
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.buscar,
-                        expression: "buscar"
-                      }
-                    ],
-                    staticClass: "form-control hidden-lg-up mb-1 w-50",
-                    attrs: {
-                      type: "text",
-                      id: "txtbuscar",
-                      placeholder: "Buscar..."
-                    },
-                    domProps: { value: _vm.buscar },
-                    on: {
-                      keypress: function($event) {
-                        if (
-                          !$event.type.indexOf("key") &&
-                          _vm._k(
-                            $event.keyCode,
-                            "enter",
-                            13,
-                            $event.key,
-                            "Enter"
-                          )
-                        ) {
-                          return null
-                        }
-                        return _vm.mostrarFactura(1, _vm.buscar, _vm.criterio)
-                      },
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.buscar = $event.target.value
-                      }
-                    }
-                  })
-                ]),
-                _vm._v(" "),
-                _c(
-                  "table",
-                  {
-                    staticClass:
-                      "tablesorter table table-striped table-hover table-sm",
-                    attrs: { id: "tabla" }
-                  },
-                  [
-                    _vm._m(1),
-                    _vm._v(" "),
+              _vm.mostrar == 1
+                ? [
                     _c(
-                      "tbody",
-                      _vm._l(_vm.Facturas, function(factura) {
-                        return _c(
-                          "tr",
+                      "div",
+                      { staticClass: "table-responsive tabla-contenido" },
+                      [
+                        _c("div", { staticClass: "form-inline mt-2 mb-2" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "hidden-lg-up ml-1",
+                              attrs: { for: "buscar" }
+                            },
+                            [_vm._v("Buscar por: ")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.criterio,
+                                  expression: "criterio"
+                                }
+                              ],
+                              staticClass:
+                                "custom-select hidden-lg-up mb-1 mr-1 w-25",
+                              attrs: { id: "select-opciones" },
+                              on: {
+                                change: function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.criterio = $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                }
+                              }
+                            },
+                            [
+                              _c("option", { attrs: { value: "Nombre" } }, [
+                                _vm._v("Factura")
+                              ])
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.buscar,
+                                expression: "buscar"
+                              }
+                            ],
+                            staticClass: "form-control hidden-lg-up mb-1 w-50",
+                            attrs: {
+                              type: "text",
+                              id: "txtbuscar",
+                              placeholder: "Buscar..."
+                            },
+                            domProps: { value: _vm.buscar },
+                            on: {
+                              keypress: function($event) {
+                                if (
+                                  !$event.type.indexOf("key") &&
+                                  _vm._k(
+                                    $event.keyCode,
+                                    "enter",
+                                    13,
+                                    $event.key,
+                                    "Enter"
+                                  )
+                                ) {
+                                  return null
+                                }
+                                return _vm.mostrarFactura(
+                                  1,
+                                  _vm.buscar,
+                                  _vm.criterio
+                                )
+                              },
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.buscar = $event.target.value
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "table",
                           {
-                            key: factura.id,
-                            style: factura.Estado == "Activo" ? "" : "color:red"
+                            staticClass:
+                              "tablesorter table table-striped table-hover table-sm",
+                            attrs: { id: "tabla" }
                           },
                           [
+                            _vm._m(1),
+                            _vm._v(" "),
                             _c(
-                              "td",
-                              [
-                                _c(
-                                  "button",
+                              "tbody",
+                              _vm._l(_vm.Facturas, function(factura) {
+                                return _c(
+                                  "tr",
                                   {
-                                    staticClass: "boton boton-edit",
+                                    key: factura.id,
+                                    style:
+                                      factura.Estado == "Activo"
+                                        ? ""
+                                        : "color:red"
+                                  },
+                                  [
+                                    _c(
+                                      "td",
+                                      [
+                                        _c(
+                                          "button",
+                                          {
+                                            staticClass: "boton boton-edit",
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.abrirModal(
+                                                  "factura",
+                                                  "actualizar",
+                                                  _vm.Factura
+                                                )
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c("i", {
+                                              staticClass: "fa fa-pencil"
+                                            })
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        factura.Estado == "Activo"
+                                          ? [
+                                              _c(
+                                                "button",
+                                                {
+                                                  staticClass:
+                                                    "boton boton-eliminar",
+                                                  on: {
+                                                    click: function($event) {
+                                                      return _vm.desactivarFactura(
+                                                        _vm.Factura.id
+                                                      )
+                                                    }
+                                                  }
+                                                },
+                                                [
+                                                  _c("i", {
+                                                    staticClass: "fa fa-trash"
+                                                  })
+                                                ]
+                                              )
+                                            ]
+                                          : [
+                                              _c(
+                                                "button",
+                                                {
+                                                  staticClass:
+                                                    "boton boton-activar",
+                                                  on: {
+                                                    click: function($event) {
+                                                      return _vm.activarFactura(
+                                                        _vm.Factura.id
+                                                      )
+                                                    }
+                                                  }
+                                                },
+                                                [
+                                                  _c("i", {
+                                                    staticClass:
+                                                      "fa fa-check-circle"
+                                                  })
+                                                ]
+                                              )
+                                            ]
+                                      ],
+                                      2
+                                    ),
+                                    _vm._v(" "),
+                                    _c("td", {
+                                      domProps: {
+                                        textContent: _vm._s(factura.Nombre)
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("td", {
+                                      domProps: {
+                                        textContent: _vm._s(
+                                          factura.Departamento
+                                        )
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("td", {
+                                      domProps: {
+                                        textContent: _vm._s(factura.Estado)
+                                      }
+                                    })
+                                  ]
+                                )
+                              }),
+                              0
+                            )
+                          ]
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "nav",
+                      { attrs: { "aria-label": "page navigation example" } },
+                      [
+                        _c(
+                          "ul",
+                          {
+                            staticClass: "pagination justify-content-end",
+                            attrs: { id: "pagination" }
+                          },
+                          [
+                            _vm.pagination.current_page > 1
+                              ? _c("li", { staticClass: "page-item" }, [
+                                  _c(
+                                    "a",
+                                    {
+                                      staticClass: "page-link",
+                                      attrs: { href: "#" },
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.cambiarPagina(
+                                            _vm.pagination.current_page - 1,
+                                            _vm.buscar,
+                                            _vm.criterio
+                                          )
+                                        }
+                                      }
+                                    },
+                                    [_c("span", [_vm._v("«")]), _vm._v(" Ant")]
+                                  )
+                                ])
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _vm._l(_vm.pagesNumber, function(pagina) {
+                              return _c(
+                                "li",
+                                {
+                                  key: pagina,
+                                  staticClass: "page-item",
+                                  class:
+                                    _vm.page == _vm.isActived ? "active" : ""
+                                },
+                                [
+                                  _c("a", {
+                                    staticClass: "page-link",
+                                    attrs: { href: "#" },
+                                    domProps: { textContent: _vm._s(pagina) },
                                     on: {
                                       click: function($event) {
-                                        return _vm.abrirModal(
-                                          "factura",
-                                          "actualizar",
-                                          _vm.Factura
+                                        $event.preventDefault()
+                                        return _vm.cambiarPagina(
+                                          pagina,
+                                          _vm.buscar,
+                                          _vm.criterio
                                         )
                                       }
                                     }
-                                  },
-                                  [_c("i", { staticClass: "fa fa-pencil" })]
-                                ),
-                                _vm._v(" "),
-                                factura.Estado == "Activo"
-                                  ? [
-                                      _c(
-                                        "button",
-                                        {
-                                          staticClass: "boton boton-eliminar",
-                                          on: {
-                                            click: function($event) {
-                                              return _vm.desactivarFactura(
-                                                _vm.Factura.id
-                                              )
-                                            }
-                                          }
-                                        },
-                                        [
-                                          _c("i", {
-                                            staticClass: "fa fa-trash"
-                                          })
-                                        ]
-                                      )
-                                    ]
-                                  : [
-                                      _c(
-                                        "button",
-                                        {
-                                          staticClass: "boton boton-activar",
-                                          on: {
-                                            click: function($event) {
-                                              return _vm.activarFactura(
-                                                _vm.Factura.id
-                                              )
-                                            }
-                                          }
-                                        },
-                                        [
-                                          _c("i", {
-                                            staticClass: "fa fa-check-circle"
-                                          })
-                                        ]
-                                      )
-                                    ]
-                              ],
-                              2
-                            ),
-                            _vm._v(" "),
-                            _c("td", {
-                              domProps: { textContent: _vm._s(factura.Nombre) }
+                                  })
+                                ]
+                              )
                             }),
                             _vm._v(" "),
-                            _c("td", {
-                              domProps: {
-                                textContent: _vm._s(factura.Departamento)
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("td", {
-                              domProps: { textContent: _vm._s(factura.Estado) }
-                            })
-                          ]
+                            _vm.pagination.current_page <
+                            _vm.pagination.last_page
+                              ? _c("li", { staticClass: "page-item" }, [
+                                  _c(
+                                    "a",
+                                    {
+                                      staticClass: "page-link",
+                                      attrs: { href: "#" },
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.cambiarPagina(
+                                            _vm.pagination.current_page + 1,
+                                            _vm.buscar,
+                                            _vm.criterio
+                                          )
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("Sig "), _c("span", [_vm._v("»")])]
+                                  )
+                                ])
+                              : _vm._e()
+                          ],
+                          2
                         )
-                      }),
-                      0
+                      ]
                     )
                   ]
-                )
-              ]),
-              _vm._v(" "),
-              _c(
-                "nav",
-                { attrs: { "aria-label": "page navigation example" } },
-                [
-                  _c(
-                    "ul",
-                    {
-                      staticClass: "pagination justify-content-end",
-                      attrs: { id: "pagination" }
-                    },
-                    [
-                      _vm.pagination.current_page > 1
-                        ? _c("li", { staticClass: "page-item" }, [
-                            _c(
-                              "a",
-                              {
-                                staticClass: "page-link",
-                                attrs: { href: "#" },
-                                on: {
-                                  click: function($event) {
-                                    $event.preventDefault()
-                                    return _vm.cambiarPagina(
-                                      _vm.pagination.current_page - 1,
-                                      _vm.buscar,
-                                      _vm.criterio
-                                    )
-                                  }
-                                }
-                              },
-                              [_c("span", [_vm._v("«")]), _vm._v(" Ant")]
-                            )
-                          ])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm._l(_vm.pagesNumber, function(pagina) {
-                        return _c(
-                          "li",
+                : [
+                    _c("div", { staticClass: "row m-1" }, [
+                      _c("div", { staticClass: "col-md-6 form-group" }, [
+                        _c(
+                          "label",
                           {
-                            key: pagina,
-                            staticClass: "page-item",
-                            class: _vm.page == _vm.isActived ? "active" : ""
+                            staticClass: "form-control-label",
+                            attrs: { for: "" }
+                          },
+                          [_vm._v("Tipo Factura: ")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.tipoDocumento,
+                                expression: "tipoDocumento"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { name: "", id: "" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.tipoDocumento = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
                           },
                           [
-                            _c("a", {
-                              staticClass: "page-link",
-                              attrs: { href: "#" },
-                              domProps: { textContent: _vm._s(pagina) },
-                              on: {
-                                click: function($event) {
-                                  $event.preventDefault()
-                                  return _vm.cambiarPagina(
-                                    pagina,
-                                    _vm.buscar,
-                                    _vm.criterio
-                                  )
-                                }
-                              }
-                            })
+                            _c("option", { attrs: { value: "Contrato" } }, [
+                              _vm._v("Contrato")
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Financiamiento" } },
+                              [_vm._v("Financiamiento")]
+                            )
                           ]
                         )
-                      }),
+                      ]),
                       _vm._v(" "),
-                      _vm.pagination.current_page < _vm.pagination.last_page
-                        ? _c("li", { staticClass: "page-item" }, [
-                            _c(
-                              "a",
+                      _c("div", { staticClass: "col-md-6 form-group" }, [
+                        _vm.tipoDocumento == "Contrato"
+                          ? _c(
+                              "label",
                               {
-                                staticClass: "page-link",
-                                attrs: { href: "#" },
-                                on: {
-                                  click: function($event) {
-                                    $event.preventDefault()
-                                    return _vm.cambiarPagina(
-                                      _vm.pagination.current_page + 1,
-                                      _vm.buscar,
-                                      _vm.criterio
-                                    )
-                                  }
-                                }
+                                staticClass: "form-control-label",
+                                attrs: { for: "Cliente" }
                               },
-                              [_vm._v("Sig "), _c("span", [_vm._v("»")])]
+                              [_vm._v("No. Contrato: ")]
                             )
-                          ])
-                        : _vm._e()
-                    ],
-                    2
-                  )
-                ]
-              )
-            ]
+                          : _c(
+                              "label",
+                              {
+                                staticClass: "form-control-label",
+                                attrs: { for: "Cliente" }
+                              },
+                              [_vm._v("No. Financiamiento: ")]
+                            ),
+                        _vm._v(" "),
+                        _c("input", {
+                          staticClass: "form-control",
+                          attrs: { type: "text", name: "", id: "" }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _vm._m(2),
+                      _vm._v(" "),
+                      _vm._m(3),
+                      _vm._v(" "),
+                      _vm._m(4),
+                      _vm._v(" "),
+                      _vm._m(5),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "mx-2 my-1 col-12" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-success",
+                            on: {
+                              click: function($event) {
+                                return _vm.registrarContrato()
+                              }
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fa fa-check" }),
+                            _vm._v(" Guardar")
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-danger",
+                            on: {
+                              click: function($event) {
+                                return _vm.mostrarTabla()
+                              }
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fa fa-close" }),
+                            _vm._v(" Cerrar")
+                          ]
+                        )
+                      ])
+                    ])
+                  ]
+            ],
+            2
           )
         ]
       )
@@ -31120,6 +31017,66 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Estados")])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-6 form-group" }, [
+      _c("label", { staticClass: "form-control-label", attrs: { for: "" } }, [
+        _vm._v("Cliente: ")
+      ]),
+      _vm._v(" "),
+      _c("input", {
+        staticClass: "form-control",
+        attrs: { type: "text", readonly: "" }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-6 form-group" }, [
+      _c("label", { staticClass: "form-control-label", attrs: { for: "" } }, [
+        _vm._v("Cambio ($): ")
+      ]),
+      _vm._v(" "),
+      _c("input", {
+        staticClass: "form-control",
+        attrs: { type: "text", readonly: "" }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-6 form-group" }, [
+      _c("label", { staticClass: "form-control-label", attrs: { for: "" } }, [
+        _vm._v("Cuota (C$): ")
+      ]),
+      _vm._v(" "),
+      _c("input", {
+        staticClass: "form-control",
+        attrs: { type: "text", readonly: "" }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-6 form-group" }, [
+      _c("label", { staticClass: "form-control-label", attrs: { for: "" } }, [
+        _vm._v("Abono (C$): ")
+      ]),
+      _vm._v(" "),
+      _c("input", {
+        staticClass: "form-control",
+        attrs: { type: "number", min: "0" }
+      })
     ])
   }
 ]
@@ -32086,7 +32043,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Cliente")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Deuda")]),
+        _c("th", [_vm._v("Deuda C$")]),
         _vm._v(" "),
         _c("th", [_vm._v("Estados")])
       ])
