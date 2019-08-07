@@ -81,8 +81,13 @@
                 <!-- mostrar formulario -->
                 <template v-else>
                     <div class="row m-1">
-                         <!--Seleccionar documento-->
-                        <div class="col-md-6 form-group">
+                        <!-- tasa de cambio -->
+                        <div class="col-md-2 form-group">
+                            <label for="" class="form-control-label">Cambio ($): </label>
+                            <input type="text" class="form-control" readonly>
+                        </div>
+                        <!--Seleccionar documento-->
+                        <div class="col-md-4 form-group">
                             <label for="" class="form-control-label">Tipo Factura: </label>
                             <select name="" id="" v-model="tipoDocumento" class="form-control">
                                 <option value="Contrato">Contrato</option>
@@ -90,21 +95,27 @@
                             </select>
                         </div>
                         <!-- # de documento -->
-                        <div class="col-md-6 form-group">
+                        <div class="col-md-4 form-group">
                             <label for="Cliente" class="form-control-label" v-if="tipoDocumento == 'Contrato'">No. Contrato: </label>
                             <label for="Cliente" class="form-control-label" v-else>No. Financiamiento: </label>
-                            <input type="text" name="" id="" class="form-control">
+                            <input type="text" name="" id="" class="form-control" v-model="numeroDoc">
                         </div>
+                        <!-- Boton Buscar -->
+                        <div class="col-md-2 form-group mt-auto d-flex align-self-center">
+                            <button class="btn btn-success" @click="buscarInformacion(tipoDocumento,numeroDoc)">Buscar</button>
+                        </div>
+                        <div v-show="errorFactura" class="form-group msjerror col-12">
+                            <div class="col-12 text-center texterror" v-for="error in msjErrores" :key="error" v-text="error"></div>
+                        </div>
+                        <template>
+                                
+                        </template>
                         <!-- Cliente -->
                         <div class="col-md-6 form-group">
                             <label for="" class="form-control-label">Cliente: </label>
                             <input type="text" class="form-control" readonly>
                         </div>
-                        <!-- tasa de cambio -->
-                        <div class="col-md-6 form-group">
-                            <label for="" class="form-control-label">Cambio ($): </label>
-                            <input type="text" class="form-control" readonly>
-                        </div>
+                        
                         <!-- Cuota -->
                         <div class="col-md-6 form-group">
                             <label for="" class="form-control-label">Cuota (C$): </label>
@@ -114,6 +125,9 @@
                         <div class="col-md-6 form-group">
                             <label for="" class="form-control-label">Abono (C$): </label>
                             <input type="number" class="form-control" min="0">
+                        </div>
+                        <div v-show="errorFactura" class="form-group msjerror">
+                            <div class="col-12 text-center texterror" v-for="error in msjErrores" :key="error" v-text="error"></div>
                         </div>
                         <div class="mx-2 my-1 col-12">
                             <button class="btn btn-success" @click="registrarContrato()"><i class="fa fa-check"></i> Guardar</button>
@@ -135,8 +149,10 @@
                 idTasa: 0,
                 tipoDocumento: 'Contrato',
                 monto: '',
+                numeroDoc: '',
                 Facturas: [],
                 errorFactura: 0,
+                informacion: [],
                 mostrar: 1,
                 msjErrores: [],
                 pagination: {
@@ -275,6 +291,24 @@
 
                         }
                     })
+            },
+            buscarInformacion(tipodoc,numdoc){
+                this.errorFactura=0;
+                this.msjErrores= [];
+               if(numdoc == ""){
+                    this.msjErrores.push("* El campo numero no puede estar vacio no puede estar vacío");
+                    this.errorFactura = 1;
+                }
+                    return errorFactura;
+                let me = this;
+                var url= '/factura/buscar?&tipoDocumento=' + tipodoc + '&numeroDoc=' + numdoc;
+                axios.get(url).then(function(response) {
+                    var respuesta = response.data;
+                    me.informacion = respuesta.informacion.data;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
             cambiarPagina(pagina,buscar,criterio){
                 let me = this;

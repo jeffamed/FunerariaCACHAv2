@@ -37,6 +37,20 @@ class FacturasController extends Controller
         ];
     }
 
+    public function InfoDocumento(Request $request){
+        $tipoDoc = $request->tipoDocumento;
+        $buscarDoc = $request->numeroDoc;
+
+        if($tipoDoc == 'Contrato'){
+            $informacion = Factura::join('contratos as c','c.id','=','facturas.idDocumento')
+                               ->join('clientes as cl','c.idCliente','=','cl.id')
+                               ->select(DB::raw('concat(cl.Nombre," ",cl.Apellido)'),'c.cuota','c.Total','c.SaldoR')
+                               ->where('c.Contrato','=',$buscarDoc);
+        }else{
+            $informacion = Factura::join('financiamientos as f','f.id','=','facturas.idDocumento');
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -47,25 +61,6 @@ class FacturasController extends Controller
     {
         if (!$request->ajax()) return redirect('/');
         $factura = new Factura();
-        $factura->idDolar =  $request->idDolar;
-        $factura->idDocumento = $request->idDocumento;
-        $factura->TipoDocumento = $request->TipoDocumento;
-        $factura->Monto = $request->Monto;
-        $factura->Estado = 'Activo';
-        $factura->save();
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request)
-    {
-        if (!$request->ajax()) return redirect('/');
-        $factura = Factura::findOrFail($request->id);
         $factura->idDolar =  $request->idDolar;
         $factura->idDocumento = $request->idDocumento;
         $factura->TipoDocumento = $request->TipoDocumento;
