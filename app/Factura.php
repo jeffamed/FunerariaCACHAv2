@@ -20,4 +20,9 @@ class Factura extends Model
     {
         return $this->belongsTo('App\Contrato');
     }
+
+    public function tasa()
+    {
+        return $this->belongsTo('App\TasaCambio');
+    }
 }

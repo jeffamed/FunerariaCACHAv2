@@ -84,7 +84,7 @@
                         <!-- tasa de cambio -->
                         <div class="col-md-2 form-group">
                             <label for="" class="form-control-label">Cambio ($): </label>
-                            <input type="text" class="form-control" readonly>
+                            <b><span v-text="'C$ '+infoTasa.Monto"></span></b>
                         </div>
                         <!--Seleccionar documento-->
                         <div class="col-md-4 form-group">
@@ -151,6 +151,7 @@
                 monto: '',
                 numeroDoc: '',
                 Facturas: [],
+                infoTasa:[],
                 errorFactura: 0,
                 informacion: [],
                 mostrar: 1,
@@ -210,13 +211,13 @@
                     console.log(error);
                 });
             },
-            mostrarDepartamento(){
+            mostrarTasaC(){
                 let me = this;
-                var url= '/departamento/seleccionarDepartamento';
+                var url= '/tasa/mostrar';
                 axios.get(url).then(function(response) {
-                    // console.log(response);
                     var respuesta = response.data;
-                    me.infoDepartamento = respuesta.departamentos;
+                    me.infoTasa = respuesta.tasa;
+                    me.idTasa = me.infoTasa.id;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -327,7 +328,7 @@
                     }    
 
                 }
-                this.mostrarContrato();
+                this.mostrarTasaC();
             },
             mostrarTabla(){
                 this.mostrar = 1;

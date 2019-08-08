@@ -49,6 +49,8 @@ class FacturasController extends Controller
         }else{
             $informacion = Factura::join('financiamientos as f','f.id','=','facturas.idDocumento');
         }
+        
+        return ['informacion'=>$informacion];
     }
 
     /**

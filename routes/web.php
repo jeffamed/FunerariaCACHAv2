@@ -92,3 +92,5 @@ Route::get('/financiamiento','FinanciamientoController@index');
 Route::post('/financiamiento/registrar','FinanciamientoController@store');
 Route::put('/financiamiento/actualizar','FinanciamientoController@update');
 // Route::put('/financiamiento/anular','FinanciamientoController@anular');
+
+Route::get('/tasa/mostrar','TasaCambiosController@mostrar');
