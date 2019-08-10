@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Factura;
 use App\Contrato;
+use App\Financiamiento;
 use Illuminate\Support\Facades\DB;
 
 class FacturasController extends Controller
@@ -50,7 +51,12 @@ class FacturasController extends Controller
                                ->where('contratos.Estado','Activo')
                                ->first();
         }else{
-            $informacion = Factura::join('financiamientos as f','f.id','=','facturas.idDocumento');
+            $informacion = Financiamiento::join('contratos as c','financiamientos.idContrato','=','c.id')
+                                        -> join('clientes as cl','c.idCliente','=','cl.id')
+                                        -> select(DB::raw('concat(cl.Nombre," ",cl.Apellido) as Cliente'),'financiamientos.cuota','financiamientos.Total','financiamientos.SaldoR')
+                                        -> where('financiamientos.Financiamiento','=',$buscarDoc)
+                                        -> where('financiamientos.Estado','Activo')
+                                        -> first();
         }
         
         return ["informacion"=>$informacion];

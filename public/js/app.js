@@ -4580,6 +4580,7 @@ __webpack_require__.r(__webpack_exports__);
       idFactura: 0,
       idDocumento: 0,
       idTasa: 0,
+      dolar: 0,
       tipoDocumento: 'Contrato',
       cuota: 0,
       saldor: 0,
@@ -4656,6 +4657,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.get(url).then(function (response) {
         var respuesta = response.data;
         me.infoTasa = respuesta.tasa;
+        me.dolar = "C$ " + me.infoTasa.Monto;
         me.idTasa = me.infoTasa.id;
       })["catch"](function (error) {
         console.log(error);
@@ -30914,13 +30916,27 @@ var render = function() {
                           [_vm._v("Cambio ($): ")]
                         ),
                         _vm._v(" "),
-                        _c("b", [
-                          _c("span", {
-                            domProps: {
-                              textContent: _vm._s("C$ " + _vm.infoTasa.Monto)
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.dolar,
+                              expression: "dolar"
                             }
-                          })
-                        ])
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", readonly: "" },
+                          domProps: { value: _vm.dolar },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.dolar = $event.target.value
+                            }
+                          }
+                        })
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-4 form-group" }, [

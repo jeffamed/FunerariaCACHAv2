@@ -84,7 +84,7 @@
                         <!-- tasa de cambio -->
                         <div class="col-md-2 form-group">
                             <label for="" class="form-control-label mr-4">Cambio ($): </label>
-                            <b><span v-text="'C$ '+infoTasa.Monto"></span></b>
+                            <input type="text" class="form-control" readonly v-model="dolar">
                         </div>
                         <!--Seleccionar documento-->
                         <div class="col-md-4 form-group">
@@ -152,6 +152,7 @@
                 idFactura: 0,
                 idDocumento: 0,
                 idTasa: 0,
+                dolar: 0,
                 tipoDocumento: 'Contrato',
                 cuota: 0,
                 saldor:0,
@@ -226,6 +227,7 @@
                 axios.get(url).then(function(response) {
                     var respuesta = response.data;
                     me.infoTasa = respuesta.tasa;
+                    me.dolar = "C$ "+me.infoTasa.Monto;
                     me.idTasa = me.infoTasa.id;
                 })
                 .catch(function (error) {
