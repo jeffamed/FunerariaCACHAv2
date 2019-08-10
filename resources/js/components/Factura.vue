@@ -129,7 +129,7 @@
                         <!-- Monto  -->
                         <div class="col-md-6 form-group">
                             <label for="" class="form-control-label">Abono (C$): </label>
-                            <input type="number" class="form-control" min="0">
+                            <input type="number" class="form-control" min="0" v-model="monto">
                         </div>
                         <div v-show="errorFactura" class="form-group msjerror">
                             <div class="col-12 text-center texterror" v-for="error in msjErrores" :key="error" v-text="error"></div>
@@ -305,11 +305,11 @@
             buscarInformacion(tipodoc,numdoc){
                 this.errorFactura=0;
                 this.msjErrores= [];
-            //    if(numdoc == ""){
-            //         this.msjVal.push("* El campo numero no puede estar vacio no puede estar vacío");
-            //         this.errorFactura = 1;
-            //     }
-            //         return this.errorFactura;
+                //    if(numdoc == ""){
+                //         this.msjVal.push("* El campo numero no puede estar vacio no puede estar vacío");
+                //         this.errorFactura = 1;
+                //     }
+                //         return this.errorFactura;
                 let me = this;
                 var url= '/factura/buscar?&tipoDocumento=' + tipodoc + '&numeroDoc=' + numdoc;
                 axios.get(url).then(function(response) {
@@ -345,21 +345,12 @@
             },
             mostrarTabla(){
                 this.mostrar = 1;
-                this.tituloModal = '';
-                this.idFinanciamiento = 0;
-                this.financiamiento = '',
-                this.idContrato = 0;
-                this.nombreCliente = '';
-                this.subTotal = 0;
-                this.total = 0;
-                this.totalC = 0;
-                this.frecuenciaPago = '';
-                this.numeroFrecuencia = 0;
-                this.porcentaje = 2.5;
-                this.beneficiario = '';
+                this.tipoDocumento = 'Contrato';
                 this.cuota = 0;
-                this.msjErrores = [];
-                this.errorFinanciamiento = 0;
+                this.saldor = 0;
+                this.monto = 0;
+                this.numeroDoc = '';
+                this.cliente = '';
             },        
         },
         mounted() {

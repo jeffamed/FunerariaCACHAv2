@@ -46,7 +46,9 @@ class FacturasController extends Controller
         if($tipoDoc == 'Contrato'){
             $informacion = Contrato::join('clientes as cl','contratos.idCliente','=','cl.id')
                                ->select(DB::raw('concat(cl.Nombre," ",cl.Apellido) as Cliente'),'contratos.cuota','contratos.Total','contratos.SaldoR')
-                               ->where('contratos.Contrato','=',$buscarDoc)->first();
+                               ->where('contratos.Contrato','=',$buscarDoc)
+                               ->where('contratos.Estado','Activo')
+                               ->first();
         }else{
             $informacion = Factura::join('financiamientos as f','f.id','=','facturas.idDocumento');
         }

@@ -4771,20 +4771,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     mostrarTabla: function mostrarTabla() {
       this.mostrar = 1;
-      this.tituloModal = '';
-      this.idFinanciamiento = 0;
-      this.financiamiento = '', this.idContrato = 0;
-      this.nombreCliente = '';
-      this.subTotal = 0;
-      this.total = 0;
-      this.totalC = 0;
-      this.frecuenciaPago = '';
-      this.numeroFrecuencia = 0;
-      this.porcentaje = 2.5;
-      this.beneficiario = '';
+      this.tipoDocumento = 'Contrato';
       this.cuota = 0;
-      this.msjErrores = [];
-      this.errorFinanciamiento = 0;
+      this.saldor = 0;
+      this.monto = 0;
+      this.numeroDoc = '';
+      this.cliente = '';
     }
   },
   mounted: function mounted() {
@@ -31150,7 +31142,38 @@ var render = function() {
                         })
                       ]),
                       _vm._v(" "),
-                      _vm._m(2),
+                      _c("div", { staticClass: "col-md-6 form-group" }, [
+                        _c(
+                          "label",
+                          {
+                            staticClass: "form-control-label",
+                            attrs: { for: "" }
+                          },
+                          [_vm._v("Abono (C$): ")]
+                        ),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.monto,
+                              expression: "monto"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "number", min: "0" },
+                          domProps: { value: _vm.monto },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.monto = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
                       _vm._v(" "),
                       _c(
                         "div",
@@ -31241,21 +31264,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Estados")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-6 form-group" }, [
-      _c("label", { staticClass: "form-control-label", attrs: { for: "" } }, [
-        _vm._v("Abono (C$): ")
-      ]),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "form-control",
-        attrs: { type: "number", min: "0" }
-      })
     ])
   }
 ]
