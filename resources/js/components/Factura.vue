@@ -83,7 +83,7 @@
                     <div class="row m-1">
                         <!-- tasa de cambio -->
                         <div class="col-md-2 form-group">
-                            <label for="" class="form-control-label">Cambio ($): </label>
+                            <label for="" class="form-control-label mr-4">Cambio ($): </label>
                             <b><span v-text="'C$ '+infoTasa.Monto"></span></b>
                         </div>
                         <!--Seleccionar documento-->
@@ -102,24 +102,29 @@
                         </div>
                         <!-- Boton Buscar -->
                         <div class="col-md-2 form-group mt-auto d-flex align-self-center">
-                            <button class="btn btn-success" @click="buscarInformacion(tipoDocumento,numeroDoc)">Buscar</button>
+                            <button class="btn btn-success" @click="buscarInformacion(tipoDocumento, numeroDoc)">Buscar</button>
                         </div>
-                        <div v-show="errorFactura" class="form-group msjerror col-12">
-                            <div class="col-12 text-center texterror" v-for="error in msjErrores" :key="error" v-text="error"></div>
-                        </div>
-                        <template>
-                                
-                        </template>
+                        <!-- <div v-show="errorFactura" class="form-group msjerror">
+                            <div class="col-12 text-center texterror" v-for="error in msjVal" :key="error" v-text="error"></div>
+                        </div> -->
+                            <!-- <div class="col">
+                                <h1>El numero del registro no existe o esta incorrecto, verifique por favor</h1>
+                            </div> -->
                         <!-- Cliente -->
                         <div class="col-md-6 form-group">
                             <label for="" class="form-control-label">Cliente: </label>
-                            <input type="text" class="form-control" readonly>
+                            <input type="text" class="form-control" readonly v-model="cliente">
                         </div>
                         
                         <!-- Cuota -->
-                        <div class="col-md-6 form-group">
+                        <div class="col-md-3 form-group">
                             <label for="" class="form-control-label">Cuota (C$): </label>
-                            <input type="text" class="form-control" readonly>
+                            <input type="text" class="form-control" readonly v-model="cuota">
+                        </div>
+                        <!-- Cuota -->
+                        <div class="col-md-3 form-group">
+                            <label for="" class="form-control-label">Saldo Restante(C$): </label>
+                            <input type="text" class="form-control" readonly v-model="saldor">
                         </div>
                         <!-- Monto  -->
                         <div class="col-md-6 form-group">
@@ -148,14 +153,18 @@
                 idDocumento: 0,
                 idTasa: 0,
                 tipoDocumento: 'Contrato',
+                cuota: 0,
+                saldor:0,
                 monto: '',
                 numeroDoc: '',
+                cliente: '',
                 Facturas: [],
                 infoTasa:[],
                 errorFactura: 0,
                 informacion: [],
                 mostrar: 1,
                 msjErrores: [],
+                msjVal: [],
                 pagination: {
                     'total': 0,    
                     'current_page': 0,
@@ -296,16 +305,20 @@
             buscarInformacion(tipodoc,numdoc){
                 this.errorFactura=0;
                 this.msjErrores= [];
-               if(numdoc == ""){
-                    this.msjErrores.push("* El campo numero no puede estar vacio no puede estar vacío");
-                    this.errorFactura = 1;
-                }
-                    return errorFactura;
+            //    if(numdoc == ""){
+            //         this.msjVal.push("* El campo numero no puede estar vacio no puede estar vacío");
+            //         this.errorFactura = 1;
+            //     }
+            //         return this.errorFactura;
                 let me = this;
                 var url= '/factura/buscar?&tipoDocumento=' + tipodoc + '&numeroDoc=' + numdoc;
                 axios.get(url).then(function(response) {
+                    // console.log(response);
                     var respuesta = response.data;
-                    me.informacion = respuesta.informacion.data;
+                    me.informacion = respuesta.informacion;
+                    me.cliente = me.informacion.Cliente;
+                    me.cuota = parseFloat( parseFloat(me.informacion.Total) / parseFloat(me.informacion.cuota) );
+                    me.saldor = me.informacion.SaldoR;
                 })
                 .catch(function (error) {
                     console.log(error);

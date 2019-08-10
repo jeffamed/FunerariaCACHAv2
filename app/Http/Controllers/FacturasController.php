@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Factura;
+use App\Contrato;
+use Illuminate\Support\Facades\DB;
 
 class FacturasController extends Controller
 {
@@ -42,15 +44,14 @@ class FacturasController extends Controller
         $buscarDoc = $request->numeroDoc;
 
         if($tipoDoc == 'Contrato'){
-            $informacion = Factura::join('contratos as c','c.id','=','facturas.idDocumento')
-                               ->join('clientes as cl','c.idCliente','=','cl.id')
-                               ->select(DB::raw('concat(cl.Nombre," ",cl.Apellido)'),'c.cuota','c.Total','c.SaldoR')
-                               ->where('c.Contrato','=',$buscarDoc);
+            $informacion = Contrato::join('clientes as cl','contratos.idCliente','=','cl.id')
+                               ->select(DB::raw('concat(cl.Nombre," ",cl.Apellido) as Cliente'),'contratos.cuota','contratos.Total','contratos.SaldoR')
+                               ->where('contratos.Contrato','=',$buscarDoc)->first();
         }else{
             $informacion = Factura::join('financiamientos as f','f.id','=','facturas.idDocumento');
         }
         
-        return ['informacion'=>$informacion];
+        return ["informacion"=>$informacion];
     }
 
     /**

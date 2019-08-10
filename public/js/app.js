@@ -4569,6 +4569,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4576,14 +4581,18 @@ __webpack_require__.r(__webpack_exports__);
       idDocumento: 0,
       idTasa: 0,
       tipoDocumento: 'Contrato',
+      cuota: 0,
+      saldor: 0,
       monto: '',
       numeroDoc: '',
+      cliente: '',
       Facturas: [],
       infoTasa: [],
       errorFactura: 0,
       informacion: [],
       mostrar: 1,
       msjErrores: [],
+      msjVal: [],
       pagination: {
         'total': 0,
         'current_page': 0,
@@ -4719,19 +4728,21 @@ __webpack_require__.r(__webpack_exports__);
     },
     buscarInformacion: function buscarInformacion(tipodoc, numdoc) {
       this.errorFactura = 0;
-      this.msjErrores = [];
+      this.msjErrores = []; //    if(numdoc == ""){
+      //         this.msjVal.push("* El campo numero no puede estar vacio no puede estar vacío");
+      //         this.errorFactura = 1;
+      //     }
+      //         return this.errorFactura;
 
-      if (numdoc == "") {
-        this.msjErrores.push("* El campo numero no puede estar vacio no puede estar vacío");
-        this.errorFactura = 1;
-      }
-
-      return errorFactura;
       var me = this;
       var url = '/factura/buscar?&tipoDocumento=' + tipodoc + '&numeroDoc=' + numdoc;
       axios.get(url).then(function (response) {
+        // console.log(response);
         var respuesta = response.data;
-        me.informacion = respuesta.informacion.data;
+        me.informacion = respuesta.informacion;
+        me.cliente = me.informacion.Cliente;
+        me.cuota = parseFloat(parseFloat(me.informacion.Total) / parseFloat(me.informacion.cuota));
+        me.saldor = me.informacion.SaldoR;
       })["catch"](function (error) {
         console.log(error);
       });
@@ -30900,240 +30911,304 @@ var render = function() {
                     )
                   ]
                 : [
-                    _c(
-                      "div",
-                      { staticClass: "row m-1" },
-                      [
-                        _c("div", { staticClass: "col-md-2 form-group" }, [
-                          _c(
-                            "label",
-                            {
-                              staticClass: "form-control-label",
-                              attrs: { for: "" }
-                            },
-                            [_vm._v("Cambio ($): ")]
-                          ),
-                          _vm._v(" "),
-                          _c("b", [
-                            _c("span", {
-                              domProps: {
-                                textContent: _vm._s("C$ " + _vm.infoTasa.Monto)
-                              }
-                            })
-                          ])
-                        ]),
+                    _c("div", { staticClass: "row m-1" }, [
+                      _c("div", { staticClass: "col-md-2 form-group" }, [
+                        _c(
+                          "label",
+                          {
+                            staticClass: "form-control-label mr-4",
+                            attrs: { for: "" }
+                          },
+                          [_vm._v("Cambio ($): ")]
+                        ),
                         _vm._v(" "),
-                        _c("div", { staticClass: "col-md-4 form-group" }, [
-                          _c(
-                            "label",
-                            {
-                              staticClass: "form-control-label",
-                              attrs: { for: "" }
-                            },
-                            [_vm._v("Tipo Factura: ")]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "select",
-                            {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.tipoDocumento,
-                                  expression: "tipoDocumento"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              attrs: { name: "", id: "" },
-                              on: {
-                                change: function($event) {
-                                  var $$selectedVal = Array.prototype.filter
-                                    .call($event.target.options, function(o) {
-                                      return o.selected
-                                    })
-                                    .map(function(o) {
-                                      var val =
-                                        "_value" in o ? o._value : o.value
-                                      return val
-                                    })
-                                  _vm.tipoDocumento = $event.target.multiple
-                                    ? $$selectedVal
-                                    : $$selectedVal[0]
-                                }
-                              }
-                            },
-                            [
-                              _c("option", { attrs: { value: "Contrato" } }, [
-                                _vm._v("Contrato")
-                              ]),
-                              _vm._v(" "),
-                              _c(
-                                "option",
-                                { attrs: { value: "Financiamiento" } },
-                                [_vm._v("Financiamiento")]
-                              )
-                            ]
-                          )
-                        ]),
+                        _c("b", [
+                          _c("span", {
+                            domProps: {
+                              textContent: _vm._s("C$ " + _vm.infoTasa.Monto)
+                            }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4 form-group" }, [
+                        _c(
+                          "label",
+                          {
+                            staticClass: "form-control-label",
+                            attrs: { for: "" }
+                          },
+                          [_vm._v("Tipo Factura: ")]
+                        ),
                         _vm._v(" "),
-                        _c("div", { staticClass: "col-md-4 form-group" }, [
-                          _vm.tipoDocumento == "Contrato"
-                            ? _c(
-                                "label",
-                                {
-                                  staticClass: "form-control-label",
-                                  attrs: { for: "Cliente" }
-                                },
-                                [_vm._v("No. Contrato: ")]
-                              )
-                            : _c(
-                                "label",
-                                {
-                                  staticClass: "form-control-label",
-                                  attrs: { for: "Cliente" }
-                                },
-                                [_vm._v("No. Financiamiento: ")]
-                              ),
-                          _vm._v(" "),
-                          _c("input", {
+                        _c(
+                          "select",
+                          {
                             directives: [
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.numeroDoc,
-                                expression: "numeroDoc"
+                                value: _vm.tipoDocumento,
+                                expression: "tipoDocumento"
                               }
                             ],
                             staticClass: "form-control",
-                            attrs: { type: "text", name: "", id: "" },
-                            domProps: { value: _vm.numeroDoc },
+                            attrs: { name: "", id: "" },
                             on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.numeroDoc = $event.target.value
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.tipoDocumento = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
                               }
                             }
-                          })
-                        ]),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass:
-                              "col-md-2 form-group mt-auto d-flex align-self-center"
                           },
                           [
+                            _c("option", { attrs: { value: "Contrato" } }, [
+                              _vm._v("Contrato")
+                            ]),
+                            _vm._v(" "),
                             _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-success",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.buscarInformacion(
-                                      _vm.tipoDocumento,
-                                      _vm.numeroDoc
-                                    )
-                                  }
-                                }
-                              },
-                              [_vm._v("Buscar")]
+                              "option",
+                              { attrs: { value: "Financiamiento" } },
+                              [_vm._v("Financiamiento")]
                             )
                           ]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            directives: [
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4 form-group" }, [
+                        _vm.tipoDocumento == "Contrato"
+                          ? _c(
+                              "label",
                               {
-                                name: "show",
-                                rawName: "v-show",
-                                value: _vm.errorFactura,
-                                expression: "errorFactura"
-                              }
-                            ],
-                            staticClass: "form-group msjerror col-12"
-                          },
-                          _vm._l(_vm.msjErrores, function(error) {
-                            return _c("div", {
-                              key: error,
-                              staticClass: "col-12 text-center texterror",
-                              domProps: { textContent: _vm._s(error) }
-                            })
-                          }),
-                          0
-                        ),
-                        _vm._v(" "),
-                        void 0,
-                        _vm._v(" "),
-                        _vm._m(2),
-                        _vm._v(" "),
-                        _vm._m(3),
-                        _vm._v(" "),
-                        _vm._m(4),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            directives: [
+                                staticClass: "form-control-label",
+                                attrs: { for: "Cliente" }
+                              },
+                              [_vm._v("No. Contrato: ")]
+                            )
+                          : _c(
+                              "label",
                               {
-                                name: "show",
-                                rawName: "v-show",
-                                value: _vm.errorFactura,
-                                expression: "errorFactura"
-                              }
-                            ],
-                            staticClass: "form-group msjerror"
-                          },
-                          _vm._l(_vm.msjErrores, function(error) {
-                            return _c("div", {
-                              key: error,
-                              staticClass: "col-12 text-center texterror",
-                              domProps: { textContent: _vm._s(error) }
-                            })
-                          }),
-                          0
-                        ),
+                                staticClass: "form-control-label",
+                                attrs: { for: "Cliente" }
+                              },
+                              [_vm._v("No. Financiamiento: ")]
+                            ),
                         _vm._v(" "),
-                        _c("div", { staticClass: "mx-2 my-1 col-12" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.numeroDoc,
+                              expression: "numeroDoc"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", name: "", id: "" },
+                          domProps: { value: _vm.numeroDoc },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.numeroDoc = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-md-2 form-group mt-auto d-flex align-self-center"
+                        },
+                        [
                           _c(
                             "button",
                             {
                               staticClass: "btn btn-success",
                               on: {
                                 click: function($event) {
-                                  return _vm.registrarContrato()
+                                  return _vm.buscarInformacion(
+                                    _vm.tipoDocumento,
+                                    _vm.numeroDoc
+                                  )
                                 }
                               }
                             },
-                            [
-                              _c("i", { staticClass: "fa fa-check" }),
-                              _vm._v(" Guardar")
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-danger",
-                              on: {
-                                click: function($event) {
-                                  return _vm.mostrarTabla()
-                                }
-                              }
-                            },
-                            [
-                              _c("i", { staticClass: "fa fa-close" }),
-                              _vm._v(" Cerrar")
-                            ]
+                            [_vm._v("Buscar")]
                           )
-                        ])
-                      ],
-                      2
-                    )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6 form-group" }, [
+                        _c(
+                          "label",
+                          {
+                            staticClass: "form-control-label",
+                            attrs: { for: "" }
+                          },
+                          [_vm._v("Cliente: ")]
+                        ),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.cliente,
+                              expression: "cliente"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", readonly: "" },
+                          domProps: { value: _vm.cliente },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.cliente = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-3 form-group" }, [
+                        _c(
+                          "label",
+                          {
+                            staticClass: "form-control-label",
+                            attrs: { for: "" }
+                          },
+                          [_vm._v("Cuota (C$): ")]
+                        ),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.cuota,
+                              expression: "cuota"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", readonly: "" },
+                          domProps: { value: _vm.cuota },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.cuota = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-3 form-group" }, [
+                        _c(
+                          "label",
+                          {
+                            staticClass: "form-control-label",
+                            attrs: { for: "" }
+                          },
+                          [_vm._v("Saldo Restante(C$): ")]
+                        ),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.saldor,
+                              expression: "saldor"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", readonly: "" },
+                          domProps: { value: _vm.saldor },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.saldor = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _vm._m(2),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          directives: [
+                            {
+                              name: "show",
+                              rawName: "v-show",
+                              value: _vm.errorFactura,
+                              expression: "errorFactura"
+                            }
+                          ],
+                          staticClass: "form-group msjerror"
+                        },
+                        _vm._l(_vm.msjErrores, function(error) {
+                          return _c("div", {
+                            key: error,
+                            staticClass: "col-12 text-center texterror",
+                            domProps: { textContent: _vm._s(error) }
+                          })
+                        }),
+                        0
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "mx-2 my-1 col-12" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-success",
+                            on: {
+                              click: function($event) {
+                                return _vm.registrarContrato()
+                              }
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fa fa-check" }),
+                            _vm._v(" Guardar")
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-danger",
+                            on: {
+                              click: function($event) {
+                                return _vm.mostrarTabla()
+                              }
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fa fa-close" }),
+                            _vm._v(" Cerrar")
+                          ]
+                        )
+                      ])
+                    ])
                   ]
             ],
             2
@@ -31166,36 +31241,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Estados")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-6 form-group" }, [
-      _c("label", { staticClass: "form-control-label", attrs: { for: "" } }, [
-        _vm._v("Cliente: ")
-      ]),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "form-control",
-        attrs: { type: "text", readonly: "" }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-6 form-group" }, [
-      _c("label", { staticClass: "form-control-label", attrs: { for: "" } }, [
-        _vm._v("Cuota (C$): ")
-      ]),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "form-control",
-        attrs: { type: "text", readonly: "" }
-      })
     ])
   },
   function() {
