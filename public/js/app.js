@@ -4571,9 +4571,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4584,7 +4581,7 @@ __webpack_require__.r(__webpack_exports__);
       tipoDocumento: 'Contrato',
       cuota: 0,
       saldor: 0,
-      monto: '',
+      monto: 0,
       numeroDoc: '',
       cliente: '',
       Facturas: [],
@@ -4603,7 +4600,7 @@ __webpack_require__.r(__webpack_exports__);
         'to': 0
       },
       offset: 3,
-      criterio: 'Nombre',
+      criterio: 'idDocumento',
       buscar: ''
     };
   },
@@ -4668,12 +4665,14 @@ __webpack_require__.r(__webpack_exports__);
         return;
       } else {
         var me = this;
-        axios.post('/Factura/registrar', {
-          'Nombre': this.nombre,
-          'idDocumento': this.idDocumento
+        axios.post('/factura/registrar', {
+          'idDolar': this.idTasa,
+          'idDocumento': this.idDocumento,
+          'TipoDocumento': this.tipoDocumento,
+          'Monto': this.monto
         }).then(function (response) {
-          me.cerrarModal();
-          me.mostrarFactura(1, '', 'Nombre');
+          me.mostrarTabla();
+          me.mostrarFactura(1, '', 'idDocumento');
         })["catch"](function (error) {
           console.log(error);
         });
@@ -4683,13 +4682,12 @@ __webpack_require__.r(__webpack_exports__);
       this.errorFactura = 0;
       this.msjErrores = [];
 
-      if (this.nombre == '' && this.idDocumento == 0) {
-        this.msjErrores.push("* El campo nombre no puede estar vacío");
-        this.msjErrores.push("* Debe seleccionar una opción en el departamento");
-      } else if (this.nombre == '') {
-        this.msjErrores.push("* El campo nombre no puede estar vacío");
-      } else if (this.idDocumento == 0) {
-        this.msjErrores.push("* Debe seleccionar una opción en el departamento");
+      if (this.numeroDoc == "") {
+        this.msjErrores.push("* El numero del registro no puede estas vacío");
+      } else if (this.monto == 0) {
+        this.msjErrores.push("* El monto no puede ser 0");
+      } else if (this.monto > this.saldor) {
+        this.msjErrores.push("* El monto no puede superar al saldo restante");
       }
 
       if (this.msjErrores.length) {
@@ -4703,13 +4701,13 @@ __webpack_require__.r(__webpack_exports__);
 
       swal({
         title: '¿Estas seguro?',
-        text: 'Deseas desactivar este Factura',
+        text: 'Deseas cancelar esta factura',
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Desactivar',
-        cancelButtonText: 'Cancelar',
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cerrar',
         confirmButtonClass: 'btn btn-success',
         cancelButtonClass: 'btn btn-danger',
         buttonsStyling: false,
@@ -4720,8 +4718,8 @@ __webpack_require__.r(__webpack_exports__);
           axios.put('/Factura/desactivar', {
             'id': id
           }).then(function (response) {
-            me.mostrarFactura(1, '', 'Nombre');
-            swal('Desactivado', 'El registro fue desactivado correctamente', 'success');
+            me.mostrarFactura(1, '', 'idDocumento');
+            swal('Desactivado', 'La factura fue cancelado correctamente', 'success');
           })["catch"](function (error) {
             console.log(error);
           });
@@ -4729,13 +4727,6 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     buscarInformacion: function buscarInformacion(tipodoc, numdoc) {
-      this.errorFactura = 0;
-      this.msjErrores = []; //    if(numdoc == ""){
-      //         this.msjVal.push("* El campo numero no puede estar vacio no puede estar vacío");
-      //         this.errorFactura = 1;
-      //     }
-      //         return this.errorFactura;
-
       var me = this;
       var url = '/factura/buscar?&tipoDocumento=' + tipodoc + '&numeroDoc=' + numdoc;
       axios.get(url).then(function (response) {
@@ -4745,9 +4736,28 @@ __webpack_require__.r(__webpack_exports__);
         me.cliente = me.informacion.Cliente;
         me.cuota = parseFloat(parseFloat(me.informacion.Total) / parseFloat(me.informacion.cuota));
         me.saldor = me.informacion.SaldoR;
+        me.idDocumento = me.informacion.id;
       })["catch"](function (error) {
         console.log(error);
-      });
+      }); // this.errorFactura=0;
+      // this.msjVal= [];
+      // if(numdoc == ""){
+      //     this.msjVal.push("* El campo numero no puede estar vacío");
+      //     this.errorFactura = 1;
+      // }else if(me.informacion == null){
+      //     me.cliente = "";
+      //     me.cuota = 0;
+      //     me.saldor = 0;
+      //     this.msjVal.push("* Información no fue encontrada, verifique el dato de busqueda");
+      //     this.errorFactura = 1;
+      // } else{
+      //     me.cliente = me.informacion.Cliente;
+      //     me.cuota = parseFloat( parseFloat(me.informacion.Total) / parseFloat(me.informacion.cuota) );
+      //     me.saldor = me.informacion.SaldoR;
+      //     this.msjVal = [];
+      //     this.errorFactura = 0;
+      // }
+      //     return this.errorFactura;
     },
     cambiarPagina: function cambiarPagina(pagina, buscar, criterio) {
       var me = this;
@@ -30544,7 +30554,7 @@ var render = function() {
                       }
                     },
                     [
-                      _c("option", { attrs: { value: "Nombre" } }, [
+                      _c("option", { attrs: { value: "idDocumento" } }, [
                         _vm._v("Factura")
                       ])
                     ]
@@ -30636,9 +30646,11 @@ var render = function() {
                               }
                             },
                             [
-                              _c("option", { attrs: { value: "Nombre" } }, [
-                                _vm._v("Factura")
-                              ])
+                              _c(
+                                "option",
+                                { attrs: { value: "idDocumento" } },
+                                [_vm._v("Factura")]
+                              )
                             ]
                           ),
                           _vm._v(" "),
@@ -30757,43 +30769,28 @@ var render = function() {
                                                 ]
                                               )
                                             ]
-                                          : [
-                                              _c(
-                                                "button",
-                                                {
-                                                  staticClass:
-                                                    "boton boton-activar",
-                                                  on: {
-                                                    click: function($event) {
-                                                      return _vm.activarFactura(
-                                                        _vm.Factura.id
-                                                      )
-                                                    }
-                                                  }
-                                                },
-                                                [
-                                                  _c("i", {
-                                                    staticClass:
-                                                      "fa fa-check-circle"
-                                                  })
-                                                ]
-                                              )
-                                            ]
+                                          : _vm._e()
                                       ],
                                       2
                                     ),
                                     _vm._v(" "),
                                     _c("td", {
                                       domProps: {
-                                        textContent: _vm._s(factura.Nombre)
+                                        textContent: _vm._s(
+                                          factura.TipoDocumento
+                                        )
                                       }
                                     }),
                                     _vm._v(" "),
                                     _c("td", {
                                       domProps: {
-                                        textContent: _vm._s(
-                                          factura.Departamento
-                                        )
+                                        textContent: _vm._s(factura.Monto)
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("td", {
+                                      domProps: {
+                                        textContent: _vm._s(factura.Fecha_Pago)
                                       }
                                     }),
                                     _vm._v(" "),
@@ -30910,7 +30907,7 @@ var render = function() {
                         _c(
                           "label",
                           {
-                            staticClass: "form-control-label mr-4",
+                            staticClass: "form-control-label",
                             attrs: { for: "" }
                           },
                           [_vm._v("Cambio ($): ")]
@@ -31221,7 +31218,7 @@ var render = function() {
                             staticClass: "btn btn-success",
                             on: {
                               click: function($event) {
-                                return _vm.registrarContrato()
+                                return _vm.registrarFactura()
                               }
                             }
                           },
@@ -31274,9 +31271,11 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Facturas")]),
+        _c("th", [_vm._v("Documento")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Departamento")]),
+        _c("th", [_vm._v("Monto C$")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Fecha")]),
         _vm._v(" "),
         _c("th", [_vm._v("Estados")])
       ])

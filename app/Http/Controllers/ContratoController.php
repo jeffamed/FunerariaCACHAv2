@@ -20,7 +20,7 @@ class ContratoController extends Controller
                                 -> join('clientes as c','contratos.idCliente','=','c.id')
                                 -> join('empleados as e','contratos.idVendedor','=','e.id')
 								-> join('fechascontratos as df','df.idContrato','=','contratos.id')
-                                -> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
+                                -> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total',DB::raw('DATE_FORMAT(contratos.Fecha_Emision,"%d-%m-%Y") as Fecha_Emision')
                                          ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia'
 										 ,'contratos.SaldoR','df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro'
                                          ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado','c.id as idCliente',DB::raw('concat(c.Nombre, " ",c.Apellido) as NombreCliente'))

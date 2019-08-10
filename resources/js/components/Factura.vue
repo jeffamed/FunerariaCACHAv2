@@ -10,7 +10,7 @@
                 <div class="buscador d-flex ml-auto hidden-md-down">
                     <label for="" class="etiqueta">Buscar por: </label>
                     <select name="filtro" id="" class="option-search" v-model="criterio">
-                        <option value="Nombre">Factura</option>
+                        <option value="idDocumento">Factura</option>
                         <!-- <option value="descripcion">Descripción</option> -->
                     </select>
                     <input type="text" v-model="buscar" @keyup="mostrarFactura(1,buscar,criterio)" class="buscar" placeholder="Buscar...">
@@ -29,7 +29,7 @@
                         <div class="form-inline mt-2 mb-2">
                             <label for="buscar" class="hidden-lg-up ml-1">Buscar por: </label>
                             <select id="select-opciones" class="custom-select hidden-lg-up mb-1 mr-1 w-25" v-model="criterio">
-                                <option value="Nombre">Factura</option>
+                                <option value="idDocumento">Factura</option>
                                 <!-- <option value="descripcion">Descripción</option> -->
                             </select>
                             <input type="text" id="txtbuscar" v-model="buscar" @keypress.enter="mostrarFactura(1,buscar,criterio)" class="form-control hidden-lg-up mb-1 w-50" placeholder="Buscar...">
@@ -40,8 +40,9 @@
                             <thead class="enc-tabla">
                                 <tr>
                                     <th>Opciones</th>
-                                    <th>Facturas</th>
-                                    <th>Departamento</th>
+                                    <th>Documento</th>
+                                    <th>Monto C$</th>
+                                    <th>Fecha</th>
                                     <th>Estados</th>
                                 </tr>
                             </thead>
@@ -52,12 +53,10 @@
                                         <template v-if="factura.Estado == 'Activo'">
                                             <button class="boton boton-eliminar" @click="desactivarFactura(Factura.id)"><i class="fa fa-trash"></i></button>
                                         </template>
-                                        <template v-else>
-                                            <button class="boton boton-activar" @click="activarFactura(Factura.id)"><i class="fa fa-check-circle"></i></button>
-                                        </template>
                                     </td>
-                                    <td v-text="factura.Nombre"></td>
-                                    <td v-text="factura.Departamento"></td>
+                                    <td v-text="factura.TipoDocumento"></td>
+                                    <td v-text="factura.Monto"></td>
+                                    <td v-text="factura.Fecha_Pago"></td>
                                     <td v-text="factura.Estado"></td>
                                 </tr>
                             </tbody>
@@ -83,7 +82,7 @@
                     <div class="row m-1">
                         <!-- tasa de cambio -->
                         <div class="col-md-2 form-group">
-                            <label for="" class="form-control-label mr-4">Cambio ($): </label>
+                            <label for="" class="form-control-label">Cambio ($): </label>
                             <input type="text" class="form-control" readonly v-model="dolar">
                         </div>
                         <!--Seleccionar documento-->
@@ -104,12 +103,10 @@
                         <div class="col-md-2 form-group mt-auto d-flex align-self-center">
                             <button class="btn btn-success" @click="buscarInformacion(tipoDocumento, numeroDoc)">Buscar</button>
                         </div>
-                        <!-- <div v-show="errorFactura" class="form-group msjerror">
+                        <!-- <div v-show="errorFactura" class="form-group col-12 msjerror">
                             <div class="col-12 text-center texterror" v-for="error in msjVal" :key="error" v-text="error"></div>
                         </div> -->
-                            <!-- <div class="col">
-                                <h1>El numero del registro no existe o esta incorrecto, verifique por favor</h1>
-                            </div> -->
+
                         <!-- Cliente -->
                         <div class="col-md-6 form-group">
                             <label for="" class="form-control-label">Cliente: </label>
@@ -135,7 +132,7 @@
                             <div class="col-12 text-center texterror" v-for="error in msjErrores" :key="error" v-text="error"></div>
                         </div>
                         <div class="mx-2 my-1 col-12">
-                            <button class="btn btn-success" @click="registrarContrato()"><i class="fa fa-check"></i> Guardar</button>
+                            <button class="btn btn-success" @click="registrarFactura()"><i class="fa fa-check"></i> Guardar</button>
                             <button @click="mostrarTabla()" class="btn btn-danger"><i class="fa fa-close"></i> Cerrar</button>
                         </div>
                     </div>
@@ -155,8 +152,8 @@
                 dolar: 0,
                 tipoDocumento: 'Contrato',
                 cuota: 0,
-                saldor:0,
-                monto: '',
+                saldor: 0,
+                monto: 0,
                 numeroDoc: '',
                 cliente: '',
                 Facturas: [],
@@ -175,7 +172,7 @@
                     'to': 0,
                 },
                 offset: 3,
-                criterio: 'Nombre',
+                criterio: 'idDocumento',
                 buscar: '',
 
             }
@@ -240,12 +237,14 @@
                 }
                 else{
                     let me = this;
-                    axios.post('/Factura/registrar', {
-                        'Nombre' : this.nombre, 
-                        'idDocumento': this.idDocumento
+                    axios.post('/factura/registrar', {
+                        'idDolar' : this.idTasa, 
+                        'idDocumento': this.idDocumento,
+                        'TipoDocumento': this.tipoDocumento,
+                        'Monto': this.monto
                         }).then(function(response) {
-                        me.cerrarModal();
-                        me.mostrarFactura(1,'','Nombre');
+                        me.mostrarTabla();
+                        me.mostrarFactura(1,'','idDocumento');
                         })
                     .catch(function (error) {
                         console.log(error);
@@ -256,13 +255,12 @@
                 this.errorFactura=0;
                 this.msjErrores= [];
 
-                if(this.nombre == '' && this.idDocumento == 0){
-                    this.msjErrores.push("* El campo nombre no puede estar vacío");
-                    this.msjErrores.push("* Debe seleccionar una opción en el departamento");
-                }else if(this.nombre == ''){
-                    this.msjErrores.push("* El campo nombre no puede estar vacío");
-                } else if(this.idDocumento == 0){
-                    this.msjErrores.push("* Debe seleccionar una opción en el departamento");
+                if(this.numeroDoc == ""){
+                    this.msjErrores.push("* El numero del registro no puede estas vacío");
+                }else if(this.monto == 0){
+                    this.msjErrores.push("* El monto no puede ser 0");
+                }else if(this.monto > this.saldor ){
+                    this.msjErrores.push("* El monto no puede superar al saldo restante");
                 }
 
                 if(this.msjErrores.length) 
@@ -274,13 +272,13 @@
             desactivarFactura(id){
                 swal({
                     title: '¿Estas seguro?',
-                    text: 'Deseas desactivar este Factura',
+                    text: 'Deseas cancelar esta factura',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Desactivar',
-                    cancelButtonText: 'Cancelar',
+                    confirmButtonText: 'Aceptar',
+                    cancelButtonText: 'Cerrar',
                     confirmButtonClass: 'btn btn-success',
                     cancelButtonClass: 'btn btn-danger',
                     buttonsStyling: false,
@@ -289,10 +287,10 @@
                         if (result.value) {
                             let me = this;
                             axios.put('/Factura/desactivar', {'id' : id}).then(function(response) {
-                                me.mostrarFactura(1,'','Nombre');
+                                me.mostrarFactura(1,'','idDocumento');
                                 swal(
                                     'Desactivado',
-                                    'El registro fue desactivado correctamente',
+                                    'La factura fue cancelado correctamente',
                                     'success'
                                 )
                             })
@@ -305,13 +303,6 @@
                     })
             },
             buscarInformacion(tipodoc,numdoc){
-                this.errorFactura=0;
-                this.msjErrores= [];
-                //    if(numdoc == ""){
-                //         this.msjVal.push("* El campo numero no puede estar vacio no puede estar vacío");
-                //         this.errorFactura = 1;
-                //     }
-                //         return this.errorFactura;
                 let me = this;
                 var url= '/factura/buscar?&tipoDocumento=' + tipodoc + '&numeroDoc=' + numdoc;
                 axios.get(url).then(function(response) {
@@ -321,10 +312,32 @@
                     me.cliente = me.informacion.Cliente;
                     me.cuota = parseFloat( parseFloat(me.informacion.Total) / parseFloat(me.informacion.cuota) );
                     me.saldor = me.informacion.SaldoR;
+                    me.idDocumento = me.informacion.id;
+                    
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
+
+                // this.errorFactura=0;
+                // this.msjVal= [];
+                // if(numdoc == ""){
+                //     this.msjVal.push("* El campo numero no puede estar vacío");
+                //     this.errorFactura = 1;
+                // }else if(me.informacion == null){
+                //     me.cliente = "";
+                //     me.cuota = 0;
+                //     me.saldor = 0;
+                //     this.msjVal.push("* Información no fue encontrada, verifique el dato de busqueda");
+                //     this.errorFactura = 1;
+                // } else{
+                //     me.cliente = me.informacion.Cliente;
+                //     me.cuota = parseFloat( parseFloat(me.informacion.Total) / parseFloat(me.informacion.cuota) );
+                //     me.saldor = me.informacion.SaldoR;
+                //     this.msjVal = [];
+                //     this.errorFactura = 0;
+                // }
+                //     return this.errorFactura;
             },
             cambiarPagina(pagina,buscar,criterio){
                 let me = this;
