@@ -71,7 +71,6 @@ class FacturasController extends Controller
      */
     public function store(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
         $factura = new Factura();
         $fechaAct = new Carbon();
         $factura->idDolar =  $request->idDolar;
@@ -80,7 +79,7 @@ class FacturasController extends Controller
         $factura->Monto = $request->Monto;
         $factura->Fecha_Pago = Carbon::now();
         $factura->Estado = 'Activo';
-        $factura->save();
+        $factura->save();                 
     }
 
     public function anular(Request $request)

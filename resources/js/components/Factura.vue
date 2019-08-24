@@ -1,10 +1,10 @@
 <template>
     <section class="main-section col-md-10 col-sm-12 d-flex ml-auto" id="SectionCuerpo">
         <div class="section-contenido mt-4 ml-2 mr-4 mb-4" id="contenido">
-        <!-- ENCABEZADO -->
+              <!-- ENCABEZADO -->
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
                 <h5 class="titulo">Facturas</h5>
-            <!-- Boton nuevo -->
+                <!-- Boton nuevo -->
                 <button class="btn-new"  @click="mostrarFrm('factura','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- buscador -->
                 <div class="buscador d-flex ml-auto hidden-md-down">

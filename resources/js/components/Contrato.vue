@@ -43,7 +43,7 @@
                                     <th>Contratos</th>
                                     <th>Cliente</th>
                                     <th>Servicio</th>
-                                    <th>Fecha Emisión</th>
+                                    <th>Fecha Cobro</th>
                                     <th>Estados</th>
                                 </tr>
                             </thead>
@@ -64,7 +64,7 @@
                                     <td v-text="contrato.Contrato"></td>
                                     <td v-text="contrato.NombreCliente"></td>
                                     <td v-text="contrato.Servicio"></td>
-                                    <td v-text="contrato.Fecha_Emision"></td>
+                                    <!-- <td v-text="contrato.FechaCobro"></td> -->
                                     <td v-text="contrato.Estado"></td>
                                 </tr>
                             

@@ -28383,14 +28383,6 @@ var render = function() {
                                     _vm._v(" "),
                                     _c("td", {
                                       domProps: {
-                                        textContent: _vm._s(
-                                          contrato.Fecha_Emision
-                                        )
-                                      }
-                                    }),
-                                    _vm._v(" "),
-                                    _c("td", {
-                                      domProps: {
                                         textContent: _vm._s(contrato.Estado)
                                       }
                                     })
@@ -29069,7 +29061,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Servicio")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Fecha Emisión")]),
+        _c("th", [_vm._v("Fecha Cobro")]),
         _vm._v(" "),
         _c("th", [_vm._v("Estados")])
       ])
