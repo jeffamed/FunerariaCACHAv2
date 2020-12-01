@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Contrato;
 use App\FechasContrato;
 use Illuminate\Support\Facades\DB;
+use App\CuentasxCobrar;
+use Carbon\Carbon;
 
 class ContratoController extends Controller
 {
@@ -19,26 +21,25 @@ class ContratoController extends Controller
             $contratos = Contrato::join('servicios as s','contratos.idServicio','=','s.id')
                                 -> join('clientes as c','contratos.idCliente','=','c.id')
                                 -> join('empleados as e','contratos.idVendedor','=','e.id')
-								-> join('fechascontratos as df','df.idContrato','=','contratos.id')
-                                -> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total',DB::raw('DATE_FORMAT(contratos.Fecha_Emision,"%d-%m-%Y") as Fecha_Emision')
-                                         ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia'
-										 ,'contratos.SaldoR','df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro'
-                                         ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado','c.id as idCliente',DB::raw('concat(c.Nombre, " ",c.Apellido) as NombreCliente'))
+                                -> leftjoin('cuentas_x_cobrar as cc','contratos.id','=','cc.idDocumento')
+                                -> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
+                                         ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia','cc.Fecha_Cobro'
+										 ,'contratos.SaldoR','s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado','c.id as idCliente','cc.Total as Deuda','contratos.cancelado',
+                                         DB::raw('concat(c.Nombre, " ",c.Apellido) as NombreCliente, Format(cc.Total,2) as TotalMoney'))
                                 -> orderBy('contratos.id','desc')
-                                -> paginate(7);
+                                -> paginate(9);
         }else{
             $contratos = Contrato::join('servicios as s','contratos.idServicio','=','s.id')
 									-> join('clientes as c','contratos.idCliente','=','c.id')
 									-> join('empleados as e','contratos.idVendedor','=','e.id')
-									-> join('fechascontratos as df','df.idContrato','=','contratos.id')
+									-> leftjoin('cuentas_x_cobrar as cc','contratos.id','=','cc.idDocumento')
 									-> select('contratos.id','contratos.Contrato','contratos.idCliente','contratos.idVendedor','contratos.idServicio','contratos.Total','contratos.Fecha_Emision'
-											 ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia'
-											 ,'contratos.SaldoR','df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro','c.id as idCliente'
-											 ,'df.id as idDocFact','df.Fecha_PropuestaP as FechaPago','df.Fecha_Cobro as FechaCobro','c.id as idCliente'
-											 ,'s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado','c.id as idCliente',DB::raw('concat(c.Nombre, " ",c.Apellido) as NombreCliente'))
+											 ,'contratos.Frecuencia_Pago','contratos.Estado','contratos.Descuento','contratos.Beneficiarios','contratos.Nota','contratos.Cuota','contratos.Numero_Frecuencia','cc.Fecha_Cobro'
+                                             ,'contratos.SaldoR','c.id as idCliente','s.Nombre as Servicio','s.id as idServicio','s.Monto as Costo','e.Nombre as NombreEmpleado','e.id as idEmpleado','cc.Total as Deuda','contratos.cancelado',
+                                             'c.id as idCliente',DB::raw('concat(c.Nombre, " ",c.Apellido) as NombreCliente, Format(cc.Total,2) as TotalMoney'))
 									-> where($criterio,'like','%'.$buscar.'%')
 									-> orderBy('contratos.id','desc')
-									-> paginate(7);
+									-> paginate(9);
         }
          
         return[
@@ -56,13 +57,15 @@ class ContratoController extends Controller
 
     public function seleccionar(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+         if (!$request->ajax()) return redirect('/');
         $filtro = $request->filtro;
         $contratos = Contrato::join('clientes as c','contratos.idCliente','=','c.id')
-                            ->where('contratos.Estado','=','Activo')
-                            -> select('contratos.id','contratos.Contrato',DB::raw('concat(c.Nombre, " ",c.Apellido) as NombreCliente'),'contratos.SaldoR','contratos.Total')
-                            -> orderBy('contratos.Contrato','desc')
-                            -> get();
+                            ->join('cuentas_x_cobrar as cc','contratos.id','=','cc.idDocumento')
+                            ->join('servicios as s','s.id','=','contratos.idServicio')
+                            ->where([['contratos.Estado','=','Activo'],['cc.Tipo_Doc','=','Contrato']])
+                            ->select('contratos.id','contratos.Contrato',DB::raw('concat(c.Nombre, " ",c.Apellido) as NombreCliente'),'cc.Total as SaldoR','contratos.total','s.Monto')
+                            ->orderBy('contratos.Contrato','desc')
+                            ->get();
                             
         // where('Nombre','like','%'.$filtro.'%')
         return ['contratos'=>$contratos];
@@ -95,14 +98,20 @@ class ContratoController extends Controller
             $contrato->Nota = $request->Nota;
             $contrato->Cuota = $request->Cuota;
             $contrato->Estado = 'Activo';
+            $contrato->cancelado = $request->Cancelado;
             $contrato->save();
 
-            $fecha = new FechasContrato();
-            $fecha->Fecha_PropuestaP = $request->Fecha_Cobro;
-            $fecha->Fecha_Cobro = $fecha->Fecha_PropuestaP;
-            $fecha->idContrato = $contrato->id;
-            $fecha->Estado = "Por Cobrar";
-            $fecha->save();
+            if($request->Cancelado == 'SI'){
+                $cxc = new CuentasxCobrar();
+                $cxc->idDocumento = $contrato->id;
+                $cxc->FechaPropuestaP = $request->Fecha_Cobro;
+                $cxc->Fecha_Cobro = $request->Fecha_Cobro;
+                $cxc->Estado = "Por Cobrar";
+                $cxc->Total = $request->Total;
+                $cxc->TotalRestante = $request->Total;
+                $cxc->Tipo_Doc = "Contrato";
+                $cxc->save();
+            }
 
             DB::commit();
         } catch (Exception $e) {
@@ -123,8 +132,6 @@ class ContratoController extends Controller
         try {
             DB::beginTransaction();
             $contrato = Contrato::findOrFail($request->id);
-			$fecha = FechasContrato::where('idContrato','=',$contrato->id)->firstOrFail();
-				
             $contrato->idCliente = $request->idCliente;
             $contrato->idVendedor = $request->idVendedor;
             $contrato->idServicio = $request->idServicio;
@@ -139,12 +146,29 @@ class ContratoController extends Controller
             $contrato->Nota = $request->Nota;
             $contrato->Cuota = $request->Cuota;
             $contrato->Estado = 'Activo';
+            $contrato->cancelado = $request->Cancelado;
             $contrato->save();
 
-            $fecha->Fecha_PropuestaP = $request->Fecha_Cobro;
-            $fecha->Fecha_Cobro = $fecha->Fecha_PropuestaP;
-            $fecha->Estado = "Por Cobrar";
-            $fecha->save();
+            if($contrato->cancelado == 'SI'){
+                $idbusq = CuentasxCobrar::select('idDocumento')->where([['idDocumento','=',$contrato->id],['Tipo_Doc','=','Contrato']])->first();
+                if($idbusq == $request->id){
+                    $fecha = CuentasxCobrar::where('idDocumento','=',$contrato->id)->firstOrFail();
+                    $fecha->FechaPropuestaP = $request->Fecha_Cobro;
+                    $fecha->Fecha_Cobro = $request->Fecha_Cobro;
+                    $fecha->Estado = "Por Cobrar";
+                    $fecha->save();
+                }else if($contrato->cancelado == 'NO'){
+                    $cxc = new CuentasxCobrar();
+                    $cxc->idDocumento = $contrato->id;
+                    $cxc->FechaPropuestaP = $request->Fecha_Cobro;
+                    $cxc->Fecha_Cobro = $request->Fecha_Cobro;
+                    $cxc->Estado = "Por Cobrar";
+                    $cxc->Total = $request->Total;
+                    $cxc->TotalRestante = $request->Total;
+                    $cxc->Tipo_Doc = "Contrato";
+                    $cxc->save();
+                }
+            }
 
             DB::commit();
 			
@@ -166,5 +190,19 @@ class ContratoController extends Controller
         $contrato = Contrato::findOrFail($request->id);
         $contrato->Estado = 'Activo';
         $contrato->save();
+    }
+
+    public function informacion(Request $request)
+    {
+        $id = $request->idContrato;
+        $info = DB::select('call sp_CargarContrato(?)',[$id]);
+
+        return ['informacion'=>$info];
+    }
+    public function FechaSistema()
+    {
+        $fecha = Carbon::now();
+        $hoy = $fecha->format('Y-m-d');
+        return ['fecha'=>$hoy];
     }
 }

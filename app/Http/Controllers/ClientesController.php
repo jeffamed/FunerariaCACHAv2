@@ -23,13 +23,13 @@ class ClientesController extends Controller
             $clientes = Cliente::join('barrios as b','clientes.idBarrio','=','b.id')
                                 ->select('b.id as idBarrio','b.Nombre as Barrio','clientes.id','clientes.Nombre','clientes.Apellido','clientes.Direccion','clientes.Cedula','clientes.Estado_Civil','clientes.Telefono','clientes.Estado')
                                 ->orderBy('id','desc')
-                                ->paginate(7);
+                                ->paginate(9);
         }else{
             $clientes = Cliente::join('barrios as b','clientes.idBarrio','=','b.id')
                                 ->select('b.id as idBarrio','b.Nombre as Barrio','clientes.id','clientes.Nombre','clientes.Apellido','clientes.Direccion','clientes.Cedula','clientes.Estado_Civil','clientes.Telefono','clientes.Estado')
                                 ->where('clientes.'.$criterio,'like','%'.$buscar.'%')
                                 ->orderBy('id','desc')
-                                ->paginate(7);
+                                ->paginate(9);
         }
 
         return[

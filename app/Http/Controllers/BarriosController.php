@@ -22,13 +22,13 @@ class BarriosController extends Controller
             $barrios = Barrio::join('zonas','barrios.idZona','=','zonas.id')
                                     ->select('barrios.id','barrios.Nombre','zonas.Nombre as Zona','zonas.id as idZona')
                                     ->orderBy('barrios.id','desc')
-                                    ->paginate(7);
+                                    ->paginate(9);
         }else{
             $barrios = Barrio::join('zonas','barrios.idZona','=','zonas.id')
                                     ->select('barrios.id','barrios.Nombre','zonas.Nombre as Zona','zonas.id as idZona')
                                     ->where('barrios.'.$criterio,'like','%'.$buscar.'%')
                                     ->orderBy('barrios.id','desc')
-                                    ->paginate(7);
+                                    ->paginate(9);
         }
 
         return[

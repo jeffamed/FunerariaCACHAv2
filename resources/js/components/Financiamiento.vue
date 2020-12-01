@@ -5,13 +5,13 @@
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
                 <h5 class="titulo">Financiamientos</h5>
                 <!-- Boton nuevo -->
-                <button class="btn-new"  @click="mostrarFrm('financiar','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
+                <button class="btn-new"  @click="mostrarFrm('financiar','registrar')" v-if="$can('financiamiento.index')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- buscador -->
                 <div class="buscador d-flex ml-auto hidden-md-down">
                     <label for="" class="etiqueta">Buscar por: </label>
                     <select name="filtro" id="" class="option-search" v-model="criterio">
                         <option value="f.Financiamiento"># Financiamiento</option>
-                        <!-- <option value="descripcion">Descripción</option> -->
+                        <option value="cl.Nombre">Cliente</option>
                     </select>
                     <input type="text" v-model="buscar" @keyup="mostrarFinanciamiento(1,buscar,criterio)" class="buscar" placeholder="Buscar...">
                     <div class="icon-buscar">
@@ -30,7 +30,7 @@
                             <label for="buscar" class="hidden-lg-up ml-1">Buscar por: </label>
                             <select id="select-opciones" class="custom-select hidden-lg-up mb-1 mr-1 w-25" v-model="criterio">
                                 <option value="f.Financiamiento"># Financiamiento</option>
-                                <!-- <option value="descripcion">Descripción</option> -->
+                                <option value="cl.Nombre">Cliente</option>
                             </select>
                             <input type="text" id="txtbuscar" v-model="buscar" @keypress.enter="mostrarFinanciamiento(1,buscar,criterio)" class="form-control hidden-lg-up mb-1 w-50" placeholder="Buscar...">
                         </div>
@@ -42,24 +42,19 @@
                                     <th>Opciones</th>
                                     <th>Financiamiento</th>
                                     <th>Cliente</th>
-                                    <th>Deuda C$</th>
+                                    <th class="text-center">Deuda C$</th>
                                     <th>Estados</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="financiamiento in Financiamientos" :key="financiamiento.id" :style="financiamiento.Estado=='Activo'?'':'color:red'">
                                     <td>
-                                        <button class="boton boton-edit" @click="abrirModal('financiamiento','actualizar', financiamiento)"><i class="fa fa-pencil"></i></button>
-                                        <template v-if="financiamiento.Estado == 'Activo'">
-                                            <button class="boton boton-eliminar" @click="desactivarFinanciamiento(financiamiento.id)"><i class="fa fa-trash"></i></button>
-                                        </template>
-                                        <template v-else>
-                                            <button class="boton boton-activar" @click="activarFinanciamiento(financiamiento.id)"><i class="fa fa-check-circle"></i></button>
-                                        </template>
+                                        <button class="boton boton-edit" @click="mostrarFrm('financiar','actualizar', financiamiento)" v-if="$can('financiamiento.update')"><i class="fa fa-pencil"></i></button>
+                                        <button class="boton boton-mirar" @click="mostrardatos(financiamiento.id)"><i class="fa fa-eye"></i></button>
                                     </td>
-                                    <td v-text="financiamiento.Financiamiento"></td>
+                                    <td v-text="financiamiento.id"></td>
                                     <td v-text="financiamiento.Cliente"></td>
-                                    <td v-text="financiamiento.Total"></td>
+                                    <td class="text-center" v-text="financiamiento.Totales"></td>
                                     <td v-text="financiamiento.Estado"></td>
                                 </tr>
                             </tbody>
@@ -81,13 +76,13 @@
                     </nav>
                 </template>
                 <!-- mostrar Formulario -->
-                <template v-else>
+                <template v-else-if="mostrar==2">
                     <div class="row m-1">
                         <!-- # Financiamiento -->
-                        <div class="col-md-3 form-group">
+                        <!--<div class="col-md-3 form-group">
                             <label for="" class="form-control-label">No. Financiamiento: </label>
                             <input type="text" class="form-control" placeholder="# Financiamiento" v-model="financiamiento">
-                        </div>
+                        </div>-->
                         <!-- Contrato-->
                         <div class="col-md-3 form-group">
                             <label for="" class="form-control-label"># Contrato:</label>
@@ -96,7 +91,7 @@
                                 label="Contrato"
                                 placeholder="Buscar Contrato.."
                                 :options="infoContrato"
-                                v-model="idContrato"
+                                v-model="contrato"
                                 :value="infoContrato"
                                 @input="getDatosContrato"
                             >
@@ -107,13 +102,23 @@
                             <label for="cliente" class="form-control-label">Cliente: </label>
                             <input type="text" class="form-control" v-model="nombreCliente" readonly>
                         </div>
+                        <!-- saldo para Financear -->
+                        <div class="col-md-3 form-group">
+                            <label for="Total" class="form-control-label">Saldo Financ.: </label>
+                            <input type="text" class="form-control" v-model="saldof" readonly placeholder="Subtotal Financiamiento">
+                        </div>
                         <!-- subTotal -->
                         <div class="col-md-4 form-group">
                             <label for="Total" class="form-control-label">Subtotal: </label>
                             <input type="text" class="form-control" v-model="subTotal" readonly placeholder="Subtotal Financiamiento">
                         </div>
+                        <!-- saldo para Financear -->
+                        <div class="col-md-2 form-group">
+                            <label for="Total" class="form-control-label">Monto Fact.: </label>
+                            <input type="text" class="form-control" v-model="montofact" readonly placeholder="Subtotal Financiamiento">
+                        </div>
                         <!-- % del Financiamiento -->
-                        <div class="col-md-4 form-group">
+                        <div class="col-md-2 form-group">
                             <label for="FechaC" class="form-control-label">Financiar %:</label>
                             <input type="number" class="form-control" min="0" v-model="porcentaje" step="0.1" @keydown="FncTotal()" @click="FncTotal()">
                         </div>
@@ -150,8 +155,60 @@
                         </div>
                         <div class="mx-2 my-1 col-12">
                             <button class="btn btn-success" v-if="btnFuncion == 1" @click="registrarFinanciamiento()"><i class="fa fa-check"></i> Guardar</button>
-                            <button class="btn btn-success" v-if="btnFuncion == 2" @click="actualizarFinanciamiento()"><i class="fa fa-check"></i> Actualizar</button>
+                            <button class="btn btn-warning" v-if="btnFuncion == 2" @click="actualizarFinanciamiento()"><i class="fa fa-check"></i> Actualizar</button>
                             <button @click="mostrarTabla()" class="btn btn-danger"><i class="fa fa-close"></i> Cerrar</button>
+                        </div>
+                    </div>
+                </template>
+                <template v-if="mostrar == 3">
+                    <div class="row m-1">
+                        <div style="border-top: 1px solid gray; border-bottom: 1px solid gray;" class="col-md-12">
+                            <label class="text-center d-block">Información del Cliente</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Cliente:</b> {{nombreCliente}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>No.Cédula:</b> {{cedula}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Teléfono:</b> {{telefono}}</p>
+                        </div>
+                        <div class="col-md-12">
+                            <p><b>Dirección:</b> {{direccion}}</p>
+                        </div>
+                        <div style="border-top: 1px solid gray; border-bottom: 1px solid gray;" class="col-md-12">
+                            <label class="text-center d-block">Información del Financiamiento</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>No.Financiamiento:</b> {{financiamiento}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>No.Contrato:</b> {{contrato}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Proyecto:</b> {{proyecto}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Servicio:</b> {{servicio}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Financeado:</b> C${{subTotal}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Total Deuda:</b> C${{total}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>% Financeado:</b> {{porcentaje}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Cuota:</b> {{cuota}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Frecuencia Pago:</b> {{frecuenciaPago}}</p>
+                        </div>
+                        <div class="col-md-12">
+                            <buttom class="btn btn-danger" @click="mostrarTabla"> Cerrar</buttom>
                         </div>
                     </div>
                 </template>
@@ -198,6 +255,14 @@
                 offset: 3,
                 criterio: 'f.Financiamiento',
                 buscar: '',
+                contrato: '',
+                saldof: 0,
+                montofact: 0,
+                servicio: '',
+                proyecto: '',
+                direccion: '',
+                telefono: '',
+                cedula: ''
             }
         },
         computed: {
@@ -260,8 +325,16 @@
                 me.loading = true;
                 me.nombreCliente = value.NombreCliente;
                 me.subTotal = value.SaldoR;
-                me.totalC = value.Total;
+                me.total = parseFloat(value.SaldoR) * 1.025;
+                me.totalC = value.total;
                 me.idContrato = value.id;
+                me.contrato = value.Contrato;
+                me.saldof = value.Monto * 0.6;
+                if (parseFloat(me.subTotal) == parseFloat(me.saldof)) {
+                    me.montofact = 0;
+                } else{
+                    me.montofact = me.subTotal - me.saldof;
+                }
             },
             registrarFinanciamiento(){
                 if(this.validarFrmFinanciamiento()){
@@ -280,13 +353,33 @@
                         'Cuota' : this.cuota,
                         'Fecha_Cobro' : this.fechaCobro
                         }).then(function(response) {
-                        me.mostrarTabla();
-                        me.mostrarFinanciamiento(1,'','f.Financiamiento');
+                            me.mostrarTabla();
+                            me.mostrarFinanciamiento(1,'','f.Financiamiento');
+                            me.notificacion();
                         })
                     .catch(function (error) {
                         console.log(error);
                     });
                 }
+            },
+            notificacion(){
+                toastr.success('Financiamiento Registrato',{
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": false,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                });
             },
             actualizarFinanciamiento(){
                 if(this.validarFrmFinanciamiento()){
@@ -297,7 +390,6 @@
                     axios.put('/financiamiento/actualizar', {
                         'id' : this.idFinanciamiento,
                         'idContrato' : this.idContrato,
-                        'financiamiento' : this.financiamiento,
                         'PorcentajeFin' : this.porcentaje,
                         'subTotal' : this.subTotal,
                         'Total' : this.total,
@@ -319,9 +411,7 @@
                 this.msjErrores= [];
                 let minimo = parseFloat(this.totalC) - (parseFloat(this.totalC) * parseFloat(0.4));
                 
-                if(this.financiamiento == ''){
-                    this.msjErrores.push("* El campo financiamiento no puede estar vacío");
-                }else if(this.idContro == 0){
+                if(this.idContro == 0){
                     this.msjErrores.push("* Elija un contrato");
                 }else if(this.fechaPago = ''){
                     this.msjErrores.push("* La fecha no puede estar vacio");
@@ -382,7 +472,6 @@
                 this.frecuenciaPago = '';
                 this.numeroFrecuencia = 0;
                 this.porcentaje = 2.5;
-                this.beneficiario = '';
                 this.cuota = 0;
                 this.msjErrores = [];
                 this.errorFinanciamiento = 0;
@@ -415,8 +504,8 @@
                             case 'actualizar':
                             {
                                 // this.modal = 1;
-                                this.tituloModal = 'Actualizar Financiamiento';
                                 this.btnFuncion = 2;
+                                this.tituloModal = 'Actualizar Financiamiento';
                                 this.idFinanciamiento = data['id'];
                                 this.Financiamiento = data['Financiamiento'],
                                 this.idnombreCliente = data['idnombreCliente'];
@@ -426,13 +515,14 @@
                                 this.total = data['Total'];
                                 this.frecuenciaPago = data['Frecuencia_Pago'];
                                 this.fechaEmision = data['Fecha_Emision'];
-                                this.numeroFrecuencia = data['Numero_Frecuencia'];
+                                this.numeroFrecuencia = data['numero_Frec'];
                                 this.descuento = data['Descuento'];
                                 this.beneficiario = data['Beneficiarios'];
                                 this.nota = data['Nota'];
                                 this.cuota = data['Cuota'];
-                                
                                 this.fechaCobro = data['FechaCobro'];
+                                this.nombreCliente = data['Cliente'];
+                                this.contrato = data['Contrato']
                                 break;
                             }
                     }    
@@ -440,6 +530,30 @@
                 }
                 this.mostrarContrato();
                 
+            },
+            mostrardatos(id){
+                let me = this;
+                me.mostrar = 3;
+                me.idFactura =  id;
+                var url= '/financiamiento/informacion?idFin='+id;
+                axios.get(url).then(function(response) {
+                    var respuesta = response.data;
+                    me.contrato = respuesta.informacion[0].Contrato;
+                    me.nombreCliente = respuesta.informacion[0].Cliente;
+                    me.frecuenciaPago = respuesta.informacion[0].Frecuencia_Pago;
+                    me.cuota = respuesta.informacion[0].Cuota;
+                    me.total = respuesta.informacion[0].Total;      
+                    me.subTotal = respuesta.informacion[0].SubTotal;    
+                    me.porcentaje = respuesta.informacion[0].PorcentajeFin;    
+                    me.financiamiento = respuesta.informacion[0].id;    
+                    me.servicio = respuesta.informacion[0].Servicio;
+                    me.proyecto = respuesta.informacion[0].Proyecto;
+                    me.direccion = respuesta.informacion[0].Direccion;
+                    me.telefono = respuesta.informacion[0].Telefono;
+                    me.cedula = respuesta.informacion[0].Cedula;
+                }).catch(function (error) {
+                    console.log(error);
+                });
             },
             cambiarPagina(pagina,buscar,criterio){
                 let me = this;

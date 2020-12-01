@@ -3,14 +3,14 @@
         <div class="section-contenido mt-4 ml-2 mr-4 mb-4" id="contenido">
               <!-- ENCABEZADO -->
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
-                <h5 class="titulo">Facturas</h5>
+                <h5 class="titulo">Recibos</h5>
                 <!-- Boton nuevo -->
-                <button class="btn-new"  @click="mostrarFrm('factura','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
+                <button class="btn-new"  @click="mostrarFrm('factura','registrar')" v-if="$can('factura.store')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- buscador -->
                 <div class="buscador d-flex ml-auto hidden-md-down">
                     <label for="" class="etiqueta">Buscar por: </label>
                     <select name="filtro" id="" class="option-search" v-model="criterio">
-                        <option value="idDocumento">Factura</option>
+                        <option value="id">Recibo</option>
                         <!-- <option value="descripcion">Descripción</option> -->
                     </select>
                     <input type="text" v-model="buscar" @keyup="mostrarFactura(1,buscar,criterio)" class="buscar" placeholder="Buscar...">
@@ -40,6 +40,7 @@
                             <thead class="enc-tabla">
                                 <tr>
                                     <th>Opciones</th>
+                                    <th>NumRecibo</th>
                                     <th>Documento</th>
                                     <th>Monto C$</th>
                                     <th>Fecha</th>
@@ -49,11 +50,14 @@
                             <tbody>
                                 <tr v-for="factura in Facturas" :key="factura.id" :style="factura.Estado=='Activo'?'':'color:red'">
                                     <td>
-                                        <button class="boton boton-edit" @click="abrirModal('factura','actualizar', Factura)"><i class="fa fa-pencil"></i></button>
+                                        <!--<button class="boton boton-edit" @click="abrirModal('factura','actualizar', Factura)"><i class="fa fa-pencil"></i></button>-->
                                         <template v-if="factura.Estado == 'Activo'">
-                                            <button class="boton boton-eliminar" @click="desactivarFactura(Factura.id)"><i class="fa fa-trash"></i></button>
+                                            <button class="boton boton-eliminar" @click="desactivarFactura(factura.id)" v-if="$can('factura.cancel')"><i class="fa fa-trash"></i></button>
+                                            <button class="boton boton-edit" @click="ImprimirRecibo(factura.id, factura.Documento)"><i class="fa fa-print"></i></button>
                                         </template>
+                                        <button class="boton boton-mirar" @click="mostrardatos(factura.id, factura.Documento)"><i class="fa fa-eye"></i></button>
                                     </td>
+                                    <td v-text="factura.id"></td>
                                     <td v-text="factura.TipoDocumento"></td>
                                     <td v-text="factura.Monto"></td>
                                     <td v-text="factura.Fecha_Pago"></td>
@@ -78,7 +82,7 @@
                     </nav>
                 </template>
                 <!-- mostrar formulario -->
-                <template v-else>
+                <template v-else-if="mostrar == 2">
                     <div class="row m-1">
                         <!-- tasa de cambio -->
                         <div class="col-md-2 form-group">
@@ -118,7 +122,7 @@
                             <label for="" class="form-control-label">Cuota (C$): </label>
                             <input type="text" class="form-control" readonly v-model="cuota">
                         </div>
-                        <!-- Cuota -->
+                        <!-- saldo restant -->
                         <div class="col-md-3 form-group">
                             <label for="" class="form-control-label">Saldo Restante(C$): </label>
                             <input type="text" class="form-control" readonly v-model="saldor">
@@ -137,6 +141,52 @@
                         </div>
                     </div>
                 </template>
+                <template v-if="mostrar == 3">
+                    <div class="row m-1">
+                        <div style="border-top: 1px solid gray; border-bottom: 1px solid gray;" class="col-md-12">
+                            <label class="text-center d-block">Datos del Cliente</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Cliente:</b> {{cliente}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Teléfono:</b> {{telefono}}</p>
+                        </div>
+                        <div class="col-md-12">
+                            <p><b>Dirección:</b> {{direccion}}</p>
+                        </div>
+                        <div style="border-top: 1px solid gray; border-bottom: 1px solid gray;" class="col-md-12">
+                            <label class="text-center d-block">Detalle del Recibo</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Num Recibo:</b> {{idFactura}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p :style="estado == 'Activo'?'color: green; font-weight: bold' : 'color: red; font-weight: bold'"><b>Estado:</b> {{estado}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Num Contrato:</b> {{numeroDoc}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Servicio:</b> {{servicio}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Fecha Emisión:</b> {{fecha}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Total Servicio:</b> C${{total}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Monto:</b> C${{monto}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Saldo Restante:</b> C${{saldor}}</p>
+                        </div>
+                        <div class="col-md-12">
+                            <buttom class="btn btn-danger" @click="mostrarTabla"> Cerrar</buttom>
+                        </div>
+                    </div>
+                </template>
             </div>
         </div>
     </section>
@@ -149,6 +199,7 @@
                 idFactura: 0,
                 idDocumento: 0,
                 idTasa: 0,
+                idCliente: 0,
                 dolar: 0,
                 tipoDocumento: 'Contrato',
                 cuota: 0,
@@ -172,9 +223,14 @@
                     'to': 0,
                 },
                 offset: 3,
-                criterio: 'idDocumento',
+                criterio: 'id',
                 buscar: '',
-
+                estado: '',
+                fecha: '',
+                servicio: '',
+                direccion: '',
+                telefono: '',
+                total: 0,
             }
         },
         computed: {
@@ -224,7 +280,7 @@
                 axios.get(url).then(function(response) {
                     var respuesta = response.data;
                     me.infoTasa = respuesta.tasa;
-                    me.dolar = "C$ "+me.infoTasa.Monto;
+                    me.dolar = "C$ " + me.infoTasa.Monto;
                     me.idTasa = me.infoTasa.id;
                 })
                 .catch(function (error) {
@@ -241,15 +297,42 @@
                         'idDolar' : this.idTasa, 
                         'idDocumento': this.idDocumento,
                         'TipoDocumento': this.tipoDocumento,
-                        'Monto': this.monto
+                        'Monto': this.monto,
+                        'NumContrato' : this.numeroDoc,
+                        'Dolar' : me.infoTasa.Monto,
+                        'Saldo' : me.saldor,
+                        'idCliente': me.idCliente
                         }).then(function(response) {
-                        me.mostrarTabla();
-                        me.mostrarFactura(1,'','idDocumento');
+                            me.mostrarTabla();
+                            me.mostrarFactura(1,'','idDocumento');
+                            me.notificacion();
                         })
                     .catch(function (error) {
                         console.log(error);
                     });
                 }
+            },
+            notificacion(){
+                toastr.success('Recibo Registrato',{
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": false,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                });
+            },
+            ImprimirRecibo(id, doc){
+                window.open('http://127.0.0.1:8000/print/recibo/'+id+'/'+doc);
             },
             validarFrmFactura(){
                 this.errorFactura=0;
@@ -258,9 +341,9 @@
                 if(this.numeroDoc == ""){
                     this.msjErrores.push("* El numero del registro no puede estas vacío");
                 }else if(this.monto == 0){
-                    this.msjErrores.push("* El monto no puede ser 0");
-                }else if(this.monto > this.saldor ){
-                    this.msjErrores.push("* El monto no puede superar al saldo restante");
+                    this.msjErrores.push("* El abono no puede ser 0");
+                }else if(parseFloat(this.monto) > parseFloat(this.saldor) ){
+                    this.msjErrores.push("* El abono no puede superar al saldo restante");
                 }
 
                 if(this.msjErrores.length) 
@@ -270,37 +353,46 @@
                 return this.errorFactura;
             },
             desactivarFactura(id){
-                swal({
-                    title: '¿Estas seguro?',
-                    text: 'Deseas cancelar esta factura',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Aceptar',
-                    cancelButtonText: 'Cerrar',
-                    confirmButtonClass: 'btn btn-success',
-                    cancelButtonClass: 'btn btn-danger',
-                    buttonsStyling: false,
-                    reverseButtons: true,
-                    }).then((result) => {
-                        if (result.value) {
-                            let me = this;
-                            axios.put('/Factura/desactivar', {'id' : id}).then(function(response) {
-                                me.mostrarFactura(1,'','idDocumento');
-                                swal(
-                                    'Desactivado',
-                                    'La factura fue cancelado correctamente',
-                                    'success'
-                                )
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                            });
-                        }else if(result.dismiss === swal.DismissReason.cancel){
-
-                        }
+                this.id = id;
+               Swal.fire({
+               title: 'Motivo de la anulación',
+                input: 'text',
+                inputAttributes: {
+                    autocapitalize: 'off',
+                },
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Anular Recibo',
+                cancelButtonText: 'Cancelar',
+                showClass: {
+                    popup: 'animated fadeInDown faster'
+                },
+                hideClass: {
+                    popup: 'animated fadeOutUp faster'
+                },
+                }).then((result) => {
+                    if (result.value) {
+                    let me = this;
+                    axios.put('/factura/anular', {
+                        'id' : this.id,
+                        'Motivo' : result.value
+                        })
+                    .then(function (response) {
+                        Swal.fire(
+                        'Anulado',
+                        'Se hizo cambio en otros datos',
+                        'Existoso'
+                        )
+                        me.mostrarFactura(1,'','idDocumento');
                     })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                    }     
+                    
+                })
             },
             buscarInformacion(tipodoc,numdoc){
                 let me = this;
@@ -310,9 +402,10 @@
                     var respuesta = response.data;
                     me.informacion = respuesta.informacion;
                     me.cliente = me.informacion.Cliente;
-                    me.cuota = parseFloat( parseFloat(me.informacion.Total) / parseFloat(me.informacion.cuota) );
-                    me.saldor = me.informacion.SaldoR;
-                    me.idDocumento = me.informacion.id;
+                    me.cuota = parseFloat(me.informacion.Total) / parseFloat(me.informacion.Cuota);
+                    me.saldor = me.informacion.subTotal;
+                    me.idDocumento = me.informacion.idCxC;
+                    me.idCliente = me.idCliente;
                     
                 })
                 .catch(function (error) {
@@ -360,13 +453,43 @@
             },
             mostrarTabla(){
                 this.mostrar = 1;
-                this.tipoDocumento = 'Contrato';
                 this.cuota = 0;
                 this.saldor = 0;
                 this.monto = 0;
                 this.numeroDoc = '';
                 this.cliente = '';
-            },        
+                this.fecha = '';
+                this.estado = '';
+                this.idFactura = 0;
+                this.servicio = '';
+                this.cliente = '';
+                this.idFactura = 0;
+                this.numeroDoc = '';
+            },   
+            mostrardatos(id,documento){
+                let me = this;
+                me.mostrar = 3;
+                me.idFactura =  id;
+                var url= '/factura/informacion?idFactura='+id+'&Doc='+documento;
+                axios.get(url).then(function(response) {
+                    var respuesta = response.data;
+                    me.fecha = respuesta.informacion[0].FechaEmision;
+                    me.servicio = respuesta.informacion[0].Servicio;
+                    me.estado = respuesta.informacion[0].Estado;
+                    me.cliente = respuesta.informacion[0].cliente;
+                    me.monto = respuesta.informacion[0].Monto;
+                    me.idFactura = respuesta.informacion[0].id;
+                    me.numeroDoc = respuesta.informacion[0].Contrato;
+                    me.direccion = respuesta.informacion[0].Direccion;
+                    me.telefono = respuesta.informacion[0].Telefono;
+                    me.saldor = respuesta.informacion[0].TotalRestante;
+                    me.total = respuesta.informacion[0].Total;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
+
         },
         mounted() {
             this.mostrarFactura(1,this.buscar,this.criterio);

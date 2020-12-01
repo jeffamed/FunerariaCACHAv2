@@ -9,11 +9,17 @@ class Factura extends Model
     protected $fillable = [
         'id',
         'idDolar',
-        'idDocumento',
+        'idCxC',
         'TipoDocumento',
         'Fecha_Pago',
         'Monto',
-        'Estado'
+        'Estado',
+        'MontoDolar',
+        'Anulacion',
+        'Documento',
+        'TotalRestante',
+        'usuario',
+        'idcliente'
     ];
 
     public function contrato()

@@ -5,7 +5,7 @@
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
                 <h5 class="titulo">Barrios</h5>
             <!-- Boton nuevo -->
-                <button class="btn-new"  @click="abrirModal('barrio','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
+                <button class="btn-new"  @click="abrirModal('barrio','registrar')" v-if="$can('barrio.store')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- Abrir Modal-->
                 <div class="modal fade" id="btn-new" tabindex="-1" :class="{'mostrar' : modal}" role="dialog" aria-labelledby="btn-new" aria-hidden="true">
                     <div class="modal-dialog">
@@ -84,7 +84,7 @@
                         <tbody>
                             <tr v-for="barrio in Barrios" :key="barrio.id">
                                 <td>
-                                    <button class="boton boton-edit" @click="abrirModal('barrio','actualizar', barrio)"><i class="fa fa-pencil"></i></button>
+                                    <button class="boton boton-edit" @click="abrirModal('barrio','actualizar', barrio)" v-if="$can('barrio.update')"><i class="fa fa-pencil"></i></button>
                                     <!-- <template v-if="barrio.Estado == 'Activo'">
                                         <button class="boton boton-eliminar" @click="desactivarBarrio(barrio.id)"><i class="fa fa-trash"></i></button>
                                     </template>

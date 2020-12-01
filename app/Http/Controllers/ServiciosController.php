@@ -22,13 +22,13 @@ class ServiciosController extends Controller
             $servicios = Servicio::join('proyectos','servicios.idProyecto','=','proyectos.id')
                                     ->select('servicios.id','servicios.Nombre','servicios.Monto','servicios.Descripcion','proyectos.Nombre as Proyecto','proyectos.id as idProyecto','servicios.Estado')
                                     ->orderBy('servicios.id','desc')
-                                    ->paginate(7);
+                                    ->paginate(9);
         }else{
             $servicios = Servicio::join('proyectos','servicios.idProyecto','=','proyectos.id')
                                     ->select('servicios.id','servicios.Nombre','servicios.Monto','servicios.Descripcion','proyectos.Nombre as Proyecto','proyectos.id as idProyecto','servicios.Estado')
                                     ->where('servicios.'.$criterio,'like','%'.$buscar.'%')
                                     ->orderBy('servicios.id','desc')
-                                    ->paginate(7);
+                                    ->paginate(9);
         }
 
         return[
@@ -51,6 +51,18 @@ class ServiciosController extends Controller
                             -> where('servicios.Estado','=','Activo')
                             -> where('p.Nombre','<>','Servicios Individuales')
                             -> select('servicios.id','servicios.Nombre','servicios.Monto')
+                            -> orderBy('servicios.Nombre','desc')
+							-> get();
+        return ['servicios'=>$servicios];
+    }
+
+    public function ServIndividuales(Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+        $servicios = Servicio::join('proyectos as p','servicios.idProyecto','=','p.id')
+                            -> where('servicios.Estado','=','Activo')
+                            -> where('p.Nombre','=','Servicios Individuales')
+                            -> select('servicios.id','servicios.Nombre','servicios.Monto','servicios.Descripcion')
                             -> orderBy('servicios.Nombre','desc')
 							-> get();
         return ['servicios'=>$servicios];

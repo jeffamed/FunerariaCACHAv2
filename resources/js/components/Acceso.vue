@@ -5,7 +5,7 @@
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
                 <h5 class="titulo">Usuarios</h5>
             <!-- Boton nuevo -->
-                <button class="btn-new"  @click="abrirModal('usuario','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
+                <button class="btn-new"  @click="abrirModal('usuario','registrar')" v-if="$can('acceso.store')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- Abrir Modal-->
                 <div class="modal fade" id="btn-new" tabindex="-1" :class="{'mostrar' : modal}" role="dialog" aria-labelledby="btn-new" aria-hidden="true">
                     <div class="modal-dialog">
@@ -22,7 +22,7 @@
                                          <label for="usuario">Empleado: </label>
                                          <select class="form-control" v-model="idEmpleado" required>
                                             <option value="0" disabled>Seleccione...</option>
-                                            <option v-for="empleado in infoEmpleado" :value="empleado.id" :key="empleado.id" v-text="empleado.Nombre +' '+empleado.Apellido"></option>
+                                            <option v-for="empleado in infoEmpleado" :value="empleado.id" :key="empleado.id" v-text="empleado.Nombre"></option>
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -37,9 +37,7 @@
                                          <label for="rol">Rol: </label>
                                          <select class="form-control" v-model="rol" required>
                                             <option value="" disabled>Seleccione...</option>
-                                            <option value="Colector">Colector</option>
-                                            <option value="Asistente">Asistente</option>
-                                            <option value="Gerente">Gerente</option>
+                                            <option v-for="rol in listaRoles" :value="rol.id" :key="rol.id" v-text="rol.name"></option>
                                         </select>
                                     </div>
                                     <div v-show="errorUsuario" class="form-group msjerror">
@@ -97,20 +95,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="usuario in Usuarios" :key="usuario.id" :style="usuario.Estado=='Activo'?'':'color:red'">
+                            <tr v-for="usuario in Usuarios" :key="usuario.id" :style="usuario.state=='Activo'?'color:black':'color:red'">
                                 <td>
-                                    <button class="boton boton-edit" @click="abrirModal('usuario','actualizar', usuario)"><i class="fa fa-pencil"></i></button>
-                                    <template v-if="usuario.Estado == 'Activo'">
-                                        <button class="boton boton-eliminar" @click="desactivarUsuario(usuario.id)"><i class="fa fa-trash"></i></button>
+                                    <button class="boton boton-edit" @click="abrirModal('usuario','actualizar', usuario)" v-if="$can('acceso.update')"><i class="fa fa-pencil"></i></button>
+                                    <template v-if="usuario.state == 'Activo'">
+                                        <button class="boton boton-eliminar" @click="desactivarUsuario(usuario.id)" v-if="$can('acceso.inactive')"><i class="fa fa-trash"></i></button>
                                     </template>
                                     <template v-else>
-                                        <button class="boton boton-activar" @click="activarUsuario(usuario.id)"><i class="fa fa-check-circle"></i></button>
+                                        <button class="boton boton-activar" @click="activarUsuario(usuario.id)" v-if="$can('acceso.active')"><i class="fa fa-check-circle"></i></button>
                                     </template>
                                 </td>
-                                <td v-text="usuario.Usuario"></td>
+                                <td v-text="usuario.name"></td>
                                 <td v-text="usuario.Empleado"></td>
-                                <td v-text="usuario.Rol"></td>
-                                <td v-text="usuario.Estado"></td>
+                                <td v-text="usuario.rol"></td>
+                                <td v-text="usuario.state"></td>
                             </tr>
                            
                         </tbody>
@@ -163,6 +161,7 @@
                 offset: 3,
                 criterio: 'Usuario',
                 buscar: '',
+                listaRoles: [],
             }
         },
         computed: {
@@ -218,6 +217,17 @@
                     console.log(error);
                 });
             },
+            mostrarRoles(){
+                let me = this;
+                var url= '/roles/lista';
+                axios.get(url).then(function(response) {
+                    var respuesta = response.data;
+                    me.listaRoles = respuesta.roles;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             registrarUsuario(){
                 if(this.validarFrmUsuario()){
                     return;
@@ -267,7 +277,7 @@
                     this.msjErrores.push("* Debe seleccionar una opción en el empleado");
                 } else if(this.usuario == ''){
                     this.msjErrores.push("* El campo usuario no puede estar vacío"); 
-                } else if (this.password.length <= 8) { 
+                } else if (this.password.length < 8) { 
                     this.msjErrores.push("* La contraseña debe de tener como mínimo 8 caracteres");
                 }else if (this.password == '') { 
                     this.msjErrores.push("* La contraseña no puede estar vacía");
@@ -374,9 +384,9 @@
                                 this.btnFuncion = 2;
                                 this.idUsuario = data['id'];
                                 this.idEmpleado = data['idEmpleado'];
-                                this.usuario = data['Usuario'];
+                                this.usuario = data['name'];
                                 this.password = '';
-                                this.rol = data['Estado'];
+                                this.rol = data['idrol'];
                                 break;
                             }
                         }
@@ -384,6 +394,7 @@
                 }
 
                 this.mostrarEmpleado();
+                this.mostrarRoles();
             },
             cerrarModal(){
                 this.modal = 0;

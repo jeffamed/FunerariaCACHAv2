@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Acceso;
+use App\RoleUser;
 use Illuminate\Support\Facades\DB;
 
 class AccesoController extends Controller
@@ -20,16 +21,20 @@ class AccesoController extends Controller
         $criterio = $request->criterio;
 
         if($buscar == ''){
-            $accesos = Acceso::join('empleados','accesos.idEmpleado','=','empleados.id')
-                                    ->select('accesos.id','accesos.Usuario',DB::raw('concat(empleados.Nombre," ",empleados.Apellido) as Empleado'),'empleados.id as idEmpleado','accesos.idEmpleado','accesos.password','accesos.Rol','accesos.Estado')
-                                    ->orderBy('accesos.id','desc')
-                                    ->paginate(7);
+            $accesos = Acceso::join('empleados','users.idEmpleado','=','empleados.id')
+                            ->join('role_user as ru','users.id','=','ru.user_id')
+                            ->join('roles as r','ru.role_id','=','r.id')
+                            ->select('users.id','users.name',DB::raw('concat(empleados.Nombre," ",empleados.Apellido) as Empleado'),'empleados.id as idEmpleado','users.idEmpleado','users.password','r.name as rol','r.id as idrol','users.state')
+                            ->orderBy('users.id','desc')
+                            ->paginate(7);
         }else{
-            $accesos = Acceso::join('empleados','accesos.idEmpleado','=','empleados.id')
-                                    ->select('accesos.id','accesos.Usuario',DB::raw('concat(empleados.Nombre," ",empleados.Apellido) as Empleado'),'empleados.id as idEmpleado','accesos.idEmpleado','accesos.password','accesos.Rol','accesos.Estado')
-                                    ->where('accesos.'.$criterio,'like','%'.$buscar.'%')
-                                    ->orderBy('accesos.id','desc')
-                                    ->paginate(7);
+            $accesos = Acceso::join('empleados','users.idEmpleado','=','empleados.id')
+                            ->join('role_user as ru','users.id','=','ru.user_id')
+                            ->join('roles as r','ru.role_id','=','r.id')
+                            ->select('users.id','users.name',DB::raw('concat(empleados.Nombre," ",empleados.Apellido) as Empleado'),'empleados.id as idEmpleado','users.idEmpleado','users.password','r.name as rol','r.id as idrol','users.state')
+                            ->where('users.'.$criterio,'like','%'.$buscar.'%')
+                            ->orderBy('users.id','desc')
+                            ->paginate(7);
         }
 
         return[
@@ -53,14 +58,26 @@ class AccesoController extends Controller
      */
     public function store(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
-        $acceso = new Acceso();
-        $acceso->Usuario = $request->Usuario;
-        $acceso->idEmpleado = $request->idEmpleado;
-        $acceso->password = bcrypt($request->password);
-        $acceso->Rol = $request->Rol;
-        $acceso->Estado = 'Activo';
-        $acceso->save();
+        if (!$request->ajax()) return redirect('/');
+        try{
+            DB::beginTransaction();
+
+            $acceso = new Acceso();
+            $acceso->name = $request->Usuario;
+            $acceso->idEmpleado = $request->idEmpleado;
+            $acceso->password = bcrypt($request->password);
+            $acceso->state = 'Activo';
+            $acceso->save();
+
+            $role = new RoleUser();
+            $role->role_id = $request->Rol;
+            $role->user_id = $acceso->id;
+            $role->save();
+
+            DB::commit();
+        } catch(Exception $e){
+            DB::rollBack();
+        }
     }
 
     /**
@@ -74,19 +91,23 @@ class AccesoController extends Controller
     {
         if (!$request->ajax()) return redirect('/');
         $acceso = Acceso::findOrFail($request->id);
-        $acceso->Usuario = $request->Usuario;
+        $acceso->name = $request->Usuario;
         $acceso->idEmpleado = $request->idEmpleado;
         $acceso->password = bcrypt($request->password);
-        $acceso->Rol = $request->Rol;
-        $acceso->Estado = 'Activo';
+        $acceso->state = 'Activo';
         $acceso->save();
+
+        $rol = RoleUser::where('user_id','=',$request->id)->first();
+        $rol->role_id = $request->Rol;
+        $rol->user_id = $request->id;
+        $rol->save();
     }
 
     public function desactivar(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
         $acceso = Acceso::findOrFail($request->id);
-        $acceso->Estado = 'Inactivo';
+        $acceso->state = 'Inactivo';
         $acceso->save();
     }
 
@@ -94,7 +115,7 @@ class AccesoController extends Controller
     {
         if (!$request->ajax()) return redirect('/');
         $acceso = Acceso::findOrFail($request->id);
-        $acceso->Estado = 'Activo';
+        $acceso->state = 'Activo';
         $acceso->save();
     }
 }

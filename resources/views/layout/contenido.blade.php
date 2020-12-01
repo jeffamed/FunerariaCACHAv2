@@ -2,8 +2,7 @@
 @section('contenido')
 {{-- dashboard --}}
     <template v-if="menu==0">
-        {{-- <example-component></example-component> --}}
-        <h3 class="pt-5">Menu 0</h3>
+        <pantalla-inicio></pantalla-inicio>
     </template>
 {{-- Cartera --}}
     <template v-if="menu==1">
@@ -25,6 +24,9 @@
     <template v-if="menu==6">
         <proyecto></proyecto>
     </template>   
+    <template v-if="menu==17">
+        <tasa-cambio></tasa-cambio>
+    </template>
 {{-- ubicacion --}}
     <template v-if="menu==7">
         <barrio></barrio>
@@ -47,6 +49,15 @@
     </template>
 {{-- ayuda --}}
     <template v-if="menu==13">
-        <h3>menu 13</h3>
+        <reportes></reportes>
+    </template>
+    <template v-if="menu==14">
+        <ventas></ventas>
+    </template>
+    <template v-if="menu==15">
+        <roles-permisos></roles-permisos>
+    </template>
+    <template v-if="menu==16">
+        <estado-cuenta></estado-cuenta>
     </template>
 @endsection

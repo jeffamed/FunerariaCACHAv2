@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Acceso extends Model
 {
+    protected $table = "users";
+
     protected $fillable = [
         'id', 
         'idEmpleado', 
-        'Usuario',
+        'name',
         'password',
-        'Rol',
-        'Estado'
+        'state'
     ];
 
     public function empleado()

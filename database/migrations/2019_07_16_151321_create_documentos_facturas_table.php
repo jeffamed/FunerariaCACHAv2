@@ -19,6 +19,7 @@ class CreateDocumentosFacturasTable extends Migration
             $table->date('Fecha_PropuestaP');
             $table->date('Fecha_Cobro');
             $table->string('Estado',10);
+            $table->float('Total');
             $table->timestamps();
         });
     }

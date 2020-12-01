@@ -5,7 +5,7 @@
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
                 <h5 class="titulo">Clientes</h5>
             <!-- Boton nuevo -->
-                <button class="btn-new"  @click="abrirModal('cliente','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
+                <button class="btn-new"  @click="abrirModal('cliente','registrar')" v-if="$can('cliente.store')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- Abrir Modal-->
                 <div class="modal fade" id="btn-new" tabindex="-1" :class="{'mostrar' : modal}" role="dialog" aria-labelledby="btn-new" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
@@ -150,7 +150,7 @@
                         <tbody>
                             <tr v-for="cliente in Clientes" :key="cliente.id">
                                 <td>
-                                    <button class="boton boton-edit" @click="abrirModal('cliente','actualizar', cliente)"><i class="fa fa-pencil"></i></button>
+                                    <button class="boton boton-edit" @click="abrirModal('cliente','actualizar', cliente)" v-if="$can('cliente.update')"><i class="fa fa-pencil"></i></button>
                                     <button class="boton boton-mirar" @click="abrirModal('cliente','mostrar', cliente)"><i class="fa fa-eye"></i></button>
                                 </td>
                                 <td v-text="cliente.Nombre"></td>
@@ -164,7 +164,6 @@
                         </tbody>
                     </table>
                 </div>
-
                 <!-- PAGINACION -->
                 <nav aria-label="page navigation example">
                     <ul class="pagination justify-content-end" id="pagination">
@@ -391,7 +390,6 @@
                                 this.modal = 1;
                                 this.tituloModal = 'Información del Cliente';
                                 this.btnFuncion = 3;
-                                // this.idCliente = data['id'];
                                 this.idBarrio = data['idBarrio'];
                                 this.nombre = data['Nombre'];
                                 this.apellido = data['Apellido'];

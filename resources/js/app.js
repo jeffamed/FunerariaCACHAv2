@@ -8,6 +8,9 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import Permissions from './mixins/Permissions';
+Vue.mixin(Permissions);
+
 // Vue.prototype.$http = windows.axios;
 /**
  * The following block of code may be used to automatically register your
@@ -33,6 +36,12 @@ Vue.component('acceso', require('./components/Acceso.vue').default);
 Vue.component('contrato', require('./components/Contrato.vue').default);
 Vue.component('factura', require('./components/Factura.vue').default);
 Vue.component('financiar', require('./components/Financiamiento.vue').default);
+Vue.component('ventas', require('./components/Ventas.vue').default);
+Vue.component('pantalla-inicio', require('./components/ExampleComponent.vue').default);
+Vue.component('roles-permisos', require('./components/Roles.vue').default);
+Vue.component('reportes', require('./components/Reportes.vue').default);
+Vue.component('estado-cuenta', require('./components/EstadoCuenta.vue').default);
+Vue.component('tasa-cambio', require('./components/TasaCambio.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

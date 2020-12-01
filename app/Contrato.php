@@ -21,7 +21,8 @@ class Contrato extends Model
         'Descuento',
         'Beneficiarios',
         'Nota',
-        'Cuota'
+        'Cuota',
+        'cancelado'
     ];
 
     public function cliente()
@@ -47,5 +48,9 @@ class Contrato extends Model
     public function financiamiento()
     {
         return $this->belongsTo('App\Financiamiento');
+    }
+    public function cuentaxcobrar()
+    {
+        return $this->hasMany('App\CuentaszCobrar');
     }
 }

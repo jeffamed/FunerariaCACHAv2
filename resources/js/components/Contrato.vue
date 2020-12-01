@@ -5,7 +5,7 @@
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
                 <h5 class="titulo">Contratos</h5>
                  <!-- Boton nuevo -->
-                <button class="btn-new"  @click="mostrarFrm('contrato','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
+                <button class="btn-new"  @click="mostrarFrm('contrato','registrar')" v-if="$can('contrato.index')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- buscador -->
                 <div class="buscador d-flex ml-auto hidden-md-down">
                     <label for="" class="etiqueta">Buscar por: </label>
@@ -43,28 +43,28 @@
                                     <th>Contratos</th>
                                     <th>Cliente</th>
                                     <th>Servicio</th>
-                                    <th>Fecha Cobro</th>
+                                    <th>Deuda C$</th>
                                     <th>Estados</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="contrato in Contratos" :key="contrato.id" :style="contrato.Estado == 'Suspendido' ? 'color:orange':''">
+                                <tr v-for="contrato in Contratos" :key="contrato.id" :style="contrato.Estado == 'Suspendido' ? 'color:orange':contrato.Estado=='Financeado'?'color:green':''">
                                     <td>
-                                        <button class="boton boton-edit" @click="mostrarFrm('contrato','actualizar', contrato)"><i class="fa fa-pencil"></i></button>
+                                        <template v-if="contrato.Estado != 'Financeado'">
+                                            <button class="boton boton-edit" @click="mostrarFrm('contrato','actualizar', contrato)" v-if="$can('contrato.update')"><i class="fa fa-pencil"></i></button>
+                                        </template>
                                         <template v-if="contrato.Estado == 'Activo'">
-                                            <button class="boton boton-eliminar" @click="desactivarContrato(contrato.id)"><i class="fa fa-trash"></i></button>
+                                            <button class="boton boton-eliminar" @click="desactivarContrato(contrato.id)" v-if="$can('contrato.suspend')"><i class="fa fa-trash"></i></button>
                                         </template>
                                         <template v-else-if="contrato.Estado == 'Suspendido'">
-                                            <button class="boton boton-activar" @click="activarContrato(contrato.id)"><i class="fa fa-check-circle"></i></button>
+                                            <button class="boton boton-activar" @click="activarContrato(contrato.id)" v-if="$can('contrato.active')"><i class="fa fa-check-circle"></i></button>
                                         </template>
-                                        <template v-else>
-                                            <button class="boton"><i class="fa fa-eye"></i> </button>
-                                        </template>
+                                        <button class="boton boton-mirar" @click="mostrardatos(contrato.id)"><i class="fa fa-eye"></i></button>
                                     </td>
                                     <td v-text="contrato.Contrato"></td>
                                     <td v-text="contrato.NombreCliente"></td>
                                     <td v-text="contrato.Servicio"></td>
-                                    <!-- <td v-text="contrato.FechaCobro"></td> -->
+                                    <td class="text-center" v-text="contrato.TotalMoney"></td>
                                     <td v-text="contrato.Estado"></td>
                                 </tr>
                             
@@ -87,7 +87,7 @@
                     </nav>
                 </template>
                 <!-- mostrar Formulario -->
-                <template v-else>
+                <template v-else-if="mostrar == 2">
                     <div class="row m-1">
                         <!-- # contrato -->
                         <div class="col-md-3 form-group">
@@ -112,7 +112,7 @@
                             <input type="date" name="" id="" class="form-control" v-model="fechaEmision">
                         </div>
                         <!-- Servicio -->
-                        <div class="col-md-3 form-group">
+                        <div class="col-md-4 form-group">
                             <label for="Servicio" class="form-control-label">Servicio:</label>
                             <!-- :reduce="infoServicio => infoServicio.id" -->
                             <v-select 
@@ -126,7 +126,7 @@
                             </v-select>
                         </div>
                         <!-- Vendedor -->
-                        <div class="col-md-6 form-group">
+                        <div class="col-md-5 form-group">
                             <label for="Vendedor" class="form-control-label">Vendedor:</label>
                             <v-select 
                                 label="Nombre"
@@ -142,8 +142,17 @@
                             <label for="Total" class="form-control-label">Costo del Servicio: </label>
                             <input type="text" class="form-control" v-model="total">
                         </div>
+                        <!-- Costo del servicio -->
+                        <div class="col-md-2 form-group">
+                            <label for="Total" class="form-control-label">Contrato Cancelado: </label>
+                            <select class="form-control" v-model="cancelado">
+                                <option value="NO">Sin Cancelar</option>
+                                <option value="SI">Cancelado</option>
+                                <option value="Anul">Rechazado</option>
+                            </select>
+                        </div>
                         <!-- Fecha del primer cobro -->
-                        <div class="col-md-3 form-group">
+                        <div class="col-md-3 form-group" v-show="cancelado == 'SI'">
                             <label for="FechaC" class="form-control-label">Primer Cobro:</label>
                             <input type="date" class="form-control" v-model="fechaCobro">
                         </div>
@@ -154,19 +163,19 @@
                                 <input type="number"  min="1" value="1" class="form-control frecuencia frecuencia-numero" v-model="numeroFrecuencia">
                                 <select class="form-control frecuencia frecuencia-tipo" v-model="frecuenciaPago">
                                     <option value="" disabled>Seleccione...</option>
-                                    <option value="Semana">Semana</option>
-                                    <option value="Mes">Mes</option>
-                                    <option value="Dia">Día</option>
+                                    <option value="WEEK">Semana</option>
+                                    <option value="MONTH">Mes</option>
+                                    <option value="DAY">Día</option>
                                 </select>
                             </div>
                         </div>
                         <!-- Cuotas -->
-                        <div class="col-md-3 form-group">
+                        <div :class="cancelado == 'SI' ? 'col-md-2 form-group':'col-md-3 form-group'">
                             <label for="Cuota" class="form-control-label">Cuota:</label>
                             <input type="number" name="Cuota" min="0" value="0" class="form-control" v-model="cuota">
                         </div>
                         <!-- Descuento -->
-                        <div class="col-md-3 form-group">
+                        <div :class="cancelado == 'SI' ? 'col-md-2 form-group':'col-md-3 form-group'">
                             <label for="Descuento" class="form-control-label">Descuento (%):</label>
                             <input type="number" name="Descuento" min="0" value="0" class="form-control" v-model="descuento">
                         </div>
@@ -187,6 +196,74 @@
                             <button class="btn btn-success" v-if="btnFuncion == 1" @click="registrarContrato()"><i class="fa fa-check"></i> Guardar</button>
                             <button class="btn btn-success" v-if="btnFuncion == 2" @click="actualizarContrato()"><i class="fa fa-check"></i> Actualizar</button>
                             <button @click="mostrarTabla()" class="btn btn-danger"><i class="fa fa-close"></i> Cerrar</button>
+                        </div>
+                    </div>
+                </template>
+                <template v-if="mostrar == 3">
+                    <div class="row m-1">
+                        <div style="border-top: 1px solid gray; border-bottom: 1px solid gray;" class="col-md-12">
+                            <label class="text-center d-block">Información del Cliente</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Cliente:</b> {{cliente}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>No.Cédula:</b> {{cedula}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Teléfono:</b> {{telefono}}</p>
+                        </div>
+                        <div class="col-md-12">
+                            <p><b>Dirección:</b> {{direccion}}</p>
+                        </div>
+                        <div style="border-top: 1px solid gray; border-bottom: 1px solid gray;" class="col-md-12">
+                            <label class="text-center d-block">Información del Contrato</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>No.Contrato:</b> {{contrato}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p :style="estado == 'Activo'?'color: green; font-weight: bold' : 'color: red; font-weight: bold'"><b>Estado:</b> {{estado}}</p>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <p><b>Fecha Emisión:</b> {{fechaEmision}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Proyecto:</b> {{proyecto}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Servicio:</b> {{servicio}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Total Servicio:</b> C${{total}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Vendedor:</b> {{vendedor}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Cuota:</b> {{cuota}}</p>
+                        </div>
+                        <div class="col-md-6" v-if="frecuenciaPago=='MONTH'">
+                            <p><b>Frecuencia Pago:</b> Mensual</p>
+                        </div>
+                        <div class="col-md-6" v-else-if="frecuenciaPago=='WEEK'">
+                            <p><b>Frecuencia Pago:</b> Semanal</p>
+                        </div>
+                        <div class="col-md-6" v-else>
+                            <p><b>Frecuencia Pago:</b> Diario</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Descuento:</b> {{descuento}} %</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Beneficiario:</b> {{beneficiario}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Nota:</b> {{nota}}</p>
+                        </div>
+                        <div class="col-md-12">
+                            <buttom class="btn btn-danger" @click="mostrarTabla"> Cerrar</buttom>
                         </div>
                     </div>
                 </template>
@@ -239,6 +316,15 @@
                 offset: 3,
                 criterio: 'contratos.Contrato',
                 buscar: '',
+                cliente: '',
+                vendedor: '',
+                descripcion: '',
+                proyecto: '',
+                estado: '',
+                direccion: '',
+                telefono: '',
+                cedula: '',
+                cancelado: ''
             }
         },
         computed: {
@@ -346,6 +432,7 @@
                 this.cuota = 0;
                 this.msjErrores = [];
                 this.errorContrato = 0;
+                this.servicio = '';
             },
             mostrarFrm(modelo,accion,data=[]){
                 this.mostrar = 2;
@@ -354,7 +441,6 @@
                         switch (accion) {
                             case 'registrar':
                             {
-                                // this.modal = 1;
                                 this.tituloModal = 'Registrar Contrato';
                                 this.btnFuncion = 1;
                                 this.contrato = '',
@@ -370,11 +456,11 @@
                                 this.beneficiario = '';
                                 this.nota = '';
                                 this.cuota = 0;
+                                this.cancelado = 'NO'
                                 break;
                             }
                             case 'actualizar':
                             {
-                                // this.modal = 1;
                                 this.tituloModal = 'Actualizar Contrato';
                                 this.btnFuncion = 2;
                                 this.idContrato = data['id'];
@@ -391,17 +477,44 @@
                                 this.beneficiario = data['Beneficiarios'];
                                 this.nota = data['Nota'];
                                 this.cuota = data['Cuota'];
-                                
-                                this.fechaCobro = data['FechaCobro'];
+                                this.fechaCobro = data['Fecha_Cobro'];
+                                this.cancelado = data['cancelado'];
                                 break;
                             }
-                            
                         }
                     }
                 this.mostrarVendedor();
                 this.mostrarCliente();
                 this.mostrarServicio();
                 this.fechaSistema();
+            },
+            mostrardatos(id){
+                let me = this;
+                me.mostrar = 3;
+                me.idFactura =  id;
+                var url= '/contrato/informacion?idContrato='+id;
+                axios.get(url).then(function(response) {
+                    var respuesta = response.data;
+                    me.contrato = respuesta.informacion[0].Contrato;
+                    me.fechaEmision = respuesta.informacion[0].Fecha_Emision;
+                    me.cliente = respuesta.informacion[0].Cliente;
+                    me.vendedor = respuesta.informacion[0].Vendedor;
+                    me.servicio = respuesta.informacion[0].Servicio;
+                    me.proyecto = respuesta.informacion[0].Proyecto;
+                    me.descripcion = respuesta.informacion[0].Descripcion;
+                    me.estado = respuesta.informacion[0].Estado;
+                    me.descuento = respuesta.informacion[0].Descuento;
+                    me.beneficiario = respuesta.informacion[0].Beneficiarios;
+                    me.nota = respuesta.informacion[0].Nota;
+                    me.cuota = respuesta.informacion[0].Cuota;
+                    me.frecuenciaPago = respuesta.informacion[0].Frecuencia_Pago;
+                    me.direccion = respuesta.informacion[0].Direccion;
+                    me.telefono = respuesta.informacion[0].Telefono;
+                    me.cedula = respuesta.informacion[0].Cedula;
+                    me.total = respuesta.informacion[0].Total;                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
             cambiarPagina(pagina,buscar,criterio){
                 let me = this;
@@ -427,15 +540,36 @@
                         'Beneficiarios' : this.beneficiario,
                         'Nota' : this.nota,
                         'Cuota' : this.cuota,
-						'Fecha_Cobro': this.fechaCobro
+                        'Fecha_Cobro': this.fechaCobro,
+                        'Cancelado': this.cancelado,
                         }).then(function(response) {
-                        me.mostrarTabla();
-                        me.mostrarContrato(1,'','Contrato');
+                            me.mostrarTabla();
+                            me.mostrarContrato(1,'','Contrato');
+                            me.notificacion();
                         })
                     .catch(function (error) {
                         console.log(error);
                     });
                 }
+            },
+            notificacion(){
+                toastr.success('Contrato Registrato',{
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": false,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                });
             },
             actualizarContrato(){
                 if(this.validarFrmContrato()){
@@ -445,7 +579,6 @@
                     let me = this;
                     axios.put('/contrato/actualizar', {
                         'id' : this.idContrato,
-						
                         'Contrato' : this.contrato,
                         'idCliente' : this.idCliente,
                         'idVendedor' : this.idVendedor,
@@ -458,10 +591,11 @@
                         'Beneficiarios' : this.beneficiario,
                         'Nota' : this.nota,
                         'Cuota' : this.cuota,
-                        'Fecha_Cobro': this.fechaCobro
+                        'Fecha_Cobro': this.fechaCobro,
+                        'Cancelado': this.cancelado,
                         }).then(function(response) {
-                         me.mostrarTabla();
-                        me.mostrarContrato(1,'','Contrato');
+                            me.mostrarTabla();
+                            me.mostrarContrato(1,'','Contrato');
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -469,14 +603,25 @@
                 }
             },
             fechaSistema(){
-                var f = new Date();
+                /*var f = new Date();
                 var day = f.getDate();
                 var month = f.getMonth();
                 var mes= parseInt(month) + parseInt(1);
                 if (mes==13) mes=1;
                 if (day < 10)  day= '0' + day;
                 if (month < 10)  month= '0' + mes;
-                this.fechaS = f.getFullYear()+"-"+month+"-"+ day;
+                this.fechaS = f.getFullYear()+"-"+month+"-"+ day;*/
+
+                let me = this;
+                var url= '/fecha';
+                axios.get(url).then(function(response) {
+                    var respuesta = response.data;
+                    me.fechaS = respuesta.fecha;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
             },
             validarFrmContrato(){
                 this.errorContrato=0;
@@ -494,10 +639,13 @@
                     this.msjErrores.push("* Debe de seleccionar una opción en servicio");
                 }else if(this.idVendedor == ''){
                     this.msjErrores.push("* Debe de seleccionar una opción en vendedor");
-                }else if(this.fechaCobro == ''){
+                }else if(this.cancelado == 'SI'){
+                    if(this.fechaCobro <= this.fechaEmision){
+                       this.msjErrores.push("La fecha de cobro no puede ser menor a la fecha del registro del contrato")
+                    }
+                    if(this.fechaCobro == ''){
                     this.msjErrores.push("* El campo fecha de cobro no puede estar vacío");
-                }else if(this.fechaCobro <= this.fechaEmision){
-                    this.msjErrores.push("La fecha de cobro no puede ser menor a la fecha del registro del contrato")
+                    }
                 }else if(this.numeroFrecuencia <= 0){
                     this.msjErrores.push("* El campo frecuencia de pago tiene que se mayor a 0");
                 }else if(this.frecuenciaPago == ''){

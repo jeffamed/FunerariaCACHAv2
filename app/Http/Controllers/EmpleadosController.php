@@ -40,7 +40,7 @@ class EmpleadosController extends Controller
 
     public function seleccionar(Request $request)
     {
-        // if (!$request->ajax()) return redirect('/');
+         if (!$request->ajax()) return redirect('/');
         $filtro = $request->filtro;
         $empleados = Empleado::where('Estado','=','Activo')
                             -> select('id',DB::raw('concat(Nombre," ",Apellido) as Nombre'))
@@ -50,6 +50,18 @@ class EmpleadosController extends Controller
         return ['empleados'=>$empleados];
     }
 
+    public function listaColector(Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+        $empleados = DB::table('empleados as e')->join('users as u','e.id','=','u.idEmpleado')
+                    ->join('role_user as ru','u.id','=','ru.user_id')
+                    ->join('roles as r','ru.role_id', '=', 'r.id')
+                    ->select('e.id',DB::raw('concat(e.Nombre," ",e.Apellido) as Nombre'))
+                    ->where([['r.slug', '=', 'Colector'],['e.Estado', '=', 'Activo']])
+                    -> orderBy('e.Nombre','asc')
+                    -> get();
+        return ['empleados'=>$empleados];        
+    }
     /**
      * Store a newly created resource in storage.
      *

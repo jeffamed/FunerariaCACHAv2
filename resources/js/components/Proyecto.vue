@@ -5,7 +5,7 @@
             <div class="contenido__encabezado bg-primary d-flex w-100" id="contenido-enc">
                 <h5 class="titulo">Proyectos</h5>
             <!-- Boton nuevo -->
-                <button class="btn-new"  @click="abrirModal('proyecto','registrar')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
+                <button class="btn-new"  @click="abrirModal('proyecto','registrar')" v-if="$can('proyecto.store')"><i class="hidden-xs-down fa fa-plus-circle"></i> Nuevo</button>
                 <!-- Abrir Modal-->
                 <div class="modal fade" id="btn-new" tabindex="-1" :class="{'mostrar' : modal}" role="dialog" aria-labelledby="btn-new" aria-hidden="true">
                     <div class="modal-dialog">
@@ -81,12 +81,12 @@
                         <tbody>
                             <tr v-for="proyecto in Proyectos" :key="proyecto.id" :style="proyecto.Estado=='Activo'?'':'color:red'">
                                 <td>
-                                    <button class="boton boton-edit" @click="abrirModal('proyecto','actualizar', proyecto)"><i class="fa fa-pencil"></i></button>
+                                    <button class="boton boton-edit" @click="abrirModal('proyecto','actualizar', proyecto)" v-if="$can('proyecto.update')"><i class="fa fa-pencil"></i></button>
                                     <template v-if="proyecto.Estado == 'Activo'">
-                                        <button class="boton boton-eliminar" @click="desactivarProyecto(proyecto.id)"><i class="fa fa-trash"></i></button>
+                                        <button class="boton boton-eliminar" @click="desactivarProyecto(proyecto.id)" v-if="$can('proyecto.inactive')"><i class="fa fa-trash"></i></button>
                                     </template>
                                     <template v-else>
-                                        <button class="boton boton-activar" @click="activarProyecto(proyecto.id)"><i class="fa fa-check-circle"></i></button>
+                                        <button class="boton boton-activar" @click="activarProyecto(proyecto.id)" v-if="$can('proyecto.active')"><i class="fa fa-check-circle"></i></button>
                                     </template>
                                 </td>
                                 <td v-text="proyecto.Nombre"></td>

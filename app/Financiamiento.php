@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Financiamiento extends Model
 {
+    protected $table = 'financiamientos';
+
     protected $fillable = [
         'id',
         'idContrato',
@@ -15,6 +17,7 @@ class Financiamiento extends Model
         'SubTotal',
         'Frecuencia_Pago',
         'numero_Frec',
+        'SaldoR',
         'Cuota',
         'Estado'
     ];
@@ -26,5 +29,9 @@ class Financiamiento extends Model
     public function fechaf()
     {
         return $this->hasMany('App\FechasFinanciamiento');
+    }
+    public function cuentas()
+    {
+        return $this->hasMany('App\CuentasxCobrar');
     }
 }

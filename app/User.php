@@ -5,10 +5,13 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Caffeinated\Shinobi\Concerns\HasRolesAndPermissions;
+use Caffeinated\Shinobi\Models\Permission;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasRolesAndPermissions;
 
     /**
      * The attributes that are mass assignable.
@@ -18,10 +21,10 @@ class User extends Authenticatable
     protected $fillable = [
         'id', 
         'idEmpleado', 
-        'Usuario',
+        'name',
         'password',
         'Rol',
-        'Estado'
+        'state'
     ];
 
     /**
@@ -41,4 +44,13 @@ class User extends Authenticatable
     // protected $casts = [
     //     'email_verified_at' => 'datetime',
     // ];
+    public function getAllPermissionsAttribute() {
+        $permissions = [];
+        foreach (Permission::all() as $permission) {
+        if (Auth::user()->can($permission->slug)) {
+            $permissions[] = $permission->slug;
+        }
+        }
+        return $permissions;
+    }
 }
